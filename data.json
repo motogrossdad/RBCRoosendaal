@@ -1,0 +1,14 @@
+{
+  "match": {
+    "home_team": "RBC",
+    "away_team": "FC Lisse",
+    "home_score": 2,
+    "away_score": 1,
+    "status": "FINISHED",
+    "date": "07-12-2025"
+  },
+  "news": {
+    "headline": "RBC wint kraker tegen FC Lisse!",
+    "link": "#"
+  }
+}
