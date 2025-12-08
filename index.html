@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RBC Roosendaal - Onofficiële Fansite</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .header { background-color: #ff6600; color: white; padding: 20px; text-align: center; }
+        .score-board { 
+            background: white; 
+            margin: 20px auto; 
+            padding: 20px; 
+            max-width: 400px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+            text-align: center;
+        }
+        .teams { display: flex; justify-content: space-between; font-size: 1.2em; font-weight: bold; }
+        .score { font-size: 3em; color: #ff6600; font-weight: bold; margin: 10px 0; }
+        .status { color: #666; font-size: 0.9em; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>RBC Roosendaal</h1>
+</div>
+
+<div class="score-board">
+    <div class="status" id="status">Laden...</div>
+    <div class="teams">
+        <span id="home">Thuis</span>
+        <span id="away">Uit</span>
+    </div>
+    <div class="score" id="score">- - -</div>
+</div>
+
+<script>
+    // This script grabs your "database" file
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('home').innerText = data.match.home_team;
+            document.getElementById('away').innerText = data.match.away_team;
+            document.getElementById('score').innerText = data.match.home_score + " - " + data.match.away_score;
+            document.getElementById('status').innerText = data.match.status;
+        });
+</script>
+
+</body>
+</html>
