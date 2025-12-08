@@ -9,125 +9,120 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* RBC COLOR PALETTE */
         :root {
             --rbc-orange: #FF6600;
-            --rbc-deep-orange: #CC5200;
-            --rbc-white: #FFFFFF;
+            --rbc-dark-orange: #D95400;
             --rbc-navy: #0F172A;
         }
         
         body { 
             font-family: 'Inter', sans-serif; 
-            /* THE NEW ORANGE BACKGROUND */
-            background: linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-deep-orange) 100%);
-            min-height: 100vh;
+            background-color: #F8FAFC; 
+            color: #0F172A;
         }
         
         h1, h2, .score-font { font-family: 'Teko', sans-serif; text-transform: uppercase; }
-        
-        /* Glassmorphism Card (Updated for Orange BG) */
-        .glass {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+
+        /* THE DOMINANT ORANGE HERO */
+        .hero-bg {
+            background: linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-dark-orange) 100%);
+            /* Optional: subtle pattern overlay */
+            background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 20%),
+                              linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-dark-orange) 100%);
         }
 
-        .hero-overlay {
-            background: linear-gradient(to bottom, rgba(255, 102, 0, 0.4), rgba(204, 82, 0, 0.9));
+        .card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body class="text-slate-900 pb-12">
+<body class="pb-12">
 
-    <nav class="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between text-white">
+    <nav class="absolute top-0 w-full z-50 border-b border-white/20">
+        <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between text-white">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#FF6600] font-bold shadow-lg">
-                    RBC
+                <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-[#FF6600] font-bold text-xl shadow-lg transform -skew-x-6">
+                    <span class="skew-x-6">RBC</span>
                 </div>
-                <span class="text-2xl font-bold tracking-wide drop-shadow-md">RBC<span class="opacity-90 font-normal">ROOSENDAAL</span></span>
+                <span class="text-3xl font-bold tracking-wide drop-shadow-sm">RBC<span class="opacity-80 font-normal">ROOSENDAAL</span></span>
             </div>
-            <div class="hidden md:flex space-x-6 font-semibold text-sm tracking-wide">
-                <a href="#" class="hover:text-white/80 transition">HOME</a>
-                <a href="#" class="hover:text-white/80 transition">SELECTIE</a>
-                <a href="#" class="bg-white text-[#FF6600] px-4 py-2 rounded shadow hover:bg-orange-50 transition">TICKETS</a>
+            <div class="hidden md:flex space-x-8 font-bold text-sm tracking-widest">
+                <a href="#" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">HOME</a>
+                <a href="#" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">SELECTIE</a>
+                <a href="#" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">PROGRAMMA</a>
+                <a href="#" class="bg-[#0F172A] px-6 py-2 rounded text-white hover:bg-slate-800 transition shadow-lg">TICKETS</a>
             </div>
         </div>
     </nav>
 
-    <div id="hero-section" class="relative h-[450px] bg-cover bg-center flex items-end justify-center pb-16">
-        <div class="absolute inset-0 hero-overlay"></div>
-        
-        <div class="relative z-10 w-11/12 max-w-4xl">
-            <div class="text-center mb-6 text-white animate-fade-in">
-                <h1 id="hero-title" class="text-7xl font-bold leading-none drop-shadow-lg filter">WIJ ZIJN RBC</h1>
-                <p id="hero-subtitle" class="text-2xl font-light tracking-[0.2em] uppercase">Trots van het Zuiden</p>
-            </div>
+    <div class="hero-bg h-[550px] relative flex items-center justify-center pt-10 overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[20vw] font-bold text-white opacity-10 pointer-events-none select-none font-sans">
+            RBC
+        </div>
 
-            <div class="glass rounded-2xl overflow-hidden shadow-2xl transform transition hover:scale-[1.01] duration-500">
-                <div class="bg-slate-900 text-white text-center py-2 text-sm font-bold tracking-widest" id="match-comp">
-                    COMPETITIE
-                </div>
-                <div class="p-6 md:p-8 flex flex-col md:flex-row items-center justify-between">
-                    
-                    <div class="flex flex-col items-center w-1/3">
-                        <img id="home-logo" src="" onerror="this.src='https://placehold.co/100x100?text=RBC'" class="h-24 w-24 object-contain mb-3 drop-shadow-xl">
-                        <span id="home-name" class="font-bold text-3xl text-slate-900">RBC</span>
-                    </div>
-
-                    <div class="flex flex-col items-center w-1/3 my-4 md:my-0">
-                        <div class="bg-[#FF6600] text-white px-8 py-2 rounded-xl text-6xl font-bold tracking-widest score-font shadow-inner border-2 border-orange-400">
-                            <span id="home-score">0</span>-<span id="away-score">0</span>
-                        </div>
-                        <span id="match-status" class="mt-3 text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full uppercase tracking-wider">
-                            Laden...
-                        </span>
-                    </div>
-
-                    <div class="flex flex-col items-center w-1/3">
-                        <img id="away-logo" src="" onerror="this.src='https://placehold.co/100x100?text=Opponent'" class="h-24 w-24 object-contain mb-3 opacity-90">
-                        <span id="away-name" class="font-bold text-3xl text-slate-500">BEZOEKER</span>
-                    </div>
-                </div>
+        <div class="relative z-10 text-center text-white -mt-10">
+            <h1 id="hero-title" class="text-7xl md:text-8xl font-bold tracking-tighter drop-shadow-md mb-2">WIJ ZIJN RBC</h1>
+            <div class="inline-block border-2 border-white/40 px-6 py-2 rounded-full backdrop-blur-sm">
+                <p id="hero-subtitle" class="text-lg md:text-xl font-medium tracking-[0.3em]">ORANJE - WIT - VOOR ALTIJD</p>
             </div>
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 -mt-8 relative z-20">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="md:col-span-2 space-y-4">
-                <div class="flex items-center space-x-2 text-white mb-2 pl-2">
-                    <i data-lucide="newspaper" class="w-6 h-6"></i>
-                    <h2 class="text-3xl font-bold">LAATSTE NIEUWS</h2>
-                </div>
+    <div class="max-w-5xl mx-auto px-4 -mt-32 relative z-20">
+        
+        <div class="card p-0 overflow-hidden mb-12 border-t-8 border-[#0F172A]">
+            <div class="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between">
                 
-                <div id="news-container" class="space-y-4">
+                <div class="flex flex-col items-center w-1/3 order-1 md:order-1">
+                    <img id="home-logo" src="" onerror="this.src='https://placehold.co/100x100?text=RBC'" class="h-24 w-24 object-contain mb-4 filter drop-shadow-md">
+                    <span id="home-name" class="font-bold text-3xl text-[#0F172A]">RBC</span>
+                </div>
+
+                <div class="flex flex-col items-center w-1/3 order-2 md:order-2 my-6 md:my-0">
+                    <div class="text-xs font-bold text-gray-400 tracking-widest mb-2" id="match-comp">DERDE DIVISIE B</div>
+                    <div class="bg-[#FF6600] text-white px-10 py-2 rounded-xl text-6xl font-bold tracking-widest score-font shadow-inner">
+                        <span id="home-score">0</span>-<span id="away-score">0</span>
+                    </div>
+                    <div class="mt-3 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse" id="match-status">
+                        LIVE
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center w-1/3 order-3 md:order-3">
+                    <img id="away-logo" src="" onerror="this.src='https://placehold.co/100x100?text=Opponent'" class="h-24 w-24 object-contain mb-4 opacity-90">
+                    <span id="away-name" class="font-bold text-3xl text-gray-500">BEZOEKER</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="md:col-span-2 space-y-6">
+                <h2 class="text-4xl font-bold text-[#0F172A] mb-4">NIEUWS</h2>
+                <div id="news-container" class="space-y-6">
                     </div>
             </div>
 
-            <div class="space-y-6 mt-12 md:mt-0">
-                <div class="glass p-6 rounded-xl shadow-lg border-l-8 border-[#FF6600]">
-                    <h3 class="font-bold text-slate-900 mb-1 text-lg">VOLGENDE WEDSTRIJD</h3>
-                    <p class="text-slate-500 text-sm mb-4">Zondag 14 dec, 14:30</p>
-                    <div class="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
-                        <span class="font-bold">RBC</span>
-                        <span class="text-xs text-gray-400">VS</span>
-                        <span class="font-bold">TOGB</span>
+            <div class="space-y-6">
+                <div class="bg-[#0F172A] rounded-2xl p-6 text-white text-center shadow-xl">
+                    <h3 class="font-bold text-2xl mb-2 score-font">VOLGENDE WEDSTRIJD</h3>
+                    <p class="text-orange-400 font-bold text-lg mb-4">ATIK STADION</p>
+                    <div class="border border-white/20 rounded-lg p-3 mb-4">
+                        <div class="text-3xl font-bold">14 DEC</div>
+                        <div class="text-sm opacity-70">14:30 UUR</div>
                     </div>
-                    <button class="w-full mt-4 bg-slate-900 text-white py-2 rounded font-bold hover:bg-[#FF6600] transition">
-                        KOOP TICKETS
+                    <button class="w-full bg-[#FF6600] hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition transform active:scale-95">
+                        BESTEL KAARTEN
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-white/60 text-center mt-20 pt-10 border-t border-white/20">
-        <p class="font-serif italic text-xl text-white mb-4">"Oranje is onze kleur..."</p>
-        <p class="text-sm">&copy; 2025 Onofficiële RBC Fansite</p>
+    <footer class="text-center py-12 mt-12 text-gray-400">
+        <p class="font-serif italic text-lg text-gray-500">Onofficiële Fansite van de Trots van het Zuiden</p>
     </footer>
 
     <script>
@@ -136,12 +131,9 @@
         fetch('data.json?v=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
-                // Hero
-                document.getElementById('hero-section').style.backgroundImage = `url('${data.hero.bg_image}')`;
                 document.getElementById('hero-title').innerText = data.hero.headline;
                 document.getElementById('hero-subtitle').innerText = data.hero.subheadline;
 
-                // Match
                 const match = data.match;
                 document.getElementById('home-name').innerText = match.home_team;
                 document.getElementById('away-name').innerText = match.away_team;
@@ -150,24 +142,22 @@
                 document.getElementById('match-status').innerText = match.status;
                 document.getElementById('match-comp').innerText = match.competition;
                 
-                // Images (Local file path)
                 document.getElementById('home-logo').src = match.home_logo;
                 document.getElementById('away-logo').src = match.away_logo;
 
-                // News
                 const newsContainer = document.getElementById('news-container');
                 newsContainer.innerHTML = '';
                 
                 data.news.forEach(item => {
                     const article = `
-                        <div class="glass p-5 rounded-xl hover:bg-white transition cursor-pointer flex justify-between items-center group">
-                            <div>
-                                <span class="text-[10px] font-bold text-white bg-[#FF6600] px-2 py-1 rounded mb-2 inline-block">${item.tag}</span>
-                                <h3 class="text-xl font-bold text-slate-800 group-hover:text-[#FF6600] transition">${item.title}</h3>
-                                <span class="text-xs text-slate-500 mt-1 block">${item.date}</span>
-                            </div>
-                            <div class="bg-slate-100 p-2 rounded-full group-hover:bg-[#FF6600] group-hover:text-white transition">
-                                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 cursor-pointer border-b-4 border-transparent hover:border-[#FF6600] group">
+                            <span class="text-xs font-bold text-[#FF6600] uppercase tracking-wider mb-2 block">${item.tag}</span>
+                            <h3 class="text-2xl font-bold text-[#0F172A] leading-tight group-hover:text-[#FF6600] transition">${item.title}</h3>
+                            <div class="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
+                                <span class="text-sm text-gray-400">${item.date}</span>
+                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#FF6600] group-hover:text-white transition">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </div>
                             </div>
                         </div>
                     `;
