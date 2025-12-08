@@ -1,14 +1,29 @@
 {
+  "hero": {
+    "headline": "WIJ ZIJN RBC",
+    "subheadline": "Samen op weg naar de top",
+    "bg_image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Stadion_De_Luiten_-_ATIK_Stadion_RBC_Roosendaal.jpg/1280px-Stadion_De_Luiten_-_ATIK_Stadion_RBC_Roosendaal.jpg"
+  },
   "match": {
     "home_team": "RBC",
+    "home_logo": "https://upload.wikimedia.org/wikipedia/de/d/d0/RBC_Roosendaal_Logo.svg",
     "away_team": "FC Lisse",
+    "away_logo": "https://upload.wikimedia.org/wikipedia/en/thumb/5/52/FC_Lisse_logo.svg/1200px-FC_Lisse_logo.svg.png",
     "home_score": 2,
     "away_score": 1,
-    "status": "FINISHED",
-    "date": "07-12-2025"
+    "status": "AFGELOPEN",
+    "competition": "Derde Divisie B"
   },
-  "news": {
-    "headline": "RBC wint kraker tegen FC Lisse!",
-    "link": "#"
-  }
+  "news": [
+    {
+      "title": "RBC wint kraker in eigen huis",
+      "date": "8 Dec 2025",
+      "tag": "WEDSTRIJD"
+    },
+    {
+      "title": "Kaartverkoop volgende duel gestart",
+      "date": "9 Dec 2025",
+      "tag": "TICKETS"
+    }
+  ]
 }
