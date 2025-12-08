@@ -9,21 +9,40 @@
     "home_logo": "rbc.png",
     "away_team": "FC Lisse",
     "away_logo": "lisse.png",
-    "home_score": 2,
-    "away_score": 1,
-    "status": "AFGELOPEN",
+    "home_score": 0,
+    "away_score": 0,
+    "status": "A.S. ZONDAG",
     "competition": "Derde Divisie B"
   },
   "news": [
-    {
-      "title": "RBC wint kraker in eigen huis",
-      "date": "8 Dec 2025",
-      "tag": "WEDSTRIJD"
-    },
-    {
-      "title": "Kaartverkoop volgende duel gestart",
-      "date": "9 Dec 2025",
-      "tag": "TICKETS"
-    }
+    { "title": "RBC wint kraker in eigen huis", "date": "8 Dec", "tag": "WEDSTRIJD" },
+    { "title": "Interview met de hoofdtrainer", "date": "9 Dec", "tag": "VIDEO" }
+  ],
+  "squad": [
+    { "number": 1,  "name": "Wai Ming Yu",              "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=wai-ming-yu-1-.jpg&category=members" },
+    { "number": 2,  "name": "Sjeffie Verhagen",         "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=sjeffie-verhagen-2-.jpg&category=members" },
+    { "number": 3,  "name": "Perry Bierkens",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=perry-bierkens-3-.jpg&category=members" },
+    { "number": 4,  "name": "Leandro Rocha de Almeida", "nationality": "BR", "photo": "https://rbc.svsplus.nl/php/image.php?image=leandro-rocha-de-almeida-4-.jpg&category=members" },
+    { "number": 5,  "name": "Jordi Ewanena",            "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=jordi-ewanena-5-.jpg&category=members" },
+    { "number": 6,  "name": "Sander Wirix",             "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=sander-wirix-6-.jpg&category=members" },
+    { "number": 7,  "name": "Rhomar Boudzra",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=rhomar-boudzra-7-.jpg&category=members" },
+    { "number": 8,  "name": "Marwin Reuvers",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=marwin-reuvers-8-.jpg&category=members" },
+    { "number": 9,  "name": "Yassine Mejres",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=yassine-mejres-9-.jpg&category=members" },
+    { "number": 10, "name": "Jens Wirix",               "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=jens-wirix-10-.jpg&category=members" },
+    { "number": 11, "name": "Moustafa Mohammad",        "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=moustafa-mohammad-11-.jpg&category=members" },
+    { "number": 12, "name": "Jelte Pal",                "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=jelte-pal-12-.jpg&category=members" },
+    { "number": 14, "name": "Joey Lokasi",              "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=joey-lokasi-14-.jpg&category=members" },
+    { "number": 15, "name": "Aart Veldhof",             "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=aart-veldhof-15-.jpg&category=members" },
+    { "number": 16, "name": "Tobias Ernst",             "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=tobias-ernst-16-.jpg&category=members" },
+    { "number": 17, "name": "Jens Verschuren",          "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=jens-verschuren-17-.jpg&category=members" },
+    { "number": 18, "name": "Mark Romantsov",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=mark-romantsov-18-.jpg&category=members" },
+    { "number": 19, "name": "Bart de Laat",             "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=bart-de-laat-19-.jpg&category=members" },
+    { "number": 20, "name": "Bas Rockx",                "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=bas-rockx-20-.jpg&category=members" },
+    { "number": 21, "name": "Ruben Buijs",              "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=ruben-buijs-21-.jpg&category=members" },
+    { "number": 22, "name": "Glaucio Ventura Tiago",    "nationality": "BR", "photo": "https://rbc.svsplus.nl/php/image.php?image=glaucio-ventura-tiago-22-.jpg&category=members" },
+    { "number": 23, "name": "Mhamed Hiddouch",          "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=mhamed-hiddouch-23-.jpg&category=members" },
+    { "number": 24, "name": "Gino Stolk",               "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=gino-stolk-24-.jpg&category=members" },
+    { "number": 25, "name": "Myron Bostdorp",           "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=myron-bostdorp-25-.jpg&category=members" },
+    { "number": 28, "name": "Luuk Brand",               "nationality": "NL", "photo": "https://rbc.svsplus.nl/php/image.php?image=luuk-brand-28-.jpg&category=members" }
   ]
 }
