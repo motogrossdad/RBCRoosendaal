@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selectie - RBC Roosendaal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F1F5F9; color: #0F172A; }
+        h1, h2, .font-teko { font-family: 'Teko', sans-serif; text-transform: uppercase; }
+        
+        .hero-mini { 
+            background: linear-gradient(135deg, #FF6600 0%, #CC5200 100%); 
+        }
+
+        /* Player Card Styling */
+        .player-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .player-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .player-image-container {
+            height: 320px; /* Fixed height for uniformity */
+            overflow: hidden;
+            position: relative;
+            background-color: #e2e8f0;
+        }
+        .player-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensures photos fill the box perfectly */
+            object-position: top center; /* Focuses on the face */
+            transition: transform 0.5s ease;
+        }
+        .player-card:hover .player-image {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="pb-20">
+
+    <nav class="bg-[#0F172A] border-b-4 border-[#FF6600] sticky top-0 z-50 shadow-lg">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between text-white">
+            <a href="index.html" class="flex items-center space-x-3">
+                <span class="text-2xl font-bold tracking-wide">RBC<span class="text-[#FF6600]">ROOSENDAAL</span></span>
+            </a>
+            <div class="hidden md:flex space-x-6 font-semibold text-sm">
+                <a href="index.html" class="hover:text-[#FF6600] transition">HOME</a>
+                <a href="selectie.html" class="text-[#FF6600]">SELECTIE</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="hero-mini py-16 text-center text-white mb-10 shadow-lg">
+        <h1 class="text-6xl font-bold tracking-wide drop-shadow-md">DE SELECTIE</h1>
+        <p class="opacity-90 tracking-[0.3em] font-medium mt-2">SEIZOEN 2025/2026</p>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4">
+        <div id="player-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            </div>
+    </div>
+
+    <script>
+        fetch('data.json?v=' + new Date().getTime())
+            .then(response => response.json())
+            .then(data => {
+                const grid = document.getElementById('player-grid');
+                
+                // Sort players by number (1 to 28)
+                const sortedSquad = data.squad.sort((a, b) => a.number - b.number);
+
+                sortedSquad.forEach(player => {
+                    // Logic for Flag
+                    let flag = '🇳🇱';
+                    if(player.nationality === 'BR') flag = '🇧🇷';
+                    if(player.nationality === 'BE') flag = '🇧🇪';
+
+                    const card = `
+                        <div class="player-card bg-white rounded-xl shadow border border-slate-100 group">
+                            <div class="player-image-container relative">
+                                <img src="${player.photo}" alt="${player.name}" class="player-image" onerror="this.src='https://placehold.co/400x500?text=No+Image'">
+                                
+                                <div class="absolute top-0 right-0 bg-[#FF6600] text-white text-3xl font-teko font-bold px-4 py-2 rounded-bl-xl shadow-lg">
+                                    ${player.number}
+                                </div>
+                            </div>
+
+                            <div class="p-5 text-center">
+                                <h3 class="text-xl font-bold text-[#0F172A] leading-tight mb-1 group-hover:text-[#FF6600] transition">${player.name}</h3>
+                                <div class="text-gray-400 text-sm font-semibold flex items-center justify-center gap-2">
+                                    <span>${flag}</span>
+                                    <span>Selectie</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += card;
+                });
+            });
+    </script>
+</body>
+</html>
