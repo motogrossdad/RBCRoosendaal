@@ -3,50 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RBC Roosendaal - Onofficiële Fansite</title>
+    <title>RBC Roosendaal - Official Fanhub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
-        .header { background-color: #ff6600; color: white; padding: 20px; text-align: center; }
-        .score-board { 
-            background: white; 
-            margin: 20px auto; 
-            padding: 20px; 
-            max-width: 400px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
-            text-align: center;
+        /* RBC Brand Colors */
+        :root {
+            --rbc-orange: #FF6600;
+            --rbc-navy: #0F172A;
         }
-        .teams { display: flex; justify-content: space-between; font-size: 1.2em; font-weight: bold; }
-        .score { font-size: 3em; color: #ff6600; font-weight: bold; margin: 10px 0; }
-        .status { color: #666; font-size: 0.9em; text-transform: uppercase; }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        h1, h2, .score-font { font-family: 'Teko', sans-serif; text-transform: uppercase; }
+        
+        /* Glassmorphism Card */
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hero-overlay {
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.3), rgba(15, 23, 42, 0.9));
+        }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-900">
 
-<div class="header">
-    <h1>RBC Roosendaal</h1>
-</div>
+    <nav class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg border-b-4 border-[#FF6600]">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center text-[#FF6600] font-bold border-2 border-[#FF6600]">
+                    RBC
+                </div>
+                <span class="text-2xl font-bold tracking-wide">RBC<span class="text-[#FF6600]">ROOSENDAAL</span></span>
+            </div>
+            <div class="hidden md:flex space-x-6 font-semibold text-sm">
+                <a href="#" class="hover:text-[#FF6600] transition">HOME</a>
+                <a href="#" class="hover:text-[#FF6600] transition">SELECTIE</a>
+                <a href="#" class="hover:text-[#FF6600] transition">PROGRAMMA</a>
+                <a href="#" class="bg-[#FF6600] px-4 py-2 rounded text-white hover:bg-orange-600 transition">TICKETS</a>
+            </div>
+        </div>
+    </nav>
 
-<div class="score-board">
-    <div class="status" id="status">Laden...</div>
-    <div class="teams">
-        <span id="home">Thuis</span>
-        <span id="away">Uit</span>
+    <div id="hero-section" class="relative h-[500px] bg-cover bg-center flex items-end justify-center pb-12">
+        <div class="absolute inset-0 hero-overlay"></div>
+        
+        <div class="relative z-10 w-11/12 max-w-4xl">
+            <div class="text-center mb-8 text-white animate-fade-in">
+                <h1 id="hero-title" class="text-6xl font-bold leading-none drop-shadow-md">WIJ ZIJN RBC</h1>
+                <p id="hero-subtitle" class="text-xl opacity-90 font-light tracking-wider">ROOSENDAAL BOYS COMBINATIE</p>
+            </div>
+
+            <div class="glass rounded-xl shadow-2xl overflow-hidden">
+                <div class="bg-[#FF6600] text-white text-center py-1 text-sm font-bold tracking-widest" id="match-comp">
+                    COMPETITIE
+                </div>
+                <div class="p-6 md:p-10 flex flex-col md:flex-row items-center justify-between">
+                    
+                    <div class="flex flex-col items-center w-1/3">
+                        <img id="home-logo" src="" class="h-20 w-20 md:h-24 md:w-24 object-contain mb-2 drop-shadow-lg">
+                        <span id="home-name" class="font-bold text-xl md:text-2xl text-slate-900">RBC</span>
+                    </div>
+
+                    <div class="flex flex-col items-center w-1/3 my-4 md:my-0">
+                        <div class="bg-slate-900 text-white px-6 py-2 rounded-lg text-5xl md:text-6xl font-bold tracking-widest score-font shadow-inner">
+                            <span id="home-score">0</span>-<span id="away-score">0</span>
+                        </div>
+                        <span id="match-status" class="mt-2 text-xs font-bold text-[#FF6600] uppercase bg-orange-100 px-2 py-1 rounded">
+                            LADEN...
+                        </span>
+                    </div>
+
+                    <div class="flex flex-col items-center w-1/3">
+                        <img id="away-logo" src="" class="h-20 w-20 md:h-24 md:w-24 object-contain mb-2 opacity-80 grayscale hover:grayscale-0 transition">
+                        <span id="away-name" class="font-bold text-xl md:text-2xl text-slate-500">BEZOEKER</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="score" id="score">- - -</div>
-</div>
 
-<script>
-    // This script grabs your "database" file
-    fetch('data.json')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('home').innerText = data.match.home_team;
-            document.getElementById('away').innerText = data.match.away_team;
-            document.getElementById('score').innerText = data.match.home_score + " - " + data.match.away_score;
-            document.getElementById('status').innerText = data.match.status;
-        });
-</script>
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="md:col-span-2 space-y-4">
+                <h2 class="text-3xl font-bold text-slate-800 border-l-4 border-[#FF6600] pl-3">LAATSTE NIEUWS</h2>
+                <div id="news-container">
+                    <div class="animate-pulse flex space-x-4">
+                        <div class="h-24 w-full bg-gray-200 rounded"></div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-900 mb-4 flex items-center">
+                        <i data-lucide="trophy" class="w-5 h-5 text-[#FF6600] mr-2"></i> STAND
+                    </h3>
+                    <p class="text-sm text-gray-500">De live stand is momenteel niet beschikbaar.</p>
+                    <a href="#" class="mt-4 block text-center bg-slate-900 text-white py-2 rounded text-sm hover:bg-[#FF6600] transition">Bekijk Volledige Stand</a>
+                </div>
+
+                <div class="bg-[#FF6600] p-6 rounded-xl shadow-lg text-white">
+                    <h3 class="font-bold mb-2">VOLGENDE WEDSTRIJD</h3>
+                    <p class="text-sm opacity-90">Zondag 14:30</p>
+                    <p class="text-2xl font-bold mt-1">Atik Stadion</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-12 text-center">
+        <div class="max-w-4xl mx-auto px-4">
+            <p class="italic font-serif text-lg text-white opacity-80 mb-6">"Oranje jongens uit Roosendaal..." 🎶</p>
+            <div class="border-t border-slate-800 pt-6 text-sm">
+                &copy; 2025 RBC Roosendaal Fansite. Onofficieel.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Fetch Data
+        fetch('data.json?v=' + new Date().getTime()) // Prevent caching
+            .then(response => response.json())
+            .then(data => {
+                // 1. Update Hero
+                document.getElementById('hero-section').style.backgroundImage = `url('${data.hero.bg_image}')`;
+                document.getElementById('hero-title').innerText = data.hero.headline;
+                document.getElementById('hero-subtitle').innerText = data.hero.subheadline;
+
+                // 2. Update Scoreboard
+                const match = data.match;
+                document.getElementById('home-name').innerText = match.home_team;
+                document.getElementById('away-name').innerText = match.away_team;
+                document.getElementById('home-score').innerText = match.home_score;
+                document.getElementById('away-score').innerText = match.away_score;
+                document.getElementById('match-status').innerText = match.status;
+                document.getElementById('match-comp').innerText = match.competition;
+                
+                document.getElementById('home-logo').src = match.home_logo;
+                document.getElementById('away-logo').src = match.away_logo;
+
+                // 3. Update News
+                const newsContainer = document.getElementById('news-container');
+                newsContainer.innerHTML = ''; // Clear loading state
+                
+                data.news.forEach(item => {
+                    const article = `
+                        <div class="group bg-white p-5 rounded-xl shadow-sm border border-slate-100 hover:shadow-md transition cursor-pointer flex justify-between items-center">
+                            <div>
+                                <span class="text-xs font-bold text-[#FF6600] tracking-wider mb-1 block">${item.tag}</span>
+                                <h3 class="text-lg font-bold text-slate-800 group-hover:text-[#FF6600] transition">${item.title}</h3>
+                                <span class="text-xs text-slate-400">${item.date}</span>
+                            </div>
+                            <i data-lucide="chevron-right" class="text-slate-300 group-hover:text-[#FF6600]"></i>
+                        </div>
+                    `;
+                    newsContainer.innerHTML += article;
+                });
+                lucide.createIcons(); // Re-init icons for new content
+            })
+            .catch(error => console.error('Error loading data:', error));
+    </script>
 </body>
 </html>
