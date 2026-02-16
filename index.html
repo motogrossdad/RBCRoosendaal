@@ -1,170 +1,1589 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RBC Roosendaal - Official Fanhub</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBC Roosendaal - De Trots van het Zuiden</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rbc-orange: #FF6B00;
+  --rbc-orange-dark: #E05500;
+  --rbc-orange-light: #FF8A33;
+  --rbc-white: #FFFFFF;
+  --rbc-blue: #1A2B5C;
+  --rbc-blue-dark: #0D1A3A;
+  --rbc-blue-light: #2A3F7A;
+  --dark: #0A0A0A;
+  --dark-card: #111111;
+  --dark-surface: #1A1A1A;
+  --gray-text: #999;
+  --gray-border: #2A2A2A;
+  --win: #22C55E;
+  --draw: #EAB308;
+  --loss: #EF4444;
+}
 
-    <style>
-        :root {
-            --rbc-orange: #FF6600;
-            --rbc-dark-orange: #D95400;
-            --rbc-navy: #0F172A;
-        }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #F8FAFC; 
-            color: #0F172A;
-        }
-        
-        h1, h2, .score-font { font-family: 'Teko', sans-serif; text-transform: uppercase; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* THE DOMINANT ORANGE HERO */
-        .hero-bg {
-            background: linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-dark-orange) 100%);
-            /* Optional: subtle pattern overlay */
-            background-image: radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0%, transparent 20%),
-                              linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-dark-orange) 100%);
-        }
+html { scroll-behavior: smooth; }
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-    </style>
+body {
+  font-family: 'Source Sans 3', sans-serif;
+  background: var(--dark);
+  color: var(--rbc-white);
+  overflow-x: hidden;
+}
+
+/* NOISE TEXTURE OVERLAY */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 40px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10,10,10,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--gray-border);
+  transition: all 0.3s;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.nav-logo .logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 3px;
+  color: var(--rbc-orange);
+}
+
+.nav-logo .logo-sub {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+  margin-top: -4px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 32px;
+  list-style: none;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--gray-text);
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--rbc-orange);
+  transition: width 0.3s;
+}
+
+.nav-links a:hover { color: var(--rbc-orange); }
+.nav-links a:hover::after { width: 100%; }
+.nav-links a.active { color: var(--rbc-white); }
+.nav-links a.active::after { width: 100%; }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 5px;
+}
+.hamburger span {
+  width: 24px;
+  height: 2px;
+  background: var(--rbc-white);
+  transition: 0.3s;
+}
+
+/* ===== HERO ===== */
+.hero {
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--rbc-blue-dark) 0%, var(--dark) 50%, #1a0800 100%);
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 800px;
+  height: 800px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,0,0.15) 0%, transparent 70%);
+  animation: pulse 6s ease-in-out infinite;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(26,43,92,0.3) 0%, transparent 70%);
+  animation: pulse 8s ease-in-out infinite reverse;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Diagonal stripes background pattern */
+.hero-stripes {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 80px,
+    rgba(255,107,0,0.03) 80px,
+    rgba(255,107,0,0.03) 82px
+  );
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-badge {
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  border: 1px solid var(--rbc-orange);
+  padding: 8px 24px;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.3s forwards;
+}
+
+.hero-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 12vw, 160px);
+  line-height: 0.9;
+  letter-spacing: 4px;
+  color: var(--rbc-white);
+  opacity: 0;
+  animation: fadeUp 0.8s 0.5s forwards;
+}
+
+.hero-title span {
+  display: block;
+  background: linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-orange-light) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 300;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+  margin-top: 20px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.7s forwards;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 40px;
+  opacity: 0;
+  animation: fadeUp 0.8s 0.9s forwards;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 14px 36px;
+  background: var(--rbc-orange);
+  color: var(--rbc-white);
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+
+.btn-primary:hover {
+  background: var(--rbc-orange-light);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  display: inline-block;
+  padding: 14px 36px;
+  background: transparent;
+  color: var(--rbc-white);
+  text-decoration: none;
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  border: 1px solid var(--gray-border);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--rbc-orange);
+  color: var(--rbc-orange);
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 0.8s 1.2s forwards;
+}
+
+.hero-scroll span {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--rbc-orange), transparent);
+  animation: scrollPulse 2s infinite;
+}
+
+@keyframes scrollPulse {
+  0% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.3; transform: scaleY(0.5); }
+  100% { opacity: 1; transform: scaleY(1); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== MATCH TICKER ===== */
+.ticker {
+  background: var(--rbc-blue-dark);
+  border-bottom: 2px solid var(--rbc-orange);
+  padding: 16px 0;
+  overflow: hidden;
+}
+
+.ticker-inner {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.ticker-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ticker-match {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.ticker-team {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.ticker-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--rbc-orange);
+  padding: 0 12px;
+  min-width: 70px;
+  text-align: center;
+  background: rgba(255,107,0,0.1);
+  border-radius: 4px;
+}
+
+.ticker-info {
+  font-size: 12px;
+  color: var(--gray-text);
+  white-space: nowrap;
+}
+
+/* ===== SECTIONS ===== */
+.section {
+  padding: 100px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-header {
+  margin-bottom: 60px;
+}
+
+.section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(36px, 5vw, 56px);
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.section-divider {
+  width: 60px;
+  height: 3px;
+  background: var(--rbc-orange);
+  margin-top: 16px;
+}
+
+/* ===== STATS STRIP ===== */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--dark-surface);
+  margin-top: -2px;
+}
+
+.stat-item {
+  background: var(--dark-card);
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--rbc-orange);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+}
+
+.stat-item:hover::before { transform: scaleX(1); }
+
+.stat-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 48px;
+  color: var(--rbc-orange);
+  line-height: 1;
+}
+
+.stat-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+  margin-top: 8px;
+}
+
+/* ===== STANDINGS TABLE ===== */
+.standings-section {
+  background: var(--dark-card);
+  border: 1px solid var(--gray-border);
+  padding: 0;
+  overflow: hidden;
+}
+
+.standings-header {
+  background: linear-gradient(135deg, var(--rbc-blue-dark), var(--rbc-blue));
+  padding: 24px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.standings-header h3 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.standings-header .league-badge {
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  border: 1px solid var(--rbc-orange);
+  padding: 4px 12px;
+  font-family: 'Oswald', sans-serif;
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-table thead th {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 1px solid var(--gray-border);
+  background: rgba(0,0,0,0.3);
+}
+
+.standings-table thead th:nth-child(2) { text-align: left; }
+
+.standings-table tbody tr {
+  border-bottom: 1px solid var(--gray-border);
+  transition: background 0.2s;
+}
+
+.standings-table tbody tr:hover { background: rgba(255,107,0,0.05); }
+
+.standings-table tbody tr.highlight {
+  background: rgba(255,107,0,0.08);
+  border-left: 3px solid var(--rbc-orange);
+}
+
+.standings-table tbody td {
+  padding: 12px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.standings-table tbody td:nth-child(1) {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: var(--gray-text);
+  width: 40px;
+}
+
+.standings-table tbody td:nth-child(2) {
+  text-align: left;
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.standings-table tbody td:nth-child(5) {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: var(--rbc-orange);
+}
+
+.form-indicators {
+  display: flex;
+  gap: 3px;
+  justify-content: center;
+}
+
+.form-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.form-dot.w { background: var(--win); }
+.form-dot.d { background: var(--draw); }
+.form-dot.l { background: var(--loss); }
+
+/* ===== RESULTS ===== */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.result-card {
+  background: var(--dark-card);
+  border: 1px solid var(--gray-border);
+  padding: 24px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.result-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.result-card.win::before { background: var(--win); }
+.result-card.draw::before { background: var(--draw); }
+.result-card.loss::before { background: var(--loss); }
+
+.result-card:hover {
+  border-color: var(--rbc-orange);
+  transform: translateY(-2px);
+}
+
+.result-date {
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gray-text);
+  margin-bottom: 12px;
+}
+
+.result-teams {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-team {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+}
+
+.result-team.away { text-align: right; }
+
+.result-score {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: var(--rbc-orange);
+  padding: 0 16px;
+  min-width: 80px;
+  text-align: center;
+}
+
+.result-venue {
+  font-size: 12px;
+  color: var(--gray-text);
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-badge {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+
+.result-badge.win { background: rgba(34,197,94,0.15); color: var(--win); }
+.result-badge.draw { background: rgba(234,179,8,0.15); color: var(--draw); }
+.result-badge.loss { background: rgba(239,68,68,0.15); color: var(--loss); }
+
+/* ===== SQUAD ===== */
+.squad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.position-group {
+  margin-bottom: 48px;
+}
+
+.position-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.player-card {
+  background: var(--dark-card);
+  border: 1px solid var(--gray-border);
+  padding: 20px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.player-card:hover {
+  border-color: var(--rbc-orange);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(255,107,0,0.1);
+}
+
+.player-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  color: rgba(255,107,0,0.1);
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  line-height: 1;
+}
+
+.player-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--rbc-orange), var(--rbc-orange-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  margin-bottom: 14px;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+.player-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.player-meta {
+  font-size: 12px;
+  color: var(--gray-text);
+  display: flex;
+  gap: 10px;
+}
+
+.player-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ===== HISTORY ===== */
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--rbc-orange), var(--gray-border));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 40px;
+  padding-left: 30px;
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 6px;
+  width: 12px;
+  height: 12px;
+  background: var(--rbc-orange);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--dark), 0 0 0 6px var(--rbc-orange);
+}
+
+.timeline-year {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: var(--rbc-orange);
+}
+
+.timeline-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--gray-text);
+  margin-top: 4px;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--dark-card);
+  border-top: 1px solid var(--gray-border);
+  padding: 60px 40px;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+
+.footer-brand .logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  letter-spacing: 3px;
+  color: var(--rbc-orange);
+}
+
+.footer-brand p {
+  color: var(--gray-text);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 12px;
+  max-width: 300px;
+}
+
+.footer-col h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rbc-white);
+  margin-bottom: 16px;
+}
+
+.footer-col a {
+  display: block;
+  color: var(--gray-text);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 4px 0;
+  transition: color 0.3s;
+}
+
+.footer-col a:hover { color: var(--rbc-orange); }
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 40px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--gray-text);
+}
+
+/* ===== COLUMN LAYOUT ===== */
+.two-col {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+}
+
+.sidebar-card {
+  background: var(--dark-card);
+  border: 1px solid var(--gray-border);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.sidebar-card h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--rbc-orange);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.next-match {
+  text-align: center;
+}
+
+.next-match .versus {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.next-match .versus .vs {
+  color: var(--rbc-orange);
+  font-size: 20px;
+}
+
+.next-match .match-info {
+  font-size: 13px;
+  color: var(--gray-text);
+  line-height: 1.8;
+}
+
+.top-scorers-list {
+  list-style: none;
+}
+
+.top-scorers-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--gray-border);
+}
+
+.top-scorers-list li:last-child { border-bottom: none; }
+
+.top-scorers-list .scorer-name {
+  font-family: 'Oswald', sans-serif;
+  font-weight: 500;
+}
+
+.top-scorers-list .scorer-goals {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  color: var(--rbc-orange);
+}
+
+/* ===== SEASON RECORD ===== */
+.record-bar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.record-bar .wins { background: var(--win); }
+.record-bar .draws { background: var(--draw); }
+.record-bar .losses { background: var(--loss); }
+
+.record-legend {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--gray-text);
+}
+
+.record-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.record-legend .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .two-col { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  .nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: var(--dark-card);
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-border);
+  }
+  
+  .section { padding: 60px 20px; }
+  .stats-strip { grid-template-columns: repeat(2, 1fr); }
+  .results-grid { grid-template-columns: 1fr; }
+  .squad-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-inner { grid-template-columns: 1fr; }
+  
+  .standings-table { font-size: 13px; }
+  .standings-table thead th, .standings-table tbody td { padding: 8px 6px; }
+  .hide-mobile { display: none; }
+}
+
+@media (max-width: 480px) {
+  .squad-grid { grid-template-columns: 1fr; }
+  .hero-cta { flex-direction: column; align-items: center; }
+}
+</style>
 </head>
-<body class="pb-12">
+<body>
 
-    <nav class="absolute top-0 w-full z-50 border-b border-white/20">
-        <div class="max-w-6xl mx-auto px-4 h-20 flex items-center justify-between text-white">
-            <div class="flex items-center space-x-3">
-                <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center text-[#FF6600] font-bold text-xl shadow-lg transform -skew-x-6">
-                    <span class="skew-x-6">RBC</span>
-                </div>
-                <span class="text-3xl font-bold tracking-wide drop-shadow-sm">RBC<span class="opacity-80 font-normal">ROOSENDAAL</span></span>
-            </div>
-            <div class="hidden md:flex space-x-8 font-bold text-sm tracking-widest">
-                <a href="#" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">HOME</a>
-                <a href="selectie.html" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">SELECTIE</a>
-                <a href="#" class="hover:text-white/80 transition border-b-2 border-transparent hover:border-white py-1">PROGRAMMA</a>
-                <a href="#" class="bg-[#0F172A] px-6 py-2 rounded text-white hover:bg-slate-800 transition shadow-lg">TICKETS</a>
-            </div>
-        </div>
-    </nav>
+<!-- NAVIGATION -->
+<nav class="nav" id="navbar">
+  <a href="#" class="nav-logo">
+    <div>
+      <div class="logo-text">RBC</div>
+      <div class="logo-sub">Roosendaal</div>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#stand">Stand</a></li>
+    <li><a href="#resultaten">Resultaten</a></li>
+    <li><a href="#selectie">Selectie</a></li>
+    <li><a href="#historie">Historie</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-    <div class="hero-bg h-[550px] relative flex items-center justify-center pt-10 overflow-hidden">
-        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[20vw] font-bold text-white opacity-10 pointer-events-none select-none font-sans">
-            RBC
-        </div>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-stripes"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Derde Divisie B &middot; Seizoen 2025/2026</div>
+    <h1 class="hero-title">
+      WIJ ZIJN<br>
+      <span>RBC</span>
+    </h1>
+    <p class="hero-subtitle">Oranje &middot; Wit &middot; Voor Altijd</p>
+    <div class="hero-cta">
+      <a href="#selectie" class="btn-primary">Bekijk Selectie</a>
+      <a href="#stand" class="btn-secondary">Competitiestand</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
 
-        <div class="relative z-10 text-center text-white -mt-10">
-            <h1 id="hero-title" class="text-7xl md:text-8xl font-bold tracking-tighter drop-shadow-md mb-2">WIJ ZIJN RBC</h1>
-            <div class="inline-block border-2 border-white/40 px-6 py-2 rounded-full backdrop-blur-sm">
-                <p id="hero-subtitle" class="text-lg md:text-xl font-medium tracking-[0.3em]">ORANJE - WIT - VOOR ALTIJD</p>
-            </div>
-        </div>
+<!-- MATCH TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-label">Laatste Wedstrijd</span>
+    <div class="ticker-match">
+      <span class="ticker-team">UNA</span>
+      <span class="ticker-score">1 - 1</span>
+      <span class="ticker-team" style="color: var(--rbc-orange);">RBC</span>
+    </div>
+    <span class="ticker-info">08 feb 2026 &middot; Uitwedstrijd &middot; Myron Bostdorp ⚽</span>
+  </div>
+</div>
+
+<!-- SEASON STATS -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-number">6<sup style="font-size:24px;">e</sup></div>
+    <div class="stat-label">Klassement</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">30</div>
+    <div class="stat-label">Punten</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">42</div>
+    <div class="stat-label">Goals voor</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">21</div>
+    <div class="stat-label">Wedstrijden</div>
+  </div>
+</div>
+
+<!-- STANDINGS -->
+<section class="section" id="stand">
+  <div class="section-header">
+    <div class="section-label">Competitie</div>
+    <h2 class="section-title">Derde Divisie B</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="standings-section">
+      <div class="standings-header">
+        <h3>Klassement 2025/2026</h3>
+        <span class="league-badge">Live Stand</span>
+      </div>
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Club</th>
+            <th>W</th>
+            <th class="hide-mobile">W-G-V</th>
+            <th>Pts</th>
+            <th class="hide-mobile">DV</th>
+            <th class="hide-mobile">DT</th>
+            <th>+/-</th>
+            <th class="hide-mobile">Vorm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>VV Kloetinge</td><td>21</td><td class="hide-mobile">14-3-4</td><td><strong>45</strong></td><td class="hide-mobile">40</td><td class="hide-mobile">29</td><td>+11</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>2</td><td>FC Rijnvogels</td><td>21</td><td class="hide-mobile">13-4-4</td><td><strong>43</strong></td><td class="hide-mobile">41</td><td class="hide-mobile">21</td><td>+20</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot d"></span><span class="form-dot w"></span></div></td></tr>
+          <tr><td>3</td><td>VV Gemert</td><td>21</td><td class="hide-mobile">12-6-3</td><td><strong>42</strong></td><td class="hide-mobile">42</td><td class="hide-mobile">24</td><td>+18</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span></div></td></tr>
+          <tr><td>4</td><td>FC Lisse</td><td>22</td><td class="hide-mobile">12-5-5</td><td><strong>41</strong></td><td class="hide-mobile">45</td><td class="hide-mobile">23</td><td>+22</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span></div></td></tr>
+          <tr><td>5</td><td>VVSB</td><td>21</td><td class="hide-mobile">11-5-5</td><td><strong>38</strong></td><td class="hide-mobile">41</td><td class="hide-mobile">25</td><td>+16</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot w"></span></div></td></tr>
+          <tr class="highlight"><td>6</td><td>⚽ RBC</td><td>21</td><td class="hide-mobile">8-6-7</td><td><strong>30</strong></td><td class="hide-mobile">42</td><td class="hide-mobile">34</td><td>+8</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot d"></span></div></td></tr>
+          <tr><td>7</td><td>VV Zwaluwen</td><td>22</td><td class="hide-mobile">8-6-8</td><td><strong>30</strong></td><td class="hide-mobile">35</td><td class="hide-mobile">34</td><td>+1</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>8</td><td>TOGB</td><td>22</td><td class="hide-mobile">8-6-8</td><td><strong>30</strong></td><td class="hide-mobile">43</td><td class="hide-mobile">45</td><td>-2</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot w"></span><span class="form-dot w"></span></div></td></tr>
+          <tr><td>9</td><td>Blauw Geel '38</td><td>21</td><td class="hide-mobile">8-5-8</td><td><strong>29</strong></td><td class="hide-mobile">30</td><td class="hide-mobile">29</td><td>+1</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>10</td><td>UDI '19</td><td>21</td><td class="hide-mobile">8-5-8</td><td><strong>29</strong></td><td class="hide-mobile">35</td><td class="hide-mobile">41</td><td>-6</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot d"></span><span class="form-dot d"></span><span class="form-dot d"></span></div></td></tr>
+          <tr><td>11</td><td>SteDoCo</td><td>22</td><td class="hide-mobile">8-3-11</td><td><strong>27</strong></td><td class="hide-mobile">21</td><td class="hide-mobile">36</td><td>-15</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot d"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>12</td><td>VV Noordwijk</td><td>22</td><td class="hide-mobile">7-5-10</td><td><strong>26</strong></td><td class="hide-mobile">31</td><td class="hide-mobile">30</td><td>+1</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot w"></span></div></td></tr>
+          <tr><td>13</td><td>VV Goes</td><td>21</td><td class="hide-mobile">7-4-10</td><td><strong>25</strong></td><td class="hide-mobile">26</td><td class="hide-mobile">39</td><td>-13</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>14</td><td>Groene Ster</td><td>21</td><td class="hide-mobile">6-6-9</td><td><strong>24</strong></td><td class="hide-mobile">29</td><td class="hide-mobile">31</td><td>-2</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot d"></span><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>15</td><td>VV UNA</td><td>21</td><td class="hide-mobile">5-6-10</td><td><strong>21</strong></td><td class="hide-mobile">29</td><td class="hide-mobile">38</td><td>-9</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot w"></span><span class="form-dot d"></span><span class="form-dot l"></span><span class="form-dot d"></span></div></td></tr>
+          <tr><td>16</td><td>SVV Scheveningen</td><td>21</td><td class="hide-mobile">6-2-13</td><td><strong>20</strong></td><td class="hide-mobile">31</td><td class="hide-mobile">38</td><td>-7</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>17</td><td>ASWH</td><td>22</td><td class="hide-mobile">5-4-13</td><td><strong>19</strong></td><td class="hide-mobile">31</td><td class="hide-mobile">57</td><td>-26</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span><span class="form-dot l"></span></div></td></tr>
+          <tr><td>18</td><td>SV Meerssen</td><td>21</td><td class="hide-mobile">4-3-14</td><td><strong>15</strong></td><td class="hide-mobile">27</td><td class="hide-mobile">45</td><td>-18</td><td class="hide-mobile"><div class="form-indicators"><span class="form-dot d"></span><span class="form-dot w"></span><span class="form-dot l"></span><span class="form-dot w"></span><span class="form-dot w"></span></div></td></tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="max-w-5xl mx-auto px-4 -mt-32 relative z-20">
-        
-        <div class="card p-0 overflow-hidden mb-12 border-t-8 border-[#0F172A]">
-            <div class="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between">
-                
-                <div class="flex flex-col items-center w-1/3 order-1 md:order-1">
-                    <img id="home-logo" src="" onerror="this.src='https://placehold.co/100x100?text=RBC'" class="h-24 w-24 object-contain mb-4 filter drop-shadow-md">
-                    <span id="home-name" class="font-bold text-3xl text-[#0F172A]">RBC</span>
-                </div>
-
-                <div class="flex flex-col items-center w-1/3 order-2 md:order-2 my-6 md:my-0">
-                    <div class="text-xs font-bold text-gray-400 tracking-widest mb-2" id="match-comp">DERDE DIVISIE B</div>
-                    <div class="bg-[#FF6600] text-white px-10 py-2 rounded-xl text-6xl font-bold tracking-widest score-font shadow-inner">
-                        <span id="home-score">0</span>-<span id="away-score">0</span>
-                    </div>
-                    <div class="mt-3 bg-red-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse" id="match-status">
-                        LIVE
-                    </div>
-                </div>
-
-                <div class="flex flex-col items-center w-1/3 order-3 md:order-3">
-                    <img id="away-logo" src="" onerror="this.src='https://placehold.co/100x100?text=Opponent'" class="h-24 w-24 object-contain mb-4 opacity-90">
-                    <span id="away-name" class="font-bold text-3xl text-gray-500">BEZOEKER</span>
-                </div>
-            </div>
+    <div>
+      <div class="sidebar-card">
+        <h4>Seizoensrecord</h4>
+        <div class="record-bar">
+          <div class="wins" style="width: 38%;"></div>
+          <div class="draws" style="width: 29%;"></div>
+          <div class="losses" style="width: 33%;"></div>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <div class="md:col-span-2 space-y-6">
-                <h2 class="text-4xl font-bold text-[#0F172A] mb-4">NIEUWS</h2>
-                <div id="news-container" class="space-y-6">
-                    </div>
-            </div>
-
-            <div class="space-y-6">
-                <div class="bg-[#0F172A] rounded-2xl p-6 text-white text-center shadow-xl">
-                    <h3 class="font-bold text-2xl mb-2 score-font">VOLGENDE WEDSTRIJD</h3>
-                    <p class="text-orange-400 font-bold text-lg mb-4">ATIK STADION</p>
-                    <div class="border border-white/20 rounded-lg p-3 mb-4">
-                        <div class="text-3xl font-bold">14 DEC</div>
-                        <div class="text-sm opacity-70">14:30 UUR</div>
-                    </div>
-                    <button class="w-full bg-[#FF6600] hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition transform active:scale-95">
-                        BESTEL KAARTEN
-                    </button>
-                </div>
-            </div>
+        <div class="record-legend">
+          <span><div class="dot" style="background:var(--win);"></div> 8 Winst</span>
+          <span><div class="dot" style="background:var(--draw);"></div> 6 Gelijk</span>
+          <span><div class="dot" style="background:var(--loss);"></div> 7 Verlies</span>
         </div>
+      </div>
+
+      <div class="sidebar-card next-match">
+        <h4>Volgende Wedstrijd</h4>
+        <div class="versus">
+          <span>RBC</span>
+          <span class="vs">VS</span>
+          <span>TBA</span>
+        </div>
+        <div class="match-info">
+          Atik Stadion<br>
+          Roosendaal<br>
+          <strong style="color:var(--rbc-orange);">Datum volgt</strong>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h4>Club Info</h4>
+        <div style="font-size:14px; line-height: 2; color: var(--gray-text);">
+          <div>📍 Atik Stadion, Roosendaal</div>
+          <div>🏟️ Capaciteit: 4.995</div>
+          <div>👔 Trainer: Mark Klippel</div>
+          <div>📅 Opgericht: 31 juli 1912</div>
+          <div>🟠 Kleuren: Oranje-Wit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section class="section" id="resultaten" style="background: var(--dark-surface); max-width: none; padding-left: 40px; padding-right: 40px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div class="section-header">
+      <div class="section-label">Uitslagen</div>
+      <h2 class="section-title">Recente Wedstrijden</h2>
+      <div class="section-divider"></div>
     </div>
 
-    <footer class="text-center py-12 mt-12 text-gray-400">
-        <p class="font-serif italic text-lg text-gray-500">Onofficiële Fansite van de Trots van het Zuiden</p>
-    </footer>
+    <div class="results-grid">
+      <div class="result-card draw">
+        <div class="result-date">08 februari 2026 &middot; Ronde 21</div>
+        <div class="result-teams">
+          <span class="result-team">UNA</span>
+          <span class="result-score">1 - 1</span>
+          <span class="result-team away">RBC</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Uitwedstrijd</span>
+          <span class="result-badge draw">Gelijkspel</span>
+        </div>
+      </div>
 
-    <script>
-        lucide.createIcons();
+      <div class="result-card draw">
+        <div class="result-date">31 januari 2026 &middot; Ronde 20</div>
+        <div class="result-teams">
+          <span class="result-team">RBC</span>
+          <span class="result-score">1 - 1</span>
+          <span class="result-team away">FC Rijnvogels</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Thuiswedstrijd</span>
+          <span class="result-badge draw">Gelijkspel</span>
+        </div>
+      </div>
 
-        fetch('data.json?v=' + new Date().getTime())
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('hero-title').innerText = data.hero.headline;
-                document.getElementById('hero-subtitle').innerText = data.hero.subheadline;
+      <div class="result-card win">
+        <div class="result-date">25 januari 2026 &middot; Ronde 19</div>
+        <div class="result-teams">
+          <span class="result-team">VV Goes</span>
+          <span class="result-score">1 - 4</span>
+          <span class="result-team away">RBC</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Uitwedstrijd</span>
+          <span class="result-badge win">Winst</span>
+        </div>
+      </div>
 
-                const match = data.match;
-                document.getElementById('home-name').innerText = match.home_team;
-                document.getElementById('away-name').innerText = match.away_team;
-                document.getElementById('home-score').innerText = match.home_score;
-                document.getElementById('away-score').innerText = match.away_score;
-                document.getElementById('match-status').innerText = match.status;
-                document.getElementById('match-comp').innerText = match.competition;
-                
-                document.getElementById('home-logo').src = match.home_logo;
-                document.getElementById('away-logo').src = match.away_logo;
+      <div class="result-card win">
+        <div class="result-date">17 januari 2026 &middot; Ronde 18</div>
+        <div class="result-teams">
+          <span class="result-team">RBC</span>
+          <span class="result-score">1 - 0</span>
+          <span class="result-team away">VVSB</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Thuiswedstrijd</span>
+          <span class="result-badge win">Winst</span>
+        </div>
+      </div>
 
-                const newsContainer = document.getElementById('news-container');
-                newsContainer.innerHTML = '';
-                
-                data.news.forEach(item => {
-                    const article = `
-                        <div class="bg-white p-6 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 cursor-pointer border-b-4 border-transparent hover:border-[#FF6600] group">
-                            <span class="text-xs font-bold text-[#FF6600] uppercase tracking-wider mb-2 block">${item.tag}</span>
-                            <h3 class="text-2xl font-bold text-[#0F172A] leading-tight group-hover:text-[#FF6600] transition">${item.title}</h3>
-                            <div class="flex items-center justify-between mt-4 border-t border-gray-100 pt-3">
-                                <span class="text-sm text-gray-400">${item.date}</span>
-                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-[#FF6600] group-hover:text-white transition">
-                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    newsContainer.innerHTML += article;
-                });
-                lucide.createIcons();
-            });
-    </script>
+      <div class="result-card loss">
+        <div class="result-date">14 december 2025 &middot; Ronde 17</div>
+        <div class="result-teams">
+          <span class="result-team">UDI '19</span>
+          <span class="result-score">5 - 3</span>
+          <span class="result-team away">RBC</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Uitwedstrijd</span>
+          <span class="result-badge loss">Verlies</span>
+        </div>
+      </div>
+
+      <div class="result-card win">
+        <div class="result-date">17 augustus 2025 &middot; Ronde 1</div>
+        <div class="result-teams">
+          <span class="result-team">RBC</span>
+          <span class="result-score">3 - 1</span>
+          <span class="result-team away">SV Meerssen</span>
+        </div>
+        <div class="result-venue">
+          <span>🏟️ Thuiswedstrijd</span>
+          <span class="result-badge win">Winst</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SQUAD -->
+<section class="section" id="selectie">
+  <div class="section-header">
+    <div class="section-label">Selectie 2025/2026</div>
+    <h2 class="section-title">De Spelers</h2>
+    <div class="section-divider"></div>
+  </div>
+
+  <!-- Goalkeepers -->
+  <div class="position-group">
+    <div class="position-label">Doelverdedigers</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-number">1</div>
+        <div class="player-icon">WY</div>
+        <div class="player-name">Wai Ming Yu</div>
+        <div class="player-meta"><span>🇳🇱 19 jaar</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">21</div>
+        <div class="player-icon">RB</div>
+        <div class="player-name">Ruben Buijs</div>
+        <div class="player-meta"><span>🇳🇱 19 jaar</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">28</div>
+        <div class="player-icon">LB</div>
+        <div class="player-name">Luuk Brand</div>
+        <div class="player-meta"><span>🇳🇱 25 jaar</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Defenders -->
+  <div class="position-group">
+    <div class="position-label">Verdedigers</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-number">3</div>
+        <div class="player-icon">PB</div>
+        <div class="player-name">Perry Bierkens</div>
+        <div class="player-meta"><span>🇳🇱 35 jaar</span><span>CB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">19</div>
+        <div class="player-icon">BL</div>
+        <div class="player-name">Bart de Laat</div>
+        <div class="player-meta"><span>🇳🇱 22 jaar</span><span>CB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">22</div>
+        <div class="player-icon">GV</div>
+        <div class="player-name">Glaucio Ventura Tiago</div>
+        <div class="player-meta"><span>🇳🇱 24 jaar</span><span>CB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">5</div>
+        <div class="player-icon">JE</div>
+        <div class="player-name">Jordi Ewanena</div>
+        <div class="player-meta"><span>🇧🇪 30 jaar</span><span>LB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">4</div>
+        <div class="player-icon">LR</div>
+        <div class="player-name">Leonardo Rocha de Almeida</div>
+        <div class="player-meta"><span>🇳🇱 22 jaar</span><span>RB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">2</div>
+        <div class="player-icon">SV</div>
+        <div class="player-name">Sjeffie Verhagen</div>
+        <div class="player-meta"><span>🇳🇱 23 jaar</span><span>RB</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">6</div>
+        <div class="player-icon">SW</div>
+        <div class="player-name">Sander Wirix</div>
+        <div class="player-meta"><span>🇳🇱 31 jaar</span><span>RB</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Midfielders -->
+  <div class="position-group">
+    <div class="position-label">Middenvelders</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-number">15</div>
+        <div class="player-icon">AV</div>
+        <div class="player-name">Aart Veldhof</div>
+        <div class="player-meta"><span>🇳🇱 32 jaar</span><span>CDM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">14</div>
+        <div class="player-icon">WS</div>
+        <div class="player-name">Wesley Spieringhs</div>
+        <div class="player-meta"><span>🇳🇱 24 jaar</span><span>CM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">8</div>
+        <div class="player-icon">MR</div>
+        <div class="player-name">Marwin Reuvers</div>
+        <div class="player-meta"><span>🇳🇱 26 jaar</span><span>CM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">7</div>
+        <div class="player-icon">RB</div>
+        <div class="player-name">Rhomar Boudzra</div>
+        <div class="player-meta"><span>🇳🇱 30 jaar</span><span>CM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">18</div>
+        <div class="player-icon">MR</div>
+        <div class="player-name">Mark Romantsov</div>
+        <div class="player-meta"><span>🇺🇦 19 jaar</span><span>CM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">9</div>
+        <div class="player-icon">DU</div>
+        <div class="player-name">Desley Ubbink</div>
+        <div class="player-meta"><span>🇳🇱 32 jaar</span><span>CAM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">10</div>
+        <div class="player-icon">JW</div>
+        <div class="player-name">Jens Wirix</div>
+        <div class="player-meta"><span>🇳🇱 31 jaar</span><span>CAM</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">17</div>
+        <div class="player-icon">JV</div>
+        <div class="player-name">Jens Verschuren</div>
+        <div class="player-meta"><span>🇳🇱 25 jaar</span><span>CAM</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forwards -->
+  <div class="position-group">
+    <div class="position-label">Aanvallers</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-number">11</div>
+        <div class="player-icon">MM</div>
+        <div class="player-name">Moustafa Mohammad</div>
+        <div class="player-meta"><span>🇳🇱 28 jaar</span><span>LW</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">23</div>
+        <div class="player-icon">MH</div>
+        <div class="player-name">Mhamed Hiddouch</div>
+        <div class="player-meta"><span>🇳🇱 19 jaar</span><span>LW</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">25</div>
+        <div class="player-icon">MB</div>
+        <div class="player-name">Myron Bostdorp</div>
+        <div class="player-meta"><span>🇳🇱 23 jaar</span><span>LW</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">12</div>
+        <div class="player-icon">JP</div>
+        <div class="player-name">Jelte Pal</div>
+        <div class="player-meta"><span>🇳🇱 23 jaar</span><span>ST</span></div>
+      </div>
+      <div class="player-card">
+        <div class="player-number">16</div>
+        <div class="player-icon">TE</div>
+        <div class="player-name">Tobias Ernst</div>
+        <div class="player-meta"><span>🇳🇱 20 jaar</span><span>ST</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="section" id="historie" style="background: var(--dark-surface); max-width: none; padding-left: 40px; padding-right: 40px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div class="section-header">
+      <div class="section-label">Geschiedenis</div>
+      <h2 class="section-title">Samen Hogerop</h2>
+      <div class="section-divider"></div>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-year">1912</div>
+        <div class="timeline-text">Club opgericht als "Excelsior" op 31 juli in Roosendaal.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1927</div>
+        <div class="timeline-text">Fusie met Roosendaalsche Boys &mdash; de naam wordt Roosendaal Boys Combinatie (RBC).</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1955</div>
+        <div class="timeline-text">RBC stapt over naar het betaald voetbal en wint in 1957 de Tweede Divisie B.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">1986</div>
+        <div class="timeline-text">RBC bereikt de KNVB Bekerfinale &mdash; verliest van Ajax in de Kuip.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2000</div>
+        <div class="timeline-text">Historische promotie naar de Eredivisie onder Robert Maaskant! De droom wordt werkelijkheid.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2011</div>
+        <div class="timeline-text">Het donkerste jaar: RBC wordt failliet verklaard. Schuld van €1,6 miljoen. De proflicentie wordt ingetrokken.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2012</div>
+        <div class="timeline-text">De wederopstanding! RBC maakt een doorstart in de Vijfde Klasse &mdash; het negende niveau van Nederland.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2017</div>
+        <div class="timeline-text">Kampioen in de Vierde Klasse, promotie naar de Derde Klasse.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2023</div>
+        <div class="timeline-text">Promotie naar de Eerste Klasse na een 6-1 thuisoverwinning op Virtus.</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2024</div>
+        <div class="timeline-text">Kampioen en promotie naar de Vierde Divisie &mdash; ongeslagen in de competitie!</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-year">2025</div>
+        <div class="timeline-text">Opnieuw promotie! Via de nacompetitie naar de Derde Divisie. "Samen Hogerop" is meer dan een slogan, het is realiteit. 2.316 toeschouwers bij het nacompetitieduel in het Atik Stadion.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo-text">RBC ROOSENDAAL</div>
+      <p>Onofficiële fansite van de Trots van het Zuiden. Oranje-Wit sinds 1912. Van de Vijfde Klasse terug naar de Derde Divisie &mdash; samen hogerop!</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigatie</h4>
+      <a href="#home">Home</a>
+      <a href="#stand">Stand</a>
+      <a href="#resultaten">Resultaten</a>
+      <a href="#selectie">Selectie</a>
+      <a href="#historie">Historie</a>
+    </div>
+    <div class="footer-col">
+      <h4>Officieel</h4>
+      <a href="https://rbcvoetbal.nl" target="_blank">rbcvoetbal.nl</a>
+      <a href="https://rbcvoetbal.nl/wedstrijden" target="_blank">Wedstrijden</a>
+    </div>
+    <div class="footer-col">
+      <h4>Stadion</h4>
+      <a>Atik Stadion</a>
+      <a>Roosendaal</a>
+      <a>4.995 plaatsen</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 rbcroosendaal.com &mdash; Onofficiële Fansite</span>
+    <span>Gemaakt met ❤️ voor RBC</span>
+  </div>
+</footer>
+
+<script>
+// Smooth scrolling for nav links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('navLinks').classList.remove('open');
+    }
+  });
+});
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('section, .hero');
+const navLinks = document.querySelectorAll('.nav-links a');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 100;
+    if (pageYOffset >= sectionTop) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
+
+  // Navbar background
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 50) {
+    nav.style.background = 'rgba(10,10,10,0.95)';
+  } else {
+    nav.style.background = 'rgba(10,10,10,0.85)';
+  }
+});
+
+// Intersection Observer for fade-in animations
+const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.player-card, .result-card, .timeline-item, .stat-item').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
 </body>
 </html>
