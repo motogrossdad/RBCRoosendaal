@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - Live Dashboard</title>
+<title>RBC Roosendaal - Periodestanden</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
     :root {
         --rbc-orange: #FF6B00;
         --dark: #0A0A0A;
+        --dark-surface: #1A1A1A;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +26,7 @@
 
     header {
         width: 100%;
-        padding: 30px 0;
+        padding: 30px 20px;
         text-align: center;
         border-bottom: 2px solid var(--rbc-orange);
         background: linear-gradient(to bottom, #111, #000);
@@ -37,53 +38,102 @@
         letter-spacing: 2px;
     }
 
-    /* THE AD-REDUCER CONTAINER */
-    /* This "crops" the iframe to hide potential sidebar/top ads */
+    /* PERIOD NAVIGATION */
+    .period-nav {
+        display: flex;
+        gap: 10px;
+        margin: 25px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-btn {
+        background: var(--dark-surface);
+        border: 1px solid #333;
+        color: white;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-family: 'Oswald', sans-serif;
+        text-transform: uppercase;
+        font-size: 13px;
+        transition: 0.3s;
+        border-radius: 4px;
+    }
+
+    .nav-btn:hover {
+        background: #333;
+        border-color: var(--rbc-orange);
+    }
+
+    .nav-btn.active {
+        background: var(--rbc-orange);
+        border-color: var(--rbc-orange);
+    }
+
+    /* IFRAME CONTAINER */
     .frame-container {
         width: 95%;
         max-width: 1100px;
-        height: 1600px; /* Adjust based on how much content you want to show */
-        margin: 40px 0;
-        overflow: hidden; /* Hides the iframe's native scrollbars */
-        border-radius: 12px;
-        border: 1px solid #333;
+        height: 1200px; /* Shorter height for better mobile focus */
+        overflow: hidden;
+        border-radius: 8px;
         background: #fff;
         position: relative;
+        margin-bottom: 50px;
     }
 
     iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
         border: none;
     }
 
-    footer {
-        padding: 20px;
-        color: #555;
-        font-size: 12px;
+    .loading-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: var(--dark);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
     }
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">RBC <span style="color:var(--rbc-orange)">LIVE</span></div>
-    <p style="color:#999; letter-spacing: 3px; font-size: 12px;">DERDE DIVISIE B DASHBOARD</p>
+    <div class="logo">RBC <span style="color:var(--rbc-orange)">PERIODEN</span></div>
+    <p style="color:#999; letter-spacing: 3px; font-size: 11px;">LIVE DERDE DIVISIE B DATA</p>
 </header>
 
+<div class="period-nav">
+    <button class="nav-btn active" onclick="changeView(this, '')">Algehele Stand</button>
+    <button class="nav-btn" onclick="changeView(this, 'perioden/1/')">Periode 1</button>
+    <button class="nav-btn" onclick="changeView(this, 'perioden/2/')">Periode 2</button>
+    <button class="nav-btn" onclick="changeView(this, 'perioden/3/')">Periode 3</button>
+</div>
+
 <div class="frame-container">
-    <iframe 
-        src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&sBC=%23ffffff&sAC=%23f3f3f3" 
-        scrolling="yes">
+    <iframe id="dataFrame" 
+            src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&sBC=%23ffffff&sAC=%23f3f3f3" 
+            scrolling="yes">
     </iframe>
 </div>
 
-<footer>
-    Gegevens via HollandseVelden.nl &copy; 2026
-</footer>
+<script>
+    function changeView(btn, periodPath) {
+        // Update button styles
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Update iframe source
+        const baseUrl = "https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/";
+        const settings = "?sTFC=%23ffffff&sBC=%23ffffff&sAC=%23f3f3f3";
+        
+        document.getElementById('dataFrame').src = baseUrl + periodPath + settings;
+    }
+</script>
 
 </body>
 </html>
