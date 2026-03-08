@@ -3,213 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - De Trots van het Zuiden</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<title>RBC Roosendaal - Live Stand & Perioden</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 :root {
   --rbc-orange: #FF6B00;
-  --rbc-orange-dark: #E05500;
-  --rbc-orange-light: #FF8A33;
   --rbc-white: #FFFFFF;
-  --rbc-blue: #1A2B5C;
-  --rbc-blue-dark: #0D1A3A;
-  --rbc-blue-light: #2A3F7A;
   --dark: #0A0A0A;
   --dark-card: #111111;
-  --dark-surface: #1A1A1A;
-  --gray-text: #999;
   --gray-border: #2A2A2A;
-  --win: #22C55E;
-  --draw: #EAB308;
-  --loss: #EF4444;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Source Sans 3', sans-serif; background: var(--dark); color: var(--rbc-white); overflow-x: hidden; }
 
-/* NOISE TEXTURE */
-body::before {
-  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999;
+body {
+  font-family: 'Oswald', sans-serif;
+  background: var(--dark);
+  color: var(--rbc-white);
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* NAVIGATION */
-.nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0 40px; height: 70px; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,10,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--gray-border); transition: all 0.3s; }
-.nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-.nav-logo .logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 3px; color: var(--rbc-orange); }
-.nav-links { display: flex; gap: 32px; list-style: none; }
-.nav-links a { text-decoration: none; color: var(--gray-text); font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.3s; position: relative; }
-.nav-links a:hover, .nav-links a.active { color: var(--rbc-orange); }
+/* HEADER STYLE */
+header {
+  width: 100%;
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(to bottom, #1a2b5c, var(--dark));
+  border-bottom: 2px solid var(--rbc-orange);
+}
 
-/* HERO */
-.hero { height: 100vh; min-height: 700px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; background: linear-gradient(135deg, var(--rbc-blue-dark) 0%, var(--dark) 50%, #1a0800 100%); }
-.hero-content { position: relative; z-index: 10; text-align: center; padding: 0 20px; }
-.hero-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 12vw, 160px); line-height: 0.9; color: var(--rbc-white); }
-.hero-title span { background: linear-gradient(135deg, var(--rbc-orange) 0%, var(--rbc-orange-light) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 60px;
+  letter-spacing: 4px;
+  color: var(--rbc-white);
+}
 
-/* TABS SYSTEM */
-.tab-container { display: flex; gap: 10px; margin-bottom: 20px; }
-.tab-btn { background: var(--dark-surface); border: 1px solid var(--gray-border); color: var(--gray-text); padding: 10px 20px; font-family: 'Oswald', sans-serif; text-transform: uppercase; cursor: pointer; transition: 0.3s; font-size: 12px; letter-spacing: 1px; }
-.tab-btn.active { background: var(--rbc-orange); color: white; border-color: var(--rbc-orange); }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+.logo-text span {
+  color: var(--rbc-orange);
+}
 
-/* STANDINGS */
-.standings-section { background: var(--dark-card); border: 1px solid var(--gray-border); overflow: hidden; }
-.standings-table { width: 100%; border-collapse: collapse; }
-.standings-table thead th { font-family: 'Oswald', sans-serif; font-size: 11px; color: var(--gray-text); padding: 14px; border-bottom: 1px solid var(--gray-border); background: rgba(0,0,0,0.3); }
-.standings-table tbody td { padding: 12px; text-align: center; border-bottom: 1px solid var(--gray-border); }
-.highlight { background: rgba(255,107,0,0.08); border-left: 3px solid var(--rbc-orange); }
+.subtitle {
+  font-size: 14px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #999;
+  margin-top: 10px;
+}
 
-/* STATS & CARDS */
-.section { padding: 80px 40px; max-width: 1200px; margin: 0 auto; }
-.two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; }
-.sidebar-card { background: var(--dark-card); border: 1px solid var(--gray-border); padding: 24px; margin-bottom: 20px; }
-.ticker { background: var(--rbc-blue-dark); border-bottom: 2px solid var(--rbc-orange); padding: 16px 0; }
-.stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: var(--dark-surface); }
-.stat-item { background: var(--dark-card); padding: 30px; text-align: center; }
-.stat-number { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--rbc-orange); }
+/* CONTAINER FOR THE IFRAME */
+.content-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  padding: 40px 10px;
+}
 
-/* IFRAME STYLING */
-.iframe-wrapper { background: #fff; border-radius: 4px; padding: 5px; height: 850px; overflow: hidden; }
+.live-card {
+  background: #FFFFFF; /* White background to match the iframe style */
+  border-radius: 8px;
+  padding: 5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  overflow: hidden;
+}
 
-@media (max-width: 1024px) { .two-col { grid-template-columns: 1fr; } }
-@media (max-width: 768px) { .stats-strip { grid-template-columns: repeat(2, 1fr); } .nav-links { display: none; } }
+.footer {
+  padding: 40px;
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+}
+
+/* Responsive height for mobile */
+@media (max-width: 768px) {
+  .logo-text { font-size: 40px; }
+}
 </style>
 </head>
 <body>
 
-<script>
-const RBC_DATA = {
-  lastMatch: { home: "UNA", away: "RBC", score: "1 - 1", date: "08 feb 2026", info: "Uitwedstrijd · Myron Bostdorp ⚽" },
-  nextMatch: { opponent: "SVV Scheveningen", home: true, date: "21 feb 2026", time: "14:30" },
-  standings: [
-    ["VV Kloetinge", 21, "14-3-4", 45, 40, 29, "+11", "WDWDL"],
-    ["FC Rijnvogels", 21, "13-4-4", 43, 41, 21, "+20", "LWDDW"],
-    ["VV Gemert", 21, "12-6-3", 42, 42, 24, "+18", "DLWWW"],
-    ["FC Lisse", 22, "12-5-5", 41, 45, 23, "+22", "DWWWW"],
-    ["VVSB", 21, "11-5-5", 38, 41, 25, "+16", "WLWLW"],
-    ["RBC", 21, "8-6-7", 30, 42, 34, "+8", "LWWDD"],
-    ["VV Zwaluwen", 22, "8-6-8", 30, 35, 34, "+1", "WWWWL"],
-    ["TOGB", 22, "8-6-8", 30, 43, 45, "-2", "DLWWW"],
-    ["Blauw Geel '38", 21, "8-5-8", 29, 30, 29, "+1", "DLWDL"],
-    ["UDI '19", 21, "8-5-8", 29, 35, 41, "-6", "WLDDD"],
-    ["SteDoCo", 22, "8-3-11", 27, 21, 36, "-15", "LLLDL"],
-    ["VV Noordwijk", 22, "7-5-10", 26, 31, 30, "+1", "WLDLW"],
-    ["VV Goes", 21, "7-4-10", 25, 26, 39, "-13", "DLLLL"],
-    ["Groene Ster", 21, "6-6-9", 24, 29, 31, "-2", "DDDLL"],
-    ["VV UNA", 21, "5-6-10", 21, 29, 38, "-9", "DWDLD"],
-    ["SVV Scheveningen", 21, "6-2-13", 20, 31, 38, "-7", "LLLWL"],
-    ["ASWH", 22, "5-4-13", 19, 31, 57, "-26", "WLLLL"],
-    ["SV Meerssen", 21, "4-3-14", 15, 27, 45, "-18", "DWLWW"]
-  ]
-};
-</script>
+<header>
+  <div class="logo-text">RBC <span>ROOSENDAAL</span></div>
+  <div class="subtitle">Live Derde Divisie B Dashboard</div>
+</header>
 
-<nav class="nav">
-  <a href="#" class="nav-logo"><div class="logo-text">RBC ROOSENDAAL</div></a>
-  <ul class="nav-links">
-    <li><a href="#home">Home</a></li>
-    <li><a href="#stand">Stand & Live</a></li>
-    <li><a href="https://rbcvoetbal.nl" target="_blank">Officieel</a></li>
-  </ul>
-</nav>
-
-<section class="hero" id="home">
-  <div class="hero-content">
-    <div style="color:var(--rbc-orange); letter-spacing:5px; margin-bottom:20px;">DERDE DIVISIE B</div>
-    <h1 class="hero-title">WIJ ZIJN<br><span>RBC</span></h1>
-    <p style="margin-top:20px; color:var(--gray-text); letter-spacing:4px;">SAMEN HOGEROP</p>
-  </div>
-</section>
-
-<div class="ticker"><div class="ticker-inner" id="ticker" style="display:flex; justify-content:center; align-items:center; gap:30px;"></div></div>
-<div class="stats-strip" id="statsStrip"></div>
-
-<section class="section" id="stand">
-  <div class="tab-container">
-    <button class="tab-btn active" onclick="openTab(event, 'manual-stand')">Algehele Stand</button>
-    <button class="tab-btn" onclick="openTab(event, 'live-periods')">Live Perioden (Embed)</button>
-  </div>
-
-  <div class="two-col">
-    <div class="main-col">
-      <div id="manual-stand" class="tab-content active">
-        <div class="standings-section">
-          <table class="standings-table">
-            <thead><tr><th>#</th><th>Club</th><th>W</th><th>Pts</th><th>+/-</th></tr></thead>
-            <tbody id="standingsBody"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <div id="live-periods" class="tab-content">
-        <div class="iframe-wrapper">
-          <iframe src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&amp;sBC=%23ffffff&amp;sAC=%23f3f3f3" 
-                  style="width:100%; height:100%; border:0;" scrolling="yes"></iframe>
-        </div>
-      </div>
+<div class="content-wrapper">
+  <div class="live-card">
+    <iframe src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&amp;sBC=%23ffffff&amp;sAC=%23f3f3f3" 
+            style="width:100%; min-width:100%; height:1700px; border:0;" 
+            frameborder="0" 
+            scrolling="no">
+      <p>Bekijk de <a href="https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/" target="_blank">live standen</a> op HollandseVelden.nl</p>
+    </iframe>
     </div>
+</div>
 
-    <div class="side-col">
-      <div class="sidebar-card">
-        <h4 style="color:var(--rbc-orange); font-family:Oswald; margin-bottom:15px; border-bottom:1px solid var(--gray-border);">VOLGENDE MATCH</h4>
-        <div id="nextMatch" style="text-align:center;"></div>
-      </div>
-      <div class="sidebar-card" style="font-size:13px; color:var(--gray-text); line-height:2;">
-        <strong>LOCATIE:</strong> Atik Stadion<br>
-        <strong>TRAINER:</strong> Mark Klippel<br>
-        <strong>CAPACITEIT:</strong> 4.995
-      </div>
-    </div>
-  </div>
-</section>
-
-<script>
-const D = RBC_DATA;
-
-// Render Ticker
-document.getElementById('ticker').innerHTML = `
-  <span style="color:var(--rbc-orange); font-family:Oswald; font-size:12px;">LAATSTE:</span>
-  <span style="font-family:Bebas Neue; font-size:24px;">${D.lastMatch.home} ${D.lastMatch.score} ${D.lastMatch.away}</span>
-  <span style="color:var(--gray-text); font-size:12px;">${D.lastMatch.date}</span>`;
-
-// Render Manual Table
-const rbcIdx = D.standings.findIndex(r => r[0] === 'RBC');
-document.getElementById('standingsBody').innerHTML = D.standings.map((r, i) => `
-  <tr class="${r[0]==='RBC'?'highlight':''}">
-    <td style="font-family:Bebas Neue; font-size:18px;">${i+1}</td>
-    <td style="text-align:left; font-family:Oswald;">${r[0]}</td>
-    <td>${r[1]}</td>
-    <td style="color:var(--rbc-orange); font-weight:bold;">${r[3]}</td>
-    <td>${r[6]}</td>
-  </tr>`).join('');
-
-// Render Stats Strip
-document.getElementById('statsStrip').innerHTML = `
-  <div class="stat-item"><div class="stat-number">${rbcIdx+1}e</div><div class="stat-label">POSITIE</div></div>
-  <div class="stat-item"><div class="stat-number">${D.standings[rbcIdx][3]}</div><div class="stat-label">PUNTEN</div></div>
-  <div class="stat-item"><div class="stat-number">${D.standings[rbcIdx][4]}</div><div class="stat-label">GOALS</div></div>
-  <div class="stat-item"><div class="stat-number">${D.standings[rbcIdx][1]}</div><div class="stat-label">DUELS</div></div>`;
-
-// Next Match
-const nm = D.nextMatch;
-document.getElementById('nextMatch').innerHTML = `
-  <div style="font-family:Bebas Neue; font-size:24px; margin-bottom:10px;">RBC <span style="color:var(--rbc-orange)">VS</span> ${nm.opponent}</div>
-  <div style="font-size:12px; color:var(--gray-text);">${nm.date} om ${nm.time}</div>`;
-
-// Tab Logic
-function openTab(evt, tabName) {
-  const contents = document.getElementsByClassName("tab-content");
-  for (let i = 0; i < contents.length; i++) contents[i].classList.remove("active");
-  const buttons = document.getElementsByClassName("tab-btn");
-  for (let i = 0; i < buttons.length; i++) buttons[i].classList.remove("active");
-  document.getElementById(tabName).classList.add("active");
-  evt.currentTarget.classList.add("active");
-}
-</script>
+<footer class="footer">
+  &copy; 2026 RBC Roosendaal Fansite - Data via HollandseVelden.nl
+</footer>
 
 </body>
 </html>
