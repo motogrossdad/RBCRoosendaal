@@ -3,105 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - Live Stand & Perioden</title>
+<title>RBC Roosendaal - Live Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-:root {
-  --rbc-orange: #FF6B00;
-  --rbc-white: #FFFFFF;
-  --dark: #0A0A0A;
-  --dark-card: #111111;
-  --gray-border: #2A2A2A;
-}
+    :root {
+        --rbc-orange: #FF6B00;
+        --dark: #0A0A0A;
+    }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-  font-family: 'Oswald', sans-serif;
-  background: var(--dark);
-  color: var(--rbc-white);
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    body {
+        background-color: var(--dark);
+        color: white;
+        font-family: 'Oswald', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+    }
 
-/* HEADER STYLE */
-header {
-  width: 100%;
-  padding: 40px 20px;
-  text-align: center;
-  background: linear-gradient(to bottom, #1a2b5c, var(--dark));
-  border-bottom: 2px solid var(--rbc-orange);
-}
+    header {
+        width: 100%;
+        padding: 30px 0;
+        text-align: center;
+        border-bottom: 2px solid var(--rbc-orange);
+        background: linear-gradient(to bottom, #111, #000);
+    }
 
-.logo-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 60px;
-  letter-spacing: 4px;
-  color: var(--rbc-white);
-}
+    .logo {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 50px;
+        letter-spacing: 2px;
+    }
 
-.logo-text span {
-  color: var(--rbc-orange);
-}
+    /* THE AD-REDUCER CONTAINER */
+    /* This "crops" the iframe to hide potential sidebar/top ads */
+    .frame-container {
+        width: 95%;
+        max-width: 1100px;
+        height: 1600px; /* Adjust based on how much content you want to show */
+        margin: 40px 0;
+        overflow: hidden; /* Hides the iframe's native scrollbars */
+        border-radius: 12px;
+        border: 1px solid #333;
+        background: #fff;
+        position: relative;
+    }
 
-.subtitle {
-  font-size: 14px;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: #999;
-  margin-top: 10px;
-}
+    iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
 
-/* CONTAINER FOR THE IFRAME */
-.content-wrapper {
-  width: 100%;
-  max-width: 1000px;
-  padding: 40px 10px;
-}
-
-.live-card {
-  background: #FFFFFF; /* White background to match the iframe style */
-  border-radius: 8px;
-  padding: 5px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  overflow: hidden;
-}
-
-.footer {
-  padding: 40px;
-  text-align: center;
-  font-size: 12px;
-  color: #555;
-}
-
-/* Responsive height for mobile */
-@media (max-width: 768px) {
-  .logo-text { font-size: 40px; }
-}
+    footer {
+        padding: 20px;
+        color: #555;
+        font-size: 12px;
+    }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo-text">RBC <span>ROOSENDAAL</span></div>
-  <div class="subtitle">Live Derde Divisie B Dashboard</div>
+    <div class="logo">RBC <span style="color:var(--rbc-orange)">LIVE</span></div>
+    <p style="color:#999; letter-spacing: 3px; font-size: 12px;">DERDE DIVISIE B DASHBOARD</p>
 </header>
 
-<div class="content-wrapper">
-  <div class="live-card">
-    <iframe src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&amp;sBC=%23ffffff&amp;sAC=%23f3f3f3" 
-            style="width:100%; min-width:100%; height:1700px; border:0;" 
-            frameborder="0" 
-            scrolling="no">
-      <p>Bekijk de <a href="https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/" target="_blank">live standen</a> op HollandseVelden.nl</p>
+<div class="frame-container">
+    <iframe 
+        src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&sBC=%23ffffff&sAC=%23f3f3f3" 
+        scrolling="yes">
     </iframe>
-    </div>
 </div>
 
-<footer class="footer">
-  &copy; 2026 RBC Roosendaal Fansite - Data via HollandseVelden.nl
+<footer>
+    Gegevens via HollandseVelden.nl &copy; 2026
 </footer>
 
 </body>
