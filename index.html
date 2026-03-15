@@ -3,26 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - Live Stand & Perioden</title>
+<title>RBC Roosendaal - Periodestanden Derde Divisie B 2025/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
     :root {
         --rbc-orange: #FF6B00;
         --dark: #0A0A0A;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
         background-color: var(--dark);
         color: white;
         font-family: 'Oswald', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         min-height: 100vh;
     }
-
     header {
         width: 100%;
         padding: 30px 0;
@@ -30,73 +24,262 @@
         border-bottom: 2px solid var(--rbc-orange);
         background: #111;
     }
-
     .logo {
         font-family: 'Bebas Neue', sans-serif;
         font-size: 50px;
         letter-spacing: 2px;
     }
-
-    /* THE DASHBOARD CONTAINER */
-    .dashboard-container {
-        width: 95%;
-        max-width: 1100px;
-        margin: 20px 0;
-        background: #fff; 
+    .main {
+        max-width: 1050px;
+        margin: 30px auto;
+        padding: 0 15px;
+    }
+    .section-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 26px;
+        letter-spacing: 2px;
+        color: var(--rbc-orange);
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    .last-updated {
+        text-align: center;
+        color: #555;
+        font-size: 12px;
+        margin-bottom: 24px;
+        letter-spacing: 1px;
+    }
+    .periods-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .period-card {
+        background: #161616;
         border-radius: 8px;
         overflow: hidden;
-        box-shadow: 0 10px 50px rgba(0,0,0,0.8);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
-
-    /* FIXED HEIGHT WITH INTERNAL SCROLLING */
-    .iframe-wrapper {
-        position: relative;
-        width: 100%;
-        height: 85vh; /* This makes the box take up 85% of the screen height */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iPhone/iPad */
-    }
-
-    iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    .instruction-bar {
+    .period-header {
         background: var(--rbc-orange);
-        color: white;
-        padding: 12px;
-        font-size: 14px;
-        text-align: center;
-        font-weight: bold;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 2px;
         text-transform: uppercase;
+        text-align: center;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+    }
+    th {
+        background: #222;
+        padding: 7px 10px;
+        text-align: left;
+        color: #888;
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    th.right, td.right { text-align: right; }
+    td {
+        padding: 7px 10px;
+        border-bottom: 1px solid #1e1e1e;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr.alt td { background: #1a1a1a; }
+    tr.rbc-row td {
+        background: rgba(255, 107, 0, 0.12);
+        color: var(--rbc-orange);
+        font-weight: 600;
+    }
+    tr.winner td { font-weight: 700; }
+    .pos { color: #555; width: 28px; }
+    .club-name { }
+    .pts { font-weight: 700; color: #fff; }
+    tr.rbc-row .pts { color: var(--rbc-orange); }
+    .ds-pos { color: #4caf50; }
+    .ds-neg { color: #f44336; }
+    .ds-zero { color: #888; }
+    .trophy { font-size: 12px; margin-right: 4px; }
+    .loading {
+        text-align: center;
+        padding: 60px 20px;
+        color: #555;
+        font-size: 18px;
+        letter-spacing: 2px;
+    }
+    .error {
+        text-align: center;
+        padding: 40px 20px;
+        color: #ff4444;
+        font-size: 14px;
+    }
+    footer {
+        padding: 24px;
+        color: #444;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 30px;
+        border-top: 1px solid #1a1a1a;
+    }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { color: var(--rbc-orange); }
+
+    @media (max-width: 600px) {
+        .logo { font-size: 36px; }
+        .section-title { font-size: 20px; }
     }
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">RBC <span style="color:var(--rbc-orange)">LIVE DATA</span></div>
-    <p style="color:#999; letter-spacing: 3px; font-size: 12px;">DERDE DIVISIE B - 2025/2026</p>
+    <div class="logo">RBC <span style="color:var(--rbc-orange)">ROOSENDAAL</span></div>
+    <p style="color:#666; letter-spacing: 3px; font-size: 12px; margin-top: 8px; text-transform: uppercase;">Derde Divisie B &mdash; 2025/2026</p>
 </header>
 
-<div class="dashboard-container">
-    <div class="instruction-bar">
-        Scroll in de witte box voor de volledige stand & perioden
-    </div>
-    
-    <div class="iframe-wrapper">
-        <iframe 
-            src="https://embed.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/?sTFC=%23ffffff&sBC=%23ffffff&sAC=%23f3f3f3" 
-            scrolling="yes"
-            loading="lazy">
-        </iframe>
-    </div>
+<div class="main">
+    <h1 class="section-title">&#x1F4CA; Periodestanden Derde Divisie B &mdash; 2025/2026</h1>
+    <p class="last-updated" id="lastUpdated">Laden...</p>
+    <div id="content"><div class="loading">&#x23F3; DATA WORDT GELADEN...</div></div>
 </div>
 
-<footer style="padding: 20px; color: #555; font-size: 12px; text-align: center;">
-    &copy; 2026 RBC Roosendaal Fansite | Data powered by HollandseVelden.nl
+<footer>
+    &copy; 2026 RBC Roosendaal Fansite &nbsp;&bull;&nbsp;
+    Data: <a href="https://www.hollandsevelden.nl/" target="_blank" rel="noopener">HollandseVelden.nl</a>
 </footer>
+
+<script>
+const PROXY = 'https://api.allorigins.win/raw?url=';
+const SOURCE = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/';
+
+function dsClass(val) {
+    const n = parseInt(val, 10);
+    if (n > 0) return 'ds-pos';
+    if (n < 0) return 'ds-neg';
+    return 'ds-zero';
+}
+
+function buildTable(periodTable, periodIndex) {
+    // Extract caption / period name
+    const caption = periodTable.querySelector('caption, thead h3, thead th h3');
+    let periodName = caption ? caption.textContent.trim() : ('Periode ' + (periodIndex + 1));
+
+    const rows = periodTable.querySelectorAll('tbody tr');
+    if (!rows.length) return null;
+
+    let html = `<div class="period-card">
+        <div class="period-header">${periodName}</div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="pos">#</th>
+                    <th>Club</th>
+                    <th class="right">Wed</th>
+                    <th class="right">Pnt</th>
+                    <th class="right">DS</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+    rows.forEach((row, i) => {
+        const cells = row.querySelectorAll('th, td');
+        if (cells.length < 4) return;
+
+        const pos     = cells[0].textContent.trim();
+        const club    = cells[1].textContent.trim().replace(/\s+/g, ' ');
+        const wed     = cells[2].textContent.trim();
+        const pnt     = cells[3].textContent.trim();
+        const ds      = cells[4] ? cells[4].textContent.trim() : '';
+
+        const isRBC     = /^rbc$/i.test(club);
+        const isWinner  = pos === '1';
+        const isAlt     = i % 2 === 1;
+
+        let rowClass = '';
+        if (isRBC) rowClass = 'rbc-row';
+        else if (isWinner) rowClass = 'winner' + (isAlt ? ' alt' : '');
+        else if (isAlt) rowClass = 'alt';
+
+        const dsHtml = ds
+            ? `<td class="right ${dsClass(ds)}">${ds}</td>`
+            : '<td></td>';
+
+        html += `<tr class="${rowClass}">
+            <td class="pos">${pos}</td>
+            <td class="club-name">${isWinner && !isRBC ? '<span class="trophy">&#x1F3C6;</span>' : ''}${club}</td>
+            <td class="right">${wed}</td>
+            <td class="right pts">${pnt}</td>
+            ${dsHtml}
+        </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    return html;
+}
+
+async function load() {
+    const contentEl = document.getElementById('content');
+    const updatedEl = document.getElementById('lastUpdated');
+
+    try {
+        const res = await fetch(PROXY + encodeURIComponent(SOURCE));
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Find the container holding the periodestanden h2
+        let periodesContainer = null;
+        for (const h2 of doc.querySelectorAll('h2')) {
+            if (h2.textContent.includes('Periodestanden')) {
+                // Walk up to find a card/section wrapper that contains tables
+                let el = h2.parentElement;
+                while (el && !el.querySelector('table.league-sm, table[class*="league"]')) {
+                    el = el.parentElement;
+                }
+                periodesContainer = el || h2.closest('.card') || h2.parentElement;
+                break;
+            }
+        }
+
+        if (!periodesContainer) throw new Error('Periodestanden sectie niet gevonden');
+
+        const tables = periodesContainer.querySelectorAll('table');
+        if (!tables.length) throw new Error('Geen tabellen gevonden');
+
+        let gridHTML = '<div class="periods-grid">';
+        tables.forEach((table, i) => {
+            const built = buildTable(table, i);
+            if (built) gridHTML += built;
+        });
+        gridHTML += '</div>';
+
+        contentEl.innerHTML = gridHTML;
+
+        const now = new Date();
+        updatedEl.textContent = 'Bijgewerkt op ' +
+            now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+            ' om ' + now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+
+    } catch (err) {
+        console.error(err);
+        contentEl.innerHTML = `<div class="error">
+            Kon data niet laden (${err.message}).<br><br>
+            <a href="${SOURCE}" target="_blank" rel="noopener" style="color:var(--rbc-orange)">
+                Bekijk op HollandseVelden.nl &rarr;
+            </a>
+        </div>`;
+        updatedEl.textContent = '';
+    }
+}
+
+load();
+</script>
 
 </body>
 </html>
