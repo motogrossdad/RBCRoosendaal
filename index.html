@@ -93,6 +93,84 @@
     footer a { color: #555; text-decoration: none; }
     footer a:hover { color: var(--rbc-orange); }
     @media (max-width: 600px) { .logo { font-size: 36px; } .section-title { font-size: 18px; } }
+
+    /* --- SCOREBOARD BAR --- */
+    #scoreboard {
+        width: 100%;
+        background: #111;
+        border-bottom: 1px solid #1e1e1e;
+        padding: 0;
+        overflow: hidden;
+        display: none; /* shown by JS when data exists */
+    }
+    .scoreboard-inner {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding: 0 12px;
+    }
+    .scoreboard-inner::-webkit-scrollbar { display: none; }
+    .scoreboard-label {
+        font-size: 10px;
+        letter-spacing: 2px;
+        color: #555;
+        text-transform: uppercase;
+        padding: 10px 14px 10px 4px;
+        border-right: 1px solid #1e1e1e;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .score-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border-right: 1px solid #1e1e1e;
+        font-size: 13px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .score-pill.rbc-pill { background: rgba(255,107,0,0.08); }
+    .score-home, .score-away { color: #ccc; }
+    .score-home.rbc, .score-away.rbc { color: var(--rbc-orange); font-weight: 700; }
+    .score-result {
+        font-weight: 700;
+        color: #fff;
+        background: #1e1e1e;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+    .score-result.live-result {
+        background: #c0392b;
+        animation: pulse-bg 1.5s ease-in-out infinite;
+    }
+    .live-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: #e74c3c;
+        flex-shrink: 0;
+        animation: pulse-dot 1.2s ease-in-out infinite;
+    }
+    .status-tag {
+        font-size: 10px;
+        letter-spacing: 1px;
+        color: #555;
+        flex-shrink: 0;
+    }
+    .status-tag.live { color: #e74c3c; font-weight: 600; }
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.7); }
+    }
+    @keyframes pulse-bg {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.75; }
+    }
 </style>
 </head>
 <body>
@@ -101,6 +179,13 @@
     <div class="logo">RBC <span style="color:var(--rbc-orange)">ROOSENDAAL</span></div>
     <p style="color:#666; letter-spacing: 3px; font-size: 12px; margin-top: 8px; text-transform: uppercase;">Derde Divisie B &mdash; 2025/2026</p>
 </header>
+
+<!-- SCOREBOARD -->
+<div id="scoreboard">
+    <div class="scoreboard-inner" id="scoreboard-inner">
+        <span class="scoreboard-label" id="scoreboard-label">&#x26BD;</span>
+    </div>
+</div>
 
 <div class="main">
     <p class="last-updated" id="lastUpdated">Laden...</p>
@@ -385,8 +470,105 @@ function buildProgramma(doc) {
     return html;
 }
 
+// ── SCOREBOARD ─────────────────────────────────────────────────────────────
+function buildScoreboard(doc) {
+    const board   = document.getElementById('scoreboard');
+    const inner   = document.getElementById('scoreboard-inner');
+    const label   = document.getElementById('scoreboard-label');
+
+    // Find all Uitslagen match tables (results tables = have a score, not "uur")
+    let resultTables = [];
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (h2.textContent.includes('Uitslagen')) {
+            let container = h2.parentElement;
+            while (container && !container.querySelector('table.match, table[class*="match"]')) {
+                container = container.parentElement;
+                if (!container || container.tagName === 'BODY') break;
+            }
+            if (container) {
+                container.querySelectorAll('table.match, table[class*="match"]').forEach(t => {
+                    const res = t.querySelector('td.result, td[class*="result"]');
+                    if (res) {
+                        const txt = res.textContent.trim();
+                        if (/\d/.test(txt) && !txt.includes('uur')) resultTables.push(t);
+                    }
+                });
+            }
+            break;
+        }
+    }
+    if (!resultTables.length) { board.style.display = 'none'; return; }
+
+    // Get the most recent date group
+    const now = new Date();
+    const todayStr = now.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // Find latest date from captions
+    let latestDateText = '';
+    let latestMatches = [];
+    const byDate = {};
+    const dateOrder = [];
+    resultTables.forEach(t => {
+        const cap = t.querySelector('caption time, caption');
+        const d = cap ? cap.textContent.trim() : '';
+        if (!byDate[d]) { byDate[d] = []; dateOrder.push(d); }
+        byDate[d].push(t);
+    });
+    // Use the last date in order (most recent)
+    latestDateText = dateOrder[dateOrder.length - 1] || '';
+    latestMatches  = byDate[latestDateText] || [];
+
+    if (!latestMatches.length) { board.style.display = 'none'; return; }
+
+    // Is this today? → could be live
+    const isToday = latestDateText.includes(todayStr) ||
+        latestDateText.replace(/\w+ /, '') === todayStr; // strip weekday
+
+    // Determine if matches might be in progress:
+    // Dutch amateur matches typically 12:00–20:00; if today & within that window → live possible
+    const h = now.getHours();
+    const mightBeLive = isToday && h >= 12 && h < 20;
+
+    // Build pills
+    let pills = '';
+    latestMatches.forEach(t => {
+        const rows = t.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length < 4) return;
+            const home   = cells[0].textContent.trim().replace(/\s+/g, ' ');
+            const away   = cells[2].textContent.trim().replace(/\s+/g, ' ');
+            const result = cells[3].textContent.trim();
+            const isRBCHome = /^rbc$/i.test(home);
+            const isRBCAway = /^rbc$/i.test(away);
+            const isRBC = isRBCHome || isRBCAway;
+
+            const statusTag = mightBeLive
+                ? `<span class="live-dot"></span><span class="status-tag live">LIVE</span>`
+                : `<span class="status-tag">FT</span>`;
+
+            pills += `<div class="score-pill${isRBC ? ' rbc-pill' : ''}">
+                <span class="score-home${isRBCHome ? ' rbc' : ''}">${home}</span>
+                <span class="score-result${mightBeLive ? ' live-result' : ''}">${result}</span>
+                <span class="score-away${isRBCAway ? ' rbc' : ''}">${away}</span>
+                ${statusTag}
+            </div>`;
+        });
+    });
+
+    if (!pills) { board.style.display = 'none'; return; }
+
+    // Set label
+    label.textContent = mightBeLive ? '🔴 LIVE' : latestDateText;
+
+    // Remove old pills (keep label)
+    inner.querySelectorAll('.score-pill').forEach(el => el.remove());
+    inner.insertAdjacentHTML('beforeend', pills);
+    board.style.display = 'block';
+}
+
 // ── MAIN ───────────────────────────────────────────────────────────────────
-async function load() {
+async function load(fullRefresh = true) {
     const standEl    = document.getElementById('stand-content');
     const periodesEl = document.getElementById('periodes-content');
     const programmaEl= document.getElementById('programma-content');
@@ -399,26 +581,36 @@ async function load() {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        standEl.innerHTML     = buildStand(doc);
-        periodesEl.innerHTML  = buildPeriodes(doc);
-        programmaEl.innerHTML = buildProgramma(doc);
+        buildScoreboard(doc);
 
-        const now = new Date();
-        updatedEl.textContent = 'Bijgewerkt op ' +
-            now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
-            ' om ' + now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+        if (fullRefresh) {
+            standEl.innerHTML     = buildStand(doc);
+            periodesEl.innerHTML  = buildPeriodes(doc);
+            programmaEl.innerHTML = buildProgramma(doc);
+
+            const now = new Date();
+            updatedEl.textContent = 'Bijgewerkt op ' +
+                now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+                ' om ' + now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+        }
 
     } catch (err) {
         console.error(err);
-        const errHTML = `<div class="error">Kon data niet laden (${err.message}).<br><br>
-            <a href="${SOURCE}" target="_blank" rel="noopener" style="color:var(--rbc-orange)">
-                Bekijk op HollandseVelden.nl &rarr;</a></div>`;
-        standEl.innerHTML = periodesEl.innerHTML = programmaEl.innerHTML = errHTML;
-        updatedEl.textContent = '';
+        if (fullRefresh) {
+            const errHTML = `<div class="error">Kon data niet laden (${err.message}).<br><br>
+                <a href="${SOURCE}" target="_blank" rel="noopener" style="color:var(--rbc-orange)">
+                    Bekijk op HollandseVelden.nl &rarr;</a></div>`;
+            standEl.innerHTML = periodesEl.innerHTML = programmaEl.innerHTML = errHTML;
+            updatedEl.textContent = '';
+        }
     }
 }
 
-load();
+// Initial full load
+load(true);
+
+// Refresh scoreboard every 60s (lightweight — only scoreboard updates)
+setInterval(() => load(false), 60000);
 </script>
 </body>
 </html>
