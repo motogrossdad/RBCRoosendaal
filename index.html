@@ -618,8 +618,8 @@ function buildSpotlight(doc) {
                         nextOpp = /^rbc$/i.test(home) ? away : home;
                         const cap = t.querySelector('caption time,caption');
                         if (cap) {
-                            const txt = cap.textContent.replace(/\w+ /,'').trim();
-                            nextDate = txt.split(' ').slice(0,2).join(' ');
+                            const m = cap.textContent.match(/(\d{1,2})\s+(\w+)/);
+                            nextDate = m ? m[1]+' '+m[2] : cap.textContent.trim();
                         }
                         break;
                     }
