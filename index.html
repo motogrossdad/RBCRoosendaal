@@ -491,9 +491,9 @@ footer a:hover { color: var(--orange); }
     border: none;
     color: var(--muted);
     font-family: 'Inter', sans-serif;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     text-transform: uppercase;
     cursor: pointer;
     transition: color 0.15s;
@@ -510,6 +510,80 @@ footer a:hover { color: var(--orange); }
     margin-top: -2px;
 }
 .nav-tab.active .nav-tab-dot { opacity: 1; }
+
+/* ── QUIZ ────────────────────────────────────────────────── */
+.quiz-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.quiz-badge {
+    display: inline-block;
+    background: var(--orange-dim);
+    color: var(--orange);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    width: fit-content;
+}
+.quiz-question {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--text);
+}
+.quiz-answers {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.quiz-answer-btn {
+    background: var(--card2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.quiz-answer-btn:hover:not(:disabled) { border-color: var(--orange); background: var(--orange-dim); }
+.quiz-answer-btn.correct { border-color: var(--green) !important; background: rgba(39,174,96,0.12) !important; color: #2ecc71 !important; }
+.quiz-answer-btn.wrong { border-color: var(--red) !important; background: rgba(231,76,60,0.12) !important; color: #e74c3c !important; }
+.quiz-answer-btn:disabled { cursor: default; }
+.quiz-result {
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 20px;
+    color: var(--muted);
+}
+.quiz-result.correct { color: var(--green); }
+.quiz-result.wrong { color: var(--red); }
+.quiz-next {
+    background: var(--orange);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    -webkit-tap-highlight-color: transparent;
+}
+.quiz-next:hover { opacity: 0.88; }
 #ere-scoreboard {
     background: #0c0c0c;
     border-bottom: 1px solid var(--border);
@@ -626,6 +700,22 @@ footer a:hover { color: var(--orange); }
     </div>
 </div>
 
+    <!-- QUIZ SECTION -->
+    <div class="block" id="section-quiz">
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">RBC Quiz</span>
+        </div>
+        <div class="quiz-card" id="quiz-card">
+            <div class="quiz-badge">Vraag <span id="quiz-num">1</span></div>
+            <p class="quiz-question" id="quiz-question">Laden...</p>
+            <div class="quiz-answers" id="quiz-answers"></div>
+            <div class="quiz-result" id="quiz-result"></div>
+            <button class="quiz-next" id="quiz-next" onclick="quizNext()" style="display:none">Volgende vraag →</button>
+        </div>
+    </div>
+</div>
+
 <footer>
     &copy; 2026 RBC Roosendaal Fansite &nbsp;&bull;&nbsp;
     Data: <a href="https://www.hollandsevelden.nl/" target="_blank" rel="noopener">HollandseVelden.nl</a>
@@ -645,7 +735,7 @@ footer a:hover { color: var(--orange); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
         </svg>
-        Kampionen
+        Periodes
         <div class="nav-tab-dot"></div>
     </button>
     <button class="nav-tab" onclick="navTo('section-wedstrijden',this)">
@@ -653,6 +743,13 @@ footer a:hover { color: var(--orange); }
             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
         Wedstrijden
+        <div class="nav-tab-dot"></div>
+    </button>
+    <button class="nav-tab" onclick="navTo('section-quiz',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="9"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="17" r=".5" fill="currentColor"/>
+        </svg>
+        Quiz
         <div class="nav-tab-dot"></div>
     </button>
 </nav>
@@ -1211,7 +1308,7 @@ function navTo(sectionId, btn) {
 }
 
 // Highlight active tab on scroll
-const sections = ['section-stand','section-periodes','section-wedstrijden'];
+const sections = ['section-stand','section-periodes','section-wedstrijden','section-quiz'];
 const tabs = document.querySelectorAll('.nav-tab');
 if ('IntersectionObserver' in window) {
     const obs = new IntersectionObserver(entries => {
@@ -1227,6 +1324,92 @@ if ('IntersectionObserver' in window) {
     }, { rootMargin: '-40% 0px -50% 0px' });
     sections.forEach(id => { const el = document.getElementById(id); if(el) obs.observe(el); });
 }
+
+// ── QUIZ ─────────────────────────────────────────────────
+const QUIZ_QUESTIONS = [
+    { q: "In welk jaar werd RBC Roosendaal opgericht?", a: ["1912","1920","1905"], correct: 0, fact: "RBC werd opgericht op 31 juli 1912, aanvankelijk als 'Excelsior'." },
+    { q: "Waar staat de afkorting 'RBC' voor?", a: ["Roosendaal Boys Combinatie","Roosendaal Boys Club","Roosendaal Brave Combinatie"], correct: 0, fact: "Vanaf 1927 draagt de club de naam Roosendaal Boys Combinatie." },
+    { q: "Welke kleuren draagt RBC Roosendaal?", a: ["Oranje en wit","Rood en zwart","Blauw en geel"], correct: 0, fact: "De clubkleuren zijn oranje en wit." },
+    { q: "Hoe heet het stadion van RBC Roosendaal?", a: ["Atik Stadion","De Hoge Heuvel","Sportpark Noord"], correct: 0, fact: "RBC speelt in het Atik Stadion, geopend in 2001 met een capaciteit van circa 5.000 toeschouwers." },
+    { q: "Hoeveel seizoenen speelde RBC in de Eredivisie?", a: ["5","3","8"], correct: 0, fact: "RBC speelde 5 Eredivisie-seizoenen: 2000-01 en 2002-03 t/m 2005-06." },
+    { q: "Wat was het beste Eredivisie-resultaat van RBC?", a: ["12e plaats (2003-04)","6e plaats (2001-02)","8e plaats (2004-05)"], correct: 0, fact: "De 12e plek in 2003-04 was de beste klassering in de Eredivisie." },
+    { q: "Wanneer verloor RBC de KNVB Bekerfinale van Ajax?", a: ["28 mei 1986","15 mei 1990","2 juni 1982"], correct: 0, fact: "Op 28 mei 1986 verloor RBC de KNVB Bekerfinale met 3-0 van Ajax." },
+    { q: "Wie is de all-time topscorer van RBC Roosendaal?", a: ["Sjoerd Ars","Pierre van Hooijdonk","Regi Blinker"], correct: 0, fact: "Sjoerd Ars scoorde 77 doelpunten in 183 wedstrijden voor RBC." },
+    { q: "Hoeveel doelpunten maakte Pierre van Hooijdonk in zijn tijd bij RBC?", a: ["33","18","45"], correct: 0, fact: "Van Hooijdonk speelde van 1989 tot 1991 bij RBC en maakte 33 goals in 69 wedstrijden." },
+    { q: "Welk land vertegenwoordigde Tomasz Iwan tijdens zijn periode bij RBC?", a: ["Polen","Tsjechië","Slowakije"], correct: 0, fact: "Tomasz Iwan was Pools international (43 caps) en speelde tijdens het Eredivisie-tijdperk bij RBC." },
+    { q: "Wanneer ging RBC Roosendaal failliet?", a: ["8 juni 2011","12 maart 2009","1 januari 2013"], correct: 0, fact: "RBC werd op 8 juni 2011 failliet verklaard en herstartte in december 2011 vanuit de laagste divisies." },
+    { q: "Hoeveel interlands speelde Regi Blinker voor het Nederlands elftal?", a: ["34","20","51"], correct: 0, fact: "Regi Blinker verdiende 34 interlands voor Nederland en speelde van 2002-2004 bij RBC." },
+    { q: "Vanuit welke amateurklasse herbegon RBC in 2011 na het faillissement?", a: ["9e/10e divisie","4e divisie","Derde Divisie"], correct: 0, fact: "Na het faillissement in 2011 moest RBC van scratch herbeginnen in de allerlaagste amateurniveaus." },
+    { q: "In welk jaar werd het Atik Stadion geopend?", a: ["2001","1995","2008"], correct: 0, fact: "Het Atik Stadion werd in 2001 geopend en heeft een capaciteit van ongeveer 5.000 toeschouwers." },
+    { q: "Hoeveel goals maakte Sjoerd Ars in zijn 183 wedstrijden voor RBC?", a: ["77","55","91"], correct: 0, fact: "Sjoerd Ars is de recordscorer van RBC met 77 goals in 183 optredens." },
+];
+
+let _quizOrder = [];
+let _quizIdx = 0;
+
+function quizShuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function quizInit() {
+    _quizOrder = quizShuffle(QUIZ_QUESTIONS.map((_, i) => i));
+    _quizIdx = 0;
+    quizShow();
+}
+
+function quizShow() {
+    const q = QUIZ_QUESTIONS[_quizOrder[_quizIdx]];
+    document.getElementById('quiz-num').textContent = _quizIdx + 1;
+    document.getElementById('quiz-question').textContent = q.q;
+    document.getElementById('quiz-result').textContent = '';
+    document.getElementById('quiz-result').className = 'quiz-result';
+    document.getElementById('quiz-next').style.display = 'none';
+
+    // Shuffle answers but track correct
+    const indices = [0, 1, 2];
+    const shuffled = quizShuffle(indices);
+    const container = document.getElementById('quiz-answers');
+    container.innerHTML = '';
+    shuffled.forEach(i => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-answer-btn';
+        btn.textContent = q.a[i];
+        btn.onclick = () => quizAnswer(btn, i === q.correct, q.fact);
+        container.appendChild(btn);
+    });
+}
+
+function quizAnswer(clickedBtn, isCorrect, fact) {
+    const btns = document.querySelectorAll('.quiz-answer-btn');
+    const resultEl = document.getElementById('quiz-result');
+    const correctText = QUIZ_QUESTIONS[_quizOrder[_quizIdx]].a[QUIZ_QUESTIONS[_quizOrder[_quizIdx]].correct];
+    btns.forEach(btn => {
+        btn.disabled = true;
+        if (btn.textContent === correctText) btn.classList.add('correct');
+    });
+    if (!isCorrect) {
+        clickedBtn.classList.add('wrong');
+        resultEl.textContent = '✗ Fout! ' + fact;
+        resultEl.className = 'quiz-result wrong';
+    } else {
+        resultEl.textContent = '✓ Correct! ' + fact;
+        resultEl.className = 'quiz-result correct';
+    }
+    document.getElementById('quiz-next').style.display = 'block';
+}
+
+function quizNext() {
+    _quizIdx = (_quizIdx + 1) % _quizOrder.length;
+    if (_quizIdx === 0) _quizOrder = quizShuffle(QUIZ_QUESTIONS.map((_, i) => i));
+    quizShow();
+}
+
+quizInit();
 </script>
 <button id="install-banner" onclick="installApp()">&#x2B07; Installeer App</button>
 </body>
