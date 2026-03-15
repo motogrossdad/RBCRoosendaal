@@ -102,7 +102,7 @@ header::before {
 .sb-inner::-webkit-scrollbar { display: none; }
 .sb-label {
     padding: 0 14px;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -112,16 +112,16 @@ header::before {
     align-items: center;
     white-space: nowrap;
     flex-shrink: 0;
-    min-height: 42px;
+    min-height: 48px;
 }
 .sb-label.is-live { color: var(--red); }
 .sb-pill {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 16px;
+    padding: 12px 20px;
     border-right: 1px solid var(--border);
-    font-size: 13px;
+    font-size: 14px;
     white-space: nowrap;
     flex-shrink: 0;
     transition: background 0.2s;
@@ -131,10 +131,10 @@ header::before {
 .sb-team.is-rbc { color: var(--orange); font-weight: 700; }
 .sb-score {
     font-weight: 800;
-    font-size: 14px;
+    font-size: 16px;
     color: #fff;
     background: var(--card2);
-    padding: 3px 9px;
+    padding: 4px 11px;
     border-radius: 5px;
     letter-spacing: 1px;
     min-width: 38px;
@@ -461,43 +461,6 @@ footer a:hover { color: var(--orange); }
 .form-dot.d { background: var(--amber); }
 .form-dot.l { background: var(--red); }
 
-/* ── COUNTDOWN ───────────────────────────────────────────── */
-.countdown-grid {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 2px;
-}
-.cd-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1px;
-}
-.cd-val {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--orange);
-    line-height: 1;
-    min-width: 28px;
-    text-align: center;
-}
-.cd-lbl {
-    font-size: 8px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-.cd-sep {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--border);
-    align-self: flex-start;
-    padding-top: 1px;
-    line-height: 1;
-}
-
 /* ── BOTTOM NAV ──────────────────────────────────────────── */
 #bottom-nav {
     display: none;
@@ -547,6 +510,54 @@ footer a:hover { color: var(--orange); }
     margin-top: -2px;
 }
 .nav-tab.active .nav-tab-dot { opacity: 1; }
+#ere-scoreboard {
+    background: #0c0c0c;
+    border-bottom: 1px solid var(--border);
+}
+.ere-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 13px;
+    border-right: 1px solid var(--border);
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ere-team { color: #888; font-weight: 500; font-size: 12px; }
+.ere-score {
+    font-weight: 800;
+    font-size: 12px;
+    color: #ccc;
+    background: var(--card2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    min-width: 32px;
+    text-align: center;
+}
+.ere-score.is-live { background: var(--red); color: #fff; animation: sb-pulse 1.4s ease-in-out infinite; }
+.ere-status { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: var(--muted); }
+.ere-status.is-live { color: var(--red); }
+#install-banner {
+    display: none;
+    position: fixed;
+    bottom: 72px;
+    right: 12px;
+    z-index: 200;
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 10px 18px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(255,107,0,0.5);
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -564,6 +575,13 @@ footer a:hover { color: var(--orange); }
 <div id="scoreboard">
     <div class="sb-inner" id="sb-inner">
         <span class="sb-label" id="sb-label">Resultaten</span>
+    </div>
+</div>
+
+<!-- EREDIVISIE BAR -->
+<div id="ere-scoreboard" style="display:none">
+    <div class="sb-inner" id="ere-inner">
+        <span class="sb-label" id="ere-label" style="font-size:8px">Eredivisie</span>
     </div>
 </div>
 
@@ -627,7 +645,7 @@ footer a:hover { color: var(--orange); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
         </svg>
-        Periodes
+        Kampionen
         <div class="nav-tab-dot"></div>
     </button>
     <button class="nav-tab" onclick="navTo('section-wedstrijden',this)">
@@ -663,9 +681,6 @@ function ds(val) {
 }
 
 // ── SPOTLIGHT ──────────────────────────────────────────────
-let _nextMatchDate = null; // stored globally for countdown
-let _countdownInterval = null;
-
 function buildSpotlight(doc) {
     // Position from stand
     let pos = '–', pnt = '–', wgv = '–';
@@ -742,7 +757,7 @@ function buildSpotlight(doc) {
         break;
     }
 
-    // Next match + countdown datetime
+    // Next match datetime
     let nextOpp = '–', nextDate = '–', nextTimeStr = '14:30';
     for (const h2 of doc.querySelectorAll('h2')) {
         if (!h2.textContent.includes('Programma')) continue;
@@ -788,19 +803,6 @@ function buildSpotlight(doc) {
         ? `<div class="form-dots">${last5.map(r=>`<div class="form-dot ${r}" title="${r==='w'?'Winst':r==='d'?'Gelijk':'Verlies'}"></div>`).join('')}</div>`
         : '';
 
-    // Parse next match datetime for countdown
-    const moMap = {januari:0,februari:1,maart:2,april:3,mei:4,juni:5,
-                   juli:6,augustus:7,september:8,oktober:9,november:10,december:11};
-    if (nextDate !== '–') {
-        const dm = nextDate.match(/(\d+)\s+(\w+)/);
-        if (dm) {
-            const yr = new Date().getFullYear();
-            const [hh,mm] = nextTimeStr.split(':').map(Number);
-            _nextMatchDate = new Date(yr, moMap[dm[2].toLowerCase()]??2, +dm[1], hh, mm, 0);
-            if (_nextMatchDate < new Date()) _nextMatchDate.setFullYear(yr+1);
-        }
-    }
-
     const wrap = document.getElementById('spotlight-wrap');
     wrap.innerHTML = `
     <div class="spotlight">
@@ -816,13 +818,12 @@ function buildSpotlight(doc) {
             <span class="spotlight-sub">${lastOpp}</span>
         </div>
         <div class="spotlight-item">
-            <span class="spotlight-label">Volgende &mdash; ${nextDate}</span>
-            <div id="countdown-wrap"><div class="countdown-grid" id="countdown"></div></div>
-            <span class="spotlight-sub">${nextOpp}</span>
+            <span class="spotlight-label">Volgende Wedstrijd</span>
+            <span class="spotlight-value" style="font-size:16px;line-height:1.2">${nextDate}</span>
+            <span class="spotlight-sub" style="font-size:11px;margin-top:1px">${nextTimeStr} uur &bull; ${nextOpp}</span>
         </div>
     </div>`;
 
-    startCountdown();
 }
 
 // ── SCOREBOARD ─────────────────────────────────────────────
@@ -1089,6 +1090,57 @@ function buildProgramma(doc) {
     return html;
 }
 
+// ── EREDIVISIE ────────────────────────────────────────────
+async function buildEredivisie() {
+    const board = document.getElementById('ere-scoreboard');
+    const inner = document.getElementById('ere-inner');
+    const label = document.getElementById('ere-label');
+    try {
+        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard', { signal: AbortSignal.timeout(6000) });
+        if (!res.ok) return;
+        const data = await res.json();
+        const events = data.events || [];
+        if (!events.length) return;
+
+        const now = new Date();
+        const h = now.getHours();
+        let pills = '';
+        let hasLive = false;
+
+        events.forEach(ev => {
+            const comp = ev.competitions?.[0];
+            if (!comp) return;
+            const home = comp.competitors?.find(c => c.homeAway === 'home');
+            const away = comp.competitors?.find(c => c.homeAway === 'away');
+            if (!home || !away) return;
+            const homeTeam = home.team?.shortDisplayName || home.team?.displayName || '?';
+            const awayTeam = away.team?.shortDisplayName || away.team?.displayName || '?';
+            const homeScore = home.score ?? '';
+            const awayScore = away.score ?? '';
+            const statusName = ev.status?.type?.name || '';
+            const isLive = statusName === 'STATUS_IN_PROGRESS' || statusName === 'STATUS_HALFTIME';
+            const isFinal = statusName === 'STATUS_FINAL';
+            const shortDetail = ev.status?.type?.shortDetail || '';
+            if (!isFinal && !isLive) return; // skip scheduled
+            if (isLive) hasLive = true;
+            const scoreDisplay = (homeScore !== '' && awayScore !== '') ? `${homeScore} - ${awayScore}` : '? - ?';
+            const statusLabel = isLive ? shortDetail || 'LIVE' : 'FT';
+            pills += `<div class="ere-pill">
+                <span class="ere-team">${homeTeam}</span>
+                <span class="ere-score${isLive ? ' is-live' : ''}">${scoreDisplay}</span>
+                <span class="ere-team">${awayTeam}</span>
+                <span class="ere-status${isLive ? ' is-live' : ''}">${statusLabel}</span>
+            </div>`;
+        });
+
+        if (!pills) return;
+        label.textContent = hasLive ? '🔴 Eredivisie' : 'Eredivisie';
+        inner.querySelectorAll('.ere-pill').forEach(el => el.remove());
+        inner.insertAdjacentHTML('beforeend', pills);
+        board.style.display = 'block';
+    } catch(e) { /* silent fail */ }
+}
+
 // ── MAIN ──────────────────────────────────────────────────
 async function load(fullRefresh = true) {
     try {
@@ -1096,6 +1148,7 @@ async function load(fullRefresh = true) {
         const doc = new DOMParser().parseFromString(html, 'text/html');
 
         buildScoreboard(doc);
+        buildEredivisie();
         buildSpotlight(doc);
 
         if (fullRefresh) {
@@ -1121,43 +1174,32 @@ async function load(fullRefresh = true) {
     }
 }
 
+// PWA Install
+let _deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    _deferredPrompt = e;
+    document.getElementById('install-banner').style.display = 'block';
+});
+window.addEventListener('appinstalled', () => {
+    document.getElementById('install-banner').style.display = 'none';
+    _deferredPrompt = null;
+});
+function installApp() {
+    if (!_deferredPrompt) return;
+    _deferredPrompt.prompt();
+    _deferredPrompt.userChoice.then(() => {
+        _deferredPrompt = null;
+        document.getElementById('install-banner').style.display = 'none';
+    });
+}
+
 load(true);
 setInterval(() => load(false), 60000);
+setInterval(() => buildEredivisie(), 60000);
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js').catch(() => {});
-}
-
-// ── COUNTDOWN ─────────────────────────────────────────────
-function startCountdown() {
-    if (_countdownInterval) clearInterval(_countdownInterval);
-    const el = document.getElementById('countdown');
-    if (!el || !_nextMatchDate) return;
-    function tick() {
-        const diff = _nextMatchDate - Date.now();
-        if (diff <= 0) {
-            el.innerHTML = '<span style="color:var(--orange);font-size:13px;font-weight:700">NU LIVE!</span>';
-            clearInterval(_countdownInterval);
-            return;
-        }
-        const d = Math.floor(diff / 86400000);
-        const h = Math.floor((diff % 86400000) / 3600000);
-        const m = Math.floor((diff % 3600000) / 60000);
-        const s = Math.floor((diff % 60000) / 1000);
-        el.innerHTML = d > 0
-            ? `<div class="cd-unit"><span class="cd-val">${d}</span><span class="cd-lbl">Dag${d!==1?'en':''}</span></div>
-               <span class="cd-sep">:</span>
-               <div class="cd-unit"><span class="cd-val">${String(h).padStart(2,'0')}</span><span class="cd-lbl">Uur</span></div>
-               <span class="cd-sep">:</span>
-               <div class="cd-unit"><span class="cd-val">${String(m).padStart(2,'0')}</span><span class="cd-lbl">Min</span></div>`
-            : `<div class="cd-unit"><span class="cd-val">${String(h).padStart(2,'0')}</span><span class="cd-lbl">Uur</span></div>
-               <span class="cd-sep">:</span>
-               <div class="cd-unit"><span class="cd-val">${String(m).padStart(2,'0')}</span><span class="cd-lbl">Min</span></div>
-               <span class="cd-sep">:</span>
-               <div class="cd-unit"><span class="cd-val">${String(s).padStart(2,'0')}</span><span class="cd-lbl">Sec</span></div>`;
-    }
-    tick();
-    _countdownInterval = setInterval(tick, 1000);
 }
 
 // ── BOTTOM NAV ────────────────────────────────────────────
@@ -1186,5 +1228,6 @@ if ('IntersectionObserver' in window) {
     sections.forEach(id => { const el = document.getElementById(id); if(el) obs.observe(el); });
 }
 </script>
+<button id="install-banner" onclick="installApp()">&#x2B07; Installeer App</button>
 </body>
 </html>
