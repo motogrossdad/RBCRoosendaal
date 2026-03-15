@@ -514,9 +514,21 @@ function buildScoreboard(doc) {
         if (!byDate[d]) { byDate[d] = []; dateOrder.push(d); }
         byDate[d].push(t);
     });
-    // Use the last date in order (most recent)
-    latestDateText = dateOrder[dateOrder.length - 1] || '';
-    latestMatches  = byDate[latestDateText] || [];
+    // Parse each date key to a real Date, pick the most recent
+    function parseDutchDate(str) {
+        const months = { januari:0,februari:1,maart:2,april:3,mei:4,juni:5,
+                         juli:6,augustus:7,september:8,oktober:9,november:10,december:11 };
+        // "vrijdag 13 maart 2026" or "13 maart 2026"
+        const m = str.replace(/^\w+ /, '').match(/(\d+)\s+(\w+)\s+(\d{4})/);
+        if (!m) return new Date(0);
+        return new Date(parseInt(m[3]), months[m[2].toLowerCase()] ?? 0, parseInt(m[1]));
+    }
+    let latestDate = new Date(0);
+    dateOrder.forEach(d => {
+        const parsed = parseDutchDate(d);
+        if (parsed > latestDate) { latestDate = parsed; latestDateText = d; }
+    });
+    latestMatches = byDate[latestDateText] || [];
 
     if (!latestMatches.length) { board.style.display = 'none'; return; }
 
