@@ -2,210 +2,499 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - Derde Divisie B 2025/2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0a0a0a">
+<title>RBC Roosendaal – Derde Divisie B 2025/2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-    :root { --rbc-orange: #FF6B00; --dark: #0A0A0A; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background-color: var(--dark); color: white; font-family: 'Oswald', sans-serif; min-height: 100vh; }
+:root {
+    --orange: #FF6B00;
+    --orange-dim: rgba(255,107,0,0.12);
+    --orange-glow: rgba(255,107,0,0.25);
+    --dark: #0a0a0a;
+    --card: #141414;
+    --card2: #1a1a1a;
+    --border: #242424;
+    --text: #e8e8e8;
+    --muted: #666;
+    --green: #27ae60;
+    --red: #e74c3c;
+    --amber: #f39c12;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior: smooth; }
+body {
+    background: var(--dark);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-    header { width: 100%; padding: 30px 0; text-align: center; border-bottom: 2px solid var(--rbc-orange); background: #111; }
-    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 50px; letter-spacing: 2px; }
+/* ── HEADER ──────────────────────────────────────────────── */
+header {
+    background: linear-gradient(180deg, #161616 0%, #0f0f0f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 140px;
+    background: radial-gradient(ellipse, rgba(255,107,0,0.18) 0%, transparent 70%);
+    pointer-events: none;
+}
+.logo-badge {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+}
+.logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(38px, 8vw, 60px);
+    letter-spacing: 4px;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 40%, #ccc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.logo-text span { -webkit-text-fill-color: var(--orange); }
+.logo-sub {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+.header-divider {
+    width: 40px; height: 2px;
+    background: var(--orange);
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
 
-    .main { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+/* ── SCOREBOARD ──────────────────────────────────────────── */
+#scoreboard {
+    background: #0f0f0f;
+    border-bottom: 1px solid var(--border);
+    display: none;
+}
+.sb-inner {
+    display: flex;
+    align-items: stretch;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.sb-inner::-webkit-scrollbar { display: none; }
+.sb-label {
+    padding: 0 14px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 42px;
+}
+.sb-label.is-live { color: var(--red); }
+.sb-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-right: 1px solid var(--border);
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+.sb-pill.is-rbc { background: var(--orange-dim); }
+.sb-team { color: #bbb; font-weight: 500; }
+.sb-team.is-rbc { color: var(--orange); font-weight: 700; }
+.sb-score {
+    font-weight: 800;
+    font-size: 14px;
+    color: #fff;
+    background: var(--card2);
+    padding: 3px 9px;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    min-width: 38px;
+    text-align: center;
+}
+.sb-score.is-live {
+    background: var(--red);
+    animation: sb-pulse 1.4s ease-in-out infinite;
+}
+@keyframes sb-pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+.sb-status {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.sb-status.is-live { color: var(--red); }
+.live-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: dot-blink 1.2s ease-in-out infinite;
+}
+@keyframes dot-blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.6)} }
 
-    /* Section blocks */
-    .block { margin-bottom: 40px; }
-    .section-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 22px;
-        letter-spacing: 2px;
-        color: var(--rbc-orange);
-        margin-bottom: 14px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #222;
-    }
-    .last-updated { text-align: center; color: #555; font-size: 12px; margin-bottom: 28px; letter-spacing: 1px; }
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 40px; }
+.updated-bar {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 28px;
+}
+.block { margin-bottom: 36px; }
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+.section-header-bar {
+    width: 3px;
+    height: 20px;
+    background: var(--orange);
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+.section-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+}
 
-    /* --- STAND --- */
-    .stand-card { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    .stand-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .stand-table thead tr th { background: #222; padding: 8px 10px; color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
-    .stand-table tbody td { padding: 7px 10px; border-bottom: 1px solid #1e1e1e; white-space: nowrap; }
-    .stand-table tbody tr:last-child td { border-bottom: none; }
-    .stand-table tbody tr.alt td { background: #1a1a1a; }
-    .stand-table tbody tr.rbc-row td { background: rgba(255,107,0,0.12); color: var(--rbc-orange); font-weight: 600; }
-    .stand-table .pos-col { color: #555; width: 28px; text-align: right; padding-right: 6px; }
-    .stand-table .club-col { text-align: left; min-width: 130px; }
-    .stand-table .num-col { text-align: right; }
-    .stand-table .pnt-col { text-align: right; font-weight: 700; color: #fff; }
-    .stand-table tr.rbc-row .pnt-col { color: var(--rbc-orange); }
-    .stand-table .wgv-col { text-align: right; color: #aaa; font-size: 12px; }
-    .stand-table .ds-pos { color: #4caf50; }
-    .stand-table .ds-neg { color: #f44336; }
-    .stand-table .ds-zero { color: #666; }
-    .stand-table .promo-line td { border-bottom: 2px solid #4caf50 !important; }
-    .stand-table .playoff-line td { border-bottom: 2px solid #ff9800 !important; }
-    .stand-table .relegate-line td { border-bottom: 2px solid #f44336 !important; }
-    @media (max-width: 600px) { .stand-table .hide-sm { display: none; } }
-    .stand-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; padding: 10px 14px; background: #161616; border-radius: 0 0 8px 8px; border-top: 1px solid #1e1e1e; font-size: 12px; color: #888; letter-spacing: 0.5px; }
-    .stand-legend-item { display: flex; align-items: center; gap: 8px; }
-    .legend-line { width: 22px; height: 3px; border-radius: 2px; flex-shrink: 0; }
-    .legend-line.green  { background: #4caf50; }
-    .legend-line.orange { background: #ff9800; }
-    .legend-line.red    { background: #f44336; }
+/* ── RBC SPOTLIGHT ───────────────────────────────────────── */
+.spotlight {
+    background: linear-gradient(135deg, #181818 0%, #141414 100%);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--orange);
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-bottom: 28px;
+    position: relative;
+    overflow: hidden;
+}
+.spotlight::after {
+    content: 'RBC';
+    position: absolute;
+    right: -10px; top: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 90px;
+    color: rgba(255,107,0,0.04);
+    pointer-events: none;
+    line-height: 1;
+}
+.spotlight-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-right: 1px solid var(--border);
+}
+.spotlight-item:last-child { border-right: none; }
+.spotlight-label {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.spotlight-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1.1;
+}
+.spotlight-sub {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+}
 
-    /* --- PERIODS --- */
-    .periods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-    .period-card { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    .period-header { background: var(--rbc-orange); padding: 12px 16px; font-size: 15px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
-    .period-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .period-table thead tr th { background: #222; padding: 7px 10px; color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
-    .period-table thead tr th.right, .period-table td.right { text-align: right; }
-    .period-table td { padding: 7px 10px; border-bottom: 1px solid #1e1e1e; }
-    .period-table tbody tr:last-child td { border-bottom: none; }
-    .period-table tr.alt td { background: #1a1a1a; }
-    .period-table tr.rbc-row td { background: rgba(255,107,0,0.12); color: var(--rbc-orange); font-weight: 600; }
-    .period-table .pts { font-weight: 700; color: #fff; }
-    .period-table tr.rbc-row .pts { color: var(--rbc-orange); }
-    .ds-pos { color: #4caf50; }
-    .ds-neg { color: #f44336; }
-    .ds-zero { color: #666; }
+/* ── STAND TABLE ─────────────────────────────────────────── */
+.table-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.stand-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.stand-tbl thead th {
+    padding: 9px 12px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--card2);
+    text-align: right;
+}
+.stand-tbl thead th.left { text-align: left; }
+.stand-tbl tbody td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    white-space: nowrap;
+}
+.stand-tbl tbody tr:last-child td { border-bottom: none; }
+.stand-tbl tbody tr.alt td { background: rgba(255,255,255,0.015); }
+.stand-tbl tbody tr.rbc td {
+    background: var(--orange-dim);
+    color: var(--orange);
+    font-weight: 700;
+}
+.stand-tbl .pos { color: var(--muted); text-align: right; width: 30px; }
+.stand-tbl .club { text-align: left; font-weight: 600; }
+.stand-tbl tr.rbc .club { color: var(--orange); }
+.stand-tbl .pnt { font-weight: 800; color: #fff; }
+.stand-tbl tr.rbc .pnt { color: var(--orange); }
+.stand-tbl .wgv { color: #888; font-size: 11px; }
+.stand-tbl .promo td { border-bottom: 2px solid var(--green) !important; }
+.stand-tbl .playoff td { border-bottom: 2px solid var(--amber) !important; }
+.stand-tbl .relegate td { border-bottom: 2px solid var(--red) !important; }
+.ds-pos { color: var(--green); }
+.ds-neg { color: var(--red); }
+.ds-zero { color: var(--muted); }
+.stand-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 10px 14px;
+    background: var(--card2);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+}
+.leg-item { display: flex; align-items: center; gap: 7px; }
+.leg-line { width: 20px; height: 2px; border-radius: 2px; flex-shrink: 0; }
+@media (max-width: 560px) {
+    .stand-tbl .hide-mob { display: none; }
+}
 
-    /* --- PROGRAMMA --- */
-    .programma-list { display: flex; flex-direction: column; gap: 16px; }
-    .date-block { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
-    .date-header { background: #222; padding: 10px 16px; font-size: 13px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
-    .match-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #1e1e1e; font-size: 14px; gap: 8px; }
-    .match-row:last-child { border-bottom: none; }
-    .match-row.rbc-match { background: rgba(255,107,0,0.08); }
-    .team-home { flex: 1; text-align: right; }
-    .team-away { flex: 1; text-align: left; }
-    .team-home.rbc, .team-away.rbc { color: var(--rbc-orange); font-weight: 600; }
-    .sep { color: #444; padding: 0 6px; flex-shrink: 0; }
-    .match-time { width: 70px; text-align: center; color: #888; font-size: 12px; flex-shrink: 0; }
-
-    /* Shared */
-    .loading { text-align: center; padding: 60px 20px; color: #555; font-size: 18px; letter-spacing: 2px; }
-    .error { text-align: center; padding: 40px 20px; color: #ff4444; font-size: 14px; }
-    footer { padding: 24px; color: #444; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #1a1a1a; }
-    footer a { color: #555; text-decoration: none; }
-    footer a:hover { color: var(--rbc-orange); }
-    @media (max-width: 600px) { .logo { font-size: 36px; } .section-title { font-size: 18px; } }
-
-    /* --- SCOREBOARD BAR --- */
-    #scoreboard {
-        width: 100%;
-        background: #111;
-        border-bottom: 1px solid #1e1e1e;
-        padding: 0;
-        overflow: hidden;
-        display: none; /* shown by JS when data exists */
-    }
-    .scoreboard-inner {
+/* ── PERIODS ─────────────────────────────────────────────── */
+.periods-scroll {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+@media (max-width: 700px) {
+    .periods-scroll {
         display: flex;
-        align-items: center;
-        gap: 0;
         overflow-x: auto;
+        gap: 12px;
+        padding-bottom: 8px;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        padding: 0 12px;
+        scroll-snap-type: x mandatory;
     }
-    .scoreboard-inner::-webkit-scrollbar { display: none; }
-    .scoreboard-label {
-        font-size: 10px;
-        letter-spacing: 2px;
-        color: #555;
-        text-transform: uppercase;
-        padding: 10px 14px 10px 4px;
-        border-right: 1px solid #1e1e1e;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    .score-pill {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border-right: 1px solid #1e1e1e;
-        font-size: 13px;
-        white-space: nowrap;
-        flex-shrink: 0;
-    }
-    .score-pill.rbc-pill { background: rgba(255,107,0,0.08); }
-    .score-home, .score-away { color: #ccc; }
-    .score-home.rbc, .score-away.rbc { color: var(--rbc-orange); font-weight: 700; }
-    .score-result {
-        font-weight: 700;
-        color: #fff;
-        background: #1e1e1e;
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 13px;
-        letter-spacing: 1px;
-    }
-    .score-result.live-result {
-        background: #c0392b;
-        animation: pulse-bg 1.5s ease-in-out infinite;
-    }
-    .live-dot {
-        width: 7px; height: 7px;
-        border-radius: 50%;
-        background: #e74c3c;
-        flex-shrink: 0;
-        animation: pulse-dot 1.2s ease-in-out infinite;
-    }
-    .status-tag {
-        font-size: 10px;
-        letter-spacing: 1px;
-        color: #555;
-        flex-shrink: 0;
-    }
-    .status-tag.live { color: #e74c3c; font-weight: 600; }
-    @keyframes pulse-dot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.4; transform: scale(0.7); }
-    }
-    @keyframes pulse-bg {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.75; }
-    }
+    .periods-scroll::-webkit-scrollbar { display: none; }
+    .period-card { min-width: 82vw; scroll-snap-align: start; flex-shrink: 0; }
+}
+.period-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.period-card-head {
+    background: var(--orange);
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    color: #fff;
+}
+.period-tbl { width: 100%; border-collapse: collapse; font-size: 12px; }
+.period-tbl thead th {
+    padding: 6px 10px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--card2);
+    text-align: right;
+}
+.period-tbl thead th.left { text-align: left; }
+.period-tbl td { padding: 7px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+.period-tbl tbody tr:last-child td { border-bottom: none; }
+.period-tbl tr.alt td { background: rgba(255,255,255,0.015); }
+.period-tbl tr.rbc td { background: var(--orange-dim); color: var(--orange); font-weight: 700; }
+.period-tbl .pnt { font-weight: 800; color: #fff; }
+.period-tbl tr.rbc .pnt { color: var(--orange); }
+
+/* ── FIXTURES ────────────────────────────────────────────── */
+.fixture-list { display: flex; flex-direction: column; gap: 10px; }
+.fixture-date-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.fixture-date-head {
+    background: var(--card2);
+    padding: 9px 16px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+}
+.fixture-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+    font-size: 13px;
+    transition: background 0.15s;
+}
+.fixture-row:last-child { border-bottom: none; }
+.fixture-row.is-rbc { background: var(--orange-dim); }
+.fixture-home { text-align: right; font-weight: 500; }
+.fixture-away { text-align: left; font-weight: 500; }
+.fixture-home.is-rbc, .fixture-away.is-rbc { color: var(--orange); font-weight: 700; }
+.fixture-vs {
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 4px;
+    text-align: center;
+    flex-shrink: 0;
+}
+.fixture-time {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    min-width: 60px;
+}
+
+/* ── SHARED ──────────────────────────────────────────────── */
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 50px 20px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+.spinner {
+    width: 18px; height: 18px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-state { text-align: center; padding: 40px 20px; color: var(--red); font-size: 13px; }
+.error-state a { color: var(--orange); text-decoration: none; }
+
+footer {
+    text-align: center;
+    padding: 24px 16px;
+    font-size: 11px;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    letter-spacing: 0.5px;
+}
+footer a { color: #555; text-decoration: none; }
+footer a:hover { color: var(--orange); }
 </style>
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
-    <div class="logo">RBC <span style="color:var(--rbc-orange)">ROOSENDAAL</span></div>
-    <p style="color:#666; letter-spacing: 3px; font-size: 12px; margin-top: 8px; text-transform: uppercase;">Derde Divisie B &mdash; 2025/2026</p>
+    <div class="logo-badge">
+        <div class="logo-text">RBC <span>Roosendaal</span></div>
+        <div class="logo-sub">Derde Divisie B &mdash; 2025/2026</div>
+        <div class="header-divider"></div>
+    </div>
 </header>
 
-<!-- SCOREBOARD -->
+<!-- SCOREBOARD BAR -->
 <div id="scoreboard">
-    <div class="scoreboard-inner" id="scoreboard-inner">
-        <span class="scoreboard-label" id="scoreboard-label">&#x26BD;</span>
+    <div class="sb-inner" id="sb-inner">
+        <span class="sb-label" id="sb-label">Resultaten</span>
     </div>
 </div>
 
+<!-- MAIN -->
 <div class="main">
-    <p class="last-updated" id="lastUpdated">Laden...</p>
+    <p class="updated-bar" id="updatedBar">Laden...</p>
+
+    <!-- RBC SPOTLIGHT -->
+    <div id="spotlight-wrap"></div>
 
     <!-- STAND -->
     <div class="block">
-        <h2 class="section-title">&#x1F4CA; Stand Derde Divisie B &mdash; 2025/2026</h2>
-        <div id="stand-content"><div class="loading">&#x23F3; LADEN...</div></div>
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Stand &mdash; Derde Divisie B</span>
+        </div>
+        <div id="stand-content">
+            <div class="loading-state"><div class="spinner"></div>Stand laden</div>
+        </div>
     </div>
 
     <!-- PERIODES -->
     <div class="block">
-        <h2 class="section-title">&#x1F3C6; Periodestanden Derde Divisie B &mdash; 2025/2026</h2>
-        <div id="periodes-content"><div class="loading">&#x23F3; LADEN...</div></div>
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Periodestanden</span>
+        </div>
+        <div id="periodes-content">
+            <div class="loading-state"><div class="spinner"></div>Periodes laden</div>
+        </div>
     </div>
 
-    <!-- PROGRAMMA -->
+    <!-- FIXTURES -->
     <div class="block">
-        <h2 class="section-title">&#x1F4C5; Resterende Wedstrijden Derde Divisie B &mdash; 2025/2026</h2>
-        <div id="programma-content"><div class="loading">&#x23F3; LADEN...</div></div>
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Resterende Wedstrijden</span>
+        </div>
+        <div id="programma-content">
+            <div class="loading-state"><div class="spinner"></div>Programma laden</div>
+        </div>
     </div>
 </div>
 
@@ -215,252 +504,408 @@
 </footer>
 
 <script>
-const PROXY = 'https://api.allorigins.win/raw?url=';
 const SOURCE = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/';
+const PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+    'https://api.codetabs.com/v1/proxy?quest='
+];
 
-function dsClass(val) {
+async function fetchWithFallback(url) {
+    for (const proxy of PROXIES) {
+        try {
+            const res = await fetch(proxy + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+            if (res.ok) return await res.text();
+        } catch (e) { /* try next */ }
+    }
+    throw new Error('Alle proxies mislukt');
+}
+
+function ds(val) {
     const n = parseInt(val, 10);
     return n > 0 ? 'ds-pos' : (n < 0 ? 'ds-neg' : 'ds-zero');
 }
 
-// ── STAND ──────────────────────────────────────────────────────────────────
+// ── SPOTLIGHT ──────────────────────────────────────────────
+function buildSpotlight(doc) {
+    // Position from stand
+    let pos = '–', pnt = '–', wgv = '–';
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Stand')) continue;
+        let el = h2.nextElementSibling;
+        while (el) {
+            const t = el.querySelector && (el.querySelector('table') || (el.tagName==='TABLE'?el:null));
+            if (t) {
+                t.querySelectorAll('tbody tr').forEach(row => {
+                    const cells = row.querySelectorAll('th,td');
+                    if (cells.length < 5) return;
+                    const club = cells[1].textContent.trim().replace(/\s+/g,' ');
+                    if (/^rbc$/i.test(club)) {
+                        pos = cells[0].textContent.trim();
+                        if (cells.length >= 9) {
+                            wgv = cells[3].textContent.trim();
+                            pnt = cells[4].textContent.trim();
+                        } else {
+                            const w=cells[3].textContent.trim(),g=cells[4].textContent.trim(),v=cells[5].textContent.trim();
+                            wgv=`${w}-${g}-${v}`; pnt=cells[9]?cells[9].textContent.trim():'–';
+                        }
+                    }
+                });
+                break;
+            }
+            if (el.matches && el.matches('h2,h3')) break;
+            el = el.nextElementSibling;
+        }
+        break;
+    }
+
+    // Last result
+    let lastResult = '–', lastOpp = '–';
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Uitslagen')) continue;
+        let container = h2.parentElement;
+        while (container && !container.querySelector('table.match, table[class*="match"]')) {
+            container = container.parentElement;
+            if (!container || container.tagName==='BODY') break;
+        }
+        if (container) {
+            const tables = [...container.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
+                const r = t.querySelector('td.result,td[class*="result"]');
+                return r && /\d/.test(r.textContent) && !r.textContent.includes('uur');
+            });
+            for (let i = tables.length-1; i>=0; i--) {
+                const rows = tables[i].querySelectorAll('tbody tr');
+                for (const row of rows) {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length < 4) continue;
+                    const home = cells[0].textContent.trim().replace(/\s+/g,' ');
+                    const away = cells[2].textContent.trim().replace(/\s+/g,' ');
+                    const result = cells[3].textContent.trim();
+                    if (/^rbc$/i.test(home) || /^rbc$/i.test(away)) {
+                        lastResult = result;
+                        lastOpp = /^rbc$/i.test(home) ? away : home;
+                        break;
+                    }
+                }
+                if (lastResult !== '–') break;
+            }
+        }
+        break;
+    }
+
+    // Next match
+    let nextOpp = '–', nextDate = '–';
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Programma')) continue;
+        let container = h2.parentElement;
+        while (container && !container.querySelector('#programma-target,table.match')) {
+            container = container.parentElement;
+            if (!container || container.tagName==='BODY') break;
+        }
+        if (container) {
+            const tables = [...container.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
+                const r = t.querySelector('td.result,td[class*="result"]');
+                return r && r.textContent.includes('uur');
+            });
+            for (const t of tables) {
+                const rows = t.querySelectorAll('tbody tr');
+                for (const row of rows) {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length < 4) continue;
+                    const home = cells[0].textContent.trim().replace(/\s+/g,' ');
+                    const away = cells[2].textContent.trim().replace(/\s+/g,' ');
+                    if (/^rbc$/i.test(home) || /^rbc$/i.test(away)) {
+                        nextOpp = /^rbc$/i.test(home) ? away : home;
+                        const cap = t.querySelector('caption time,caption');
+                        if (cap) {
+                            const txt = cap.textContent.replace(/\w+ /,'').trim();
+                            nextDate = txt.split(' ').slice(0,2).join(' ');
+                        }
+                        break;
+                    }
+                }
+                if (nextOpp !== '–') break;
+            }
+        }
+        break;
+    }
+
+    const wrap = document.getElementById('spotlight-wrap');
+    wrap.innerHTML = `
+    <div class="spotlight">
+        <div class="spotlight-item">
+            <span class="spotlight-label">Stand</span>
+            <span class="spotlight-value">${pos}e</span>
+            <span class="spotlight-sub">${pnt} punten</span>
+        </div>
+        <div class="spotlight-item">
+            <span class="spotlight-label">Laatste uitslag</span>
+            <span class="spotlight-value" style="font-size:16px;letter-spacing:2px">${lastResult}</span>
+            <span class="spotlight-sub">${lastOpp}</span>
+        </div>
+        <div class="spotlight-item">
+            <span class="spotlight-label">Volgende</span>
+            <span class="spotlight-value" style="font-size:15px">${nextDate}</span>
+            <span class="spotlight-sub">${nextOpp}</span>
+        </div>
+    </div>`;
+}
+
+// ── SCOREBOARD ─────────────────────────────────────────────
+function buildScoreboard(doc) {
+    const board  = document.getElementById('scoreboard');
+    const inner  = document.getElementById('sb-inner');
+    const label  = document.getElementById('sb-label');
+
+    let resultTables = [];
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Uitslagen')) continue;
+        let container = h2.parentElement;
+        while (container && !container.querySelector('table.match,table[class*="match"]')) {
+            container = container.parentElement;
+            if (!container || container.tagName==='BODY') break;
+        }
+        if (container) {
+            container.querySelectorAll('table.match,table[class*="match"]').forEach(t => {
+                const res = t.querySelector('td.result,td[class*="result"]');
+                if (res && /\d/.test(res.textContent) && !res.textContent.includes('uur')) resultTables.push(t);
+            });
+        }
+        break;
+    }
+    if (!resultTables.length) { board.style.display='none'; return; }
+
+    function parseDutchDate(str) {
+        const mo={januari:0,februari:1,maart:2,april:3,mei:4,juni:5,
+                  juli:6,augustus:7,september:8,oktober:9,november:10,december:11};
+        const m = str.replace(/^\w+ /,'').match(/(\d+)\s+(\w+)\s+(\d{4})/);
+        if (!m) return new Date(0);
+        return new Date(+m[3], mo[m[2].toLowerCase()]??0, +m[1]);
+    }
+    const byDate = {}; const dateOrder = [];
+    resultTables.forEach(t => {
+        const cap = t.querySelector('caption time,caption');
+        const d = cap ? cap.textContent.trim() : '';
+        if (!byDate[d]) { byDate[d]=[]; dateOrder.push(d); }
+        byDate[d].push(t);
+    });
+    let latestText=''; let latestDate=new Date(0);
+    dateOrder.forEach(d => { const p=parseDutchDate(d); if(p>latestDate){latestDate=p;latestText=d;} });
+    const latestMatches = byDate[latestText]||[];
+    if (!latestMatches.length) { board.style.display='none'; return; }
+
+    const now = new Date();
+    const isToday = latestDate.toDateString()===now.toDateString();
+    const h = now.getHours();
+    const mightBeLive = isToday && h>=11 && h<21;
+
+    let pills = '';
+    latestMatches.forEach(t => {
+        t.querySelectorAll('tbody tr').forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length < 4) return;
+            const home   = cells[0].textContent.trim().replace(/\s+/g,' ');
+            const away   = cells[2].textContent.trim().replace(/\s+/g,' ');
+            const result = cells[3].textContent.trim();
+            const rbcH = /^rbc$/i.test(home), rbcA = /^rbc$/i.test(away);
+            pills += `<div class="sb-pill${(rbcH||rbcA)?' is-rbc':''}">
+                <span class="sb-team${rbcH?' is-rbc':''}">${home}</span>
+                <span class="sb-score${mightBeLive?' is-live':''}">${result}</span>
+                <span class="sb-team${rbcA?' is-rbc':''}">${away}</span>
+                ${mightBeLive
+                    ? `<span class="live-dot"></span><span class="sb-status is-live">Live</span>`
+                    : `<span class="sb-status">FT</span>`}
+            </div>`;
+        });
+    });
+    if (!pills) { board.style.display='none'; return; }
+
+    label.className = 'sb-label' + (mightBeLive ? ' is-live' : '');
+    label.textContent = mightBeLive ? 'LIVE' : latestText.replace(/\w+ /,'');
+    inner.querySelectorAll('.sb-pill').forEach(el=>el.remove());
+    inner.insertAdjacentHTML('beforeend', pills);
+    board.style.display = 'block';
+}
+
+// ── STAND ──────────────────────────────────────────────────
 function buildStand(doc) {
     let standTable = null;
     for (const h2 of doc.querySelectorAll('h2')) {
-        if (h2.textContent.includes('Stand')) {
-            let el = h2.nextElementSibling;
-            while (el) {
-                const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
-                if (t) { standTable = t; break; }
-                if (el.matches('h2,h3')) break;
-                el = el.nextElementSibling;
-            }
-            if (!standTable) {
-                // try parent container
-                let parent = h2.parentElement;
-                while (parent) {
-                    const t = parent.querySelector('table');
-                    if (t) { standTable = t; break; }
-                    parent = parent.parentElement;
-                    if (!parent || parent.tagName === 'BODY') break;
-                }
-            }
-            break;
+        if (!h2.textContent.includes('Stand')) continue;
+        let el = h2.nextElementSibling;
+        while (el) {
+            const t = el.querySelector('table')||(el.tagName==='TABLE'?el:null);
+            if (t) { standTable=t; break; }
+            if (el.matches('h2,h3')) break;
+            el = el.nextElementSibling;
         }
+        if (!standTable) {
+            let p = h2.parentElement;
+            while (p) { const t=p.querySelector('table'); if(t){standTable=t;break;} p=p.parentElement; if(!p||p.tagName==='BODY')break; }
+        }
+        break;
     }
-    if (!standTable) return '<div class="error">Stand niet gevonden</div>';
+    if (!standTable) return '<div class="error-state">Stand niet gevonden</div>';
 
     const rows = standTable.querySelectorAll('tbody tr');
-    // Determine promo/playoff/relegate boundaries from table class
-    const tableClass = standTable.className;
-    const promoteMatch = tableClass.match(/promote-(\d+)/);
-    const playoffMatch = tableClass.match(/playoff-(\d+)/);
-    const relegateMatch = tableClass.match(/relegate-(\d+)/);
-    const totalRows = rows.length;
-    const promoteUntil  = promoteMatch  ? parseInt(promoteMatch[1])  : 1;
-    const playoffUntil  = playoffMatch  ? parseInt(playoffMatch[1])  : 0;
-    const relegateFrom  = relegateMatch ? (totalRows - parseInt(relegateMatch[1]) + 1) : totalRows + 1;
+    const cls = standTable.className;
+    const prM=cls.match(/promote-(\d+)/), plM=cls.match(/playoff-(\d+)/), reM=cls.match(/relegate-(\d+)/);
+    const promoteAt = prM ? +prM[1] : 1;
+    const playoffAt = plM ? +plM[1] : 0;
+    const relegateAt = reM ? (rows.length - +reM[1]) : rows.length;
 
-    let html = `<div class="stand-card"><table class="stand-table">
+    let html = `<div class="table-card"><table class="stand-tbl">
         <thead><tr>
-            <th class="pos-col">#</th>
-            <th class="club-col">Club</th>
-            <th class="num-col">Wed</th>
-            <th class="num-col hide-sm">W-G-V</th>
-            <th class="pnt-col">Pnt</th>
-            <th class="num-col hide-sm">DV</th>
-            <th class="num-col hide-sm">DT</th>
-            <th class="num-col">DS</th>
+            <th class="left" style="width:30px">#</th>
+            <th class="left">Club</th>
+            <th>Wed</th>
+            <th class="hide-mob">W-G-V</th>
+            <th>Pnt</th>
+            <th class="hide-mob">DV</th>
+            <th class="hide-mob">DT</th>
+            <th>DS</th>
         </tr></thead><tbody>`;
 
-    rows.forEach((row, i) => {
-        const cells = row.querySelectorAll('th, td');
+    rows.forEach((row,i) => {
+        const cells = row.querySelectorAll('th,td');
         if (cells.length < 5) return;
-
-        const pos  = cells[0].textContent.trim();
-        const club = cells[1].textContent.trim().replace(/\s+/g, ' ');
-        const wed  = cells[2] ? cells[2].textContent.trim() : '';
-        // W-G-V is combined or separate
-        let wgv = '', pnt = '', dv = '', dt = '', ds = '';
+        const posN = cells[0].textContent.trim();
+        const club = cells[1].textContent.trim().replace(/\s+/g,' ');
+        const wed  = cells[2]?.textContent.trim()||'';
+        let wgv='',pnt='',dv='',dt='',dsv='';
         if (cells.length >= 9) {
-            // main site: pos, club, wed, W-G-V, pnt, DV, DT, DS, vorm
-            wgv = cells[3] ? cells[3].textContent.trim() : '';
-            pnt = cells[4] ? cells[4].textContent.trim() : '';
-            dv  = cells[5] ? cells[5].textContent.trim() : '';
-            dt  = cells[6] ? cells[6].textContent.trim() : '';
-            ds  = cells[7] ? cells[7].textContent.trim() : '';
+            wgv=cells[3]?.textContent.trim()||''; pnt=cells[4]?.textContent.trim()||'';
+            dv=cells[5]?.textContent.trim()||''; dt=cells[6]?.textContent.trim()||''; dsv=cells[7]?.textContent.trim()||'';
         } else {
-            // embed: pos, club, wed, W, G, V, DV, DT, +/-, pnt, min
-            const w = cells[3] ? cells[3].textContent.trim() : '';
-            const g = cells[4] ? cells[4].textContent.trim() : '';
-            const v = cells[5] ? cells[5].textContent.trim() : '';
-            wgv = `${w}-${g}-${v}`;
-            dv  = cells[6] ? cells[6].textContent.trim() : '';
-            dt  = cells[7] ? cells[7].textContent.trim() : '';
-            ds  = cells[8] ? cells[8].textContent.trim() : '';
-            pnt = cells[9] ? cells[9].textContent.trim() : '';
+            const w=cells[3]?.textContent.trim()||'',g=cells[4]?.textContent.trim()||'',v=cells[5]?.textContent.trim()||'';
+            wgv=`${w}-${g}-${v}`; dv=cells[6]?.textContent.trim()||''; dt=cells[7]?.textContent.trim()||'';
+            dsv=cells[8]?.textContent.trim()||''; pnt=cells[9]?.textContent.trim()||'';
         }
-
-        const posNum = parseInt(pos, 10);
-        const isRBC  = /^rbc$/i.test(club);
-        const isAlt  = i % 2 === 1;
-
-        let rowClass = isRBC ? 'rbc-row' : (isAlt ? 'alt' : '');
-
-        // Zone separator lines
-        let extraStyle = '';
-        if (posNum === promoteUntil)  rowClass += ' promo-line';
-        if (posNum === playoffUntil)  rowClass += ' playoff-line';
-        if (posNum === relegateFrom - 1) rowClass += ' relegate-line';
-
-        html += `<tr class="${rowClass.trim()}">
-            <td class="pos-col">${pos}</td>
-            <td class="club-col">${club}</td>
-            <td class="num-col">${wed}</td>
-            <td class="num-col wgv-col hide-sm">${wgv}</td>
-            <td class="num-col pnt-col">${pnt}</td>
-            <td class="num-col hide-sm">${dv}</td>
-            <td class="num-col hide-sm">${dt}</td>
-            <td class="num-col ${dsClass(ds)}">${ds}</td>
+        const p=+posN, isRBC=/^rbc$/i.test(club), alt=i%2===1;
+        let rowCls = isRBC ? 'rbc' : (alt ? 'alt' : '');
+        if (p===promoteAt)  rowCls += ' promo';
+        if (p===playoffAt)  rowCls += ' playoff';
+        if (p===relegateAt) rowCls += ' relegate';
+        html += `<tr class="${rowCls.trim()}">
+            <td class="pos">${posN}</td>
+            <td class="club">${club}</td>
+            <td>${wed}</td>
+            <td class="wgv hide-mob">${wgv}</td>
+            <td class="pnt">${pnt}</td>
+            <td class="hide-mob">${dv}</td>
+            <td class="hide-mob">${dt}</td>
+            <td class="${ds(dsv)}">${dsv}</td>
         </tr>`;
     });
 
     html += `</tbody></table>
     <div class="stand-legend">
-        <div class="stand-legend-item"><div class="legend-line green"></div> Directe promotie naar Tweede Divisie</div>
-        <div class="stand-legend-item"><div class="legend-line orange"></div> Nacompetitie (promoveren / handhaven)</div>
-        <div class="stand-legend-item"><div class="legend-line red"></div> Directe degradatie naar Vierde Divisie</div>
-    </div>
-    </div>`;
+        <div class="leg-item"><div class="leg-line" style="background:var(--green)"></div>Directe promotie naar Tweede Divisie</div>
+        <div class="leg-item"><div class="leg-line" style="background:var(--amber)"></div>Nacompetitie</div>
+        <div class="leg-item"><div class="leg-line" style="background:var(--red)"></div>Directe degradatie naar Vierde Divisie</div>
+    </div></div>`;
     return html;
 }
 
-// ── PERIODES ───────────────────────────────────────────────────────────────
+// ── PERIODES ───────────────────────────────────────────────
 function buildPeriodes(doc) {
-    let periodesContainer = null;
+    let container = null;
     for (const h2 of doc.querySelectorAll('h2')) {
-        if (h2.textContent.includes('Periodestanden')) {
-            let el = h2.parentElement;
-            while (el && !el.querySelector('table.league-sm, table[class*="league"]')) {
-                el = el.parentElement;
-            }
-            periodesContainer = el || h2.closest('.card') || h2.parentElement;
-            break;
-        }
+        if (!h2.textContent.includes('Periodestanden')) continue;
+        let el = h2.parentElement;
+        while (el && !el.querySelector('table.league-sm,table[class*="league"]')) { el=el.parentElement; }
+        container = el || h2.closest('.card') || h2.parentElement;
+        break;
     }
-    if (!periodesContainer) return '<div class="error">Periodestanden niet gevonden</div>';
+    if (!container) return '<div class="error-state">Periodestanden niet gevonden</div>';
+    const tables = container.querySelectorAll('table');
+    if (!tables.length) return '<div class="error-state">Geen periode-tabellen</div>';
 
-    const tables = periodesContainer.querySelectorAll('table');
-    if (!tables.length) return '<div class="error">Geen periode-tabellen gevonden</div>';
-
-    let grid = '<div class="periods-grid">';
-    tables.forEach((table, idx) => {
-        const caption = table.querySelector('caption, thead h3');
-        const periodName = caption ? caption.textContent.trim() : ('Periode ' + (idx + 1));
-        const rows = table.querySelectorAll('tbody tr');
+    let html = '<div class="periods-scroll">';
+    tables.forEach((tbl,idx) => {
+        const cap = tbl.querySelector('caption,thead h3');
+        const name = cap ? cap.textContent.trim() : ('Periode '+(idx+1));
+        const rows = tbl.querySelectorAll('tbody tr');
         if (!rows.length) return;
-
         let card = `<div class="period-card">
-            <div class="period-header">${periodName}</div>
-            <table class="period-table">
+            <div class="period-card-head">${name}</div>
+            <table class="period-tbl">
                 <thead><tr>
-                    <th style="width:28px">#</th>
-                    <th>Club</th>
-                    <th class="right">Wed</th>
-                    <th class="right">Pnt</th>
-                    <th class="right">DS</th>
+                    <th class="left" style="width:24px">#</th>
+                    <th class="left">Club</th>
+                    <th>Wed</th>
+                    <th>Pnt</th>
+                    <th>DS</th>
                 </tr></thead><tbody>`;
-
-        rows.forEach((row, i) => {
-            const cells = row.querySelectorAll('th, td');
+        rows.forEach((row,i) => {
+            const cells = row.querySelectorAll('th,td');
             if (cells.length < 4) return;
-            const pos  = cells[0].textContent.trim();
-            const club = cells[1].textContent.trim().replace(/\s+/g, ' ');
-            const wed  = cells[2].textContent.trim();
-            const pnt  = cells[3].textContent.trim();
-            const ds   = cells[4] ? cells[4].textContent.trim() : '';
-            const isRBC    = /^rbc$/i.test(club);
-            const isWinner = pos === '1';
-            const isAlt    = i % 2 === 1;
-            let rowClass = isRBC ? 'rbc-row' : (isAlt ? 'alt' : '');
-
-            card += `<tr class="${rowClass}">
+            const pos=cells[0].textContent.trim(), club=cells[1].textContent.trim().replace(/\s+/g,' ');
+            const wed=cells[2].textContent.trim(), pnt=cells[3].textContent.trim();
+            const dsv=cells[4]?cells[4].textContent.trim():'';
+            const isRBC=/^rbc$/i.test(club), isW=pos==='1', alt=i%2===1;
+            const rowCls = isRBC?'rbc':(alt?'alt':'');
+            card += `<tr class="${rowCls}">
                 <td>${pos}</td>
-                <td>${isWinner && !isRBC ? '&#x1F3C6; ' : ''}${club}</td>
-                <td class="right">${wed}</td>
-                <td class="right pts">${pnt}</td>
-                <td class="right ${dsClass(ds)}">${ds}</td>
+                <td class="left" style="font-weight:${isW||isRBC?'700':'500'}">${isW&&!isRBC?'&#x1F947; ':''}${club}</td>
+                <td>${wed}</td>
+                <td class="pnt">${pnt}</td>
+                <td class="${ds(dsv)}">${dsv}</td>
             </tr>`;
         });
-
-        card += `</tbody></table></div>`;
-        grid += card;
+        card += '</tbody></table></div>';
+        html += card;
     });
-    grid += '</div>';
-    return grid;
+    html += '</div>';
+    return html;
 }
 
-// ── PROGRAMMA ──────────────────────────────────────────────────────────────
+// ── PROGRAMMA ─────────────────────────────────────────────
 function buildProgramma(doc) {
-    let programmaContainer = null;
+    let container = null;
     for (const h2 of doc.querySelectorAll('h2')) {
-        if (h2.textContent.includes('Programma')) {
-            let el = h2.parentElement;
-            while (el && !el.querySelector('#programma-target, table.match:not(.match-result)')) {
-                el = el.parentElement;
-                if (!el || el.tagName === 'BODY') break;
-            }
-            programmaContainer = el;
-            break;
+        if (!h2.textContent.includes('Programma')) continue;
+        let el = h2.parentElement;
+        while (el && !el.querySelector('#programma-target,table.match')) {
+            el=el.parentElement; if (!el||el.tagName==='BODY') break;
         }
+        container = el; break;
     }
-    if (!programmaContainer) return '<div class="error">Programma niet gevonden</div>';
+    if (!container) return '<div class="error-state">Programma niet gevonden</div>';
 
-    // Get all match tables that are NOT results (future fixtures have no result score)
-    const matchTables = programmaContainer.querySelectorAll('table.match, table[class*="match"]');
-    const futureTables = [];
+    const matchTables = [...container.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
+        const r = t.querySelector('td.result,td[class*="result"]');
+        if (!r) return false;
+        const txt = r.textContent.trim();
+        return txt.includes('uur') || !((/^\d/.test(txt)) && txt.includes('-'));
+    });
+    if (!matchTables.length) return '<div class="error-state">Geen resterende wedstrijden</div>';
+
+    const byDate = {}, order = [];
     matchTables.forEach(t => {
-        // A future fixture has time text (e.g. "14.30 uur"), not a score (digit - digit)
-        const resultCell = t.querySelector('td.result, td[class*="result"]');
-        if (resultCell) {
-            const text = resultCell.textContent.trim();
-            if (/^\d/.test(text) && text.includes('-') && !text.includes('uur')) return; // skip results
-        }
-        futureTables.push(t);
+        const cap = t.querySelector('caption time,caption');
+        const d = cap ? cap.textContent.trim() : 'Onbekend';
+        if (!byDate[d]) { byDate[d]=[]; order.push(d); }
+        byDate[d].push(t);
     });
 
-    if (!futureTables.length) return '<div class="error">Geen resterende wedstrijden gevonden</div>';
-
-    // Group by date using the caption
-    const dateGroups = {};
-    const dateOrder = [];
-    futureTables.forEach(table => {
-        const caption = table.querySelector('caption time, caption');
-        const dateKey = caption ? caption.textContent.trim() : 'Onbekende datum';
-        if (!dateGroups[dateKey]) { dateGroups[dateKey] = []; dateOrder.push(dateKey); }
-        dateGroups[dateKey].push(table);
-    });
-
-    let html = '<div class="programma-list">';
-    dateOrder.forEach(date => {
-        html += `<div class="date-block">
-            <div class="date-header">${date}</div>`;
-        dateGroups[date].forEach(table => {
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
+    let html = '<div class="fixture-list">';
+    order.forEach(date => {
+        html += `<div class="fixture-date-card">
+            <div class="fixture-date-head">${date}</div>`;
+        byDate[date].forEach(t => {
+            t.querySelectorAll('tbody tr').forEach(row => {
                 const cells = row.querySelectorAll('td');
                 if (cells.length < 4) return;
-                const home = cells[0].textContent.trim().replace(/\s+/g, ' ');
-                const away = cells[2].textContent.trim().replace(/\s+/g, ' ');
+                const home = cells[0].textContent.trim().replace(/\s+/g,' ');
+                const away = cells[2].textContent.trim().replace(/\s+/g,' ');
                 const time = cells[3].textContent.trim();
-                const isRBCHome = /^rbc$/i.test(home);
-                const isRBCAway = /^rbc$/i.test(away);
-                const isRBCMatch = isRBCHome || isRBCAway;
-                html += `<div class="match-row${isRBCMatch ? ' rbc-match' : ''}">
-                    <span class="team-home${isRBCHome ? ' rbc' : ''}">${home}</span>
-                    <span class="sep">&mdash;</span>
-                    <span class="team-away${isRBCAway ? ' rbc' : ''}">${away}</span>
-                    <span class="match-time">${time}</span>
+                const rbcH=/^rbc$/i.test(home), rbcA=/^rbc$/i.test(away);
+                html += `<div class="fixture-row${(rbcH||rbcA)?' is-rbc':''}">
+                    <span class="fixture-home${rbcH?' is-rbc':''}">${home}</span>
+                    <span class="fixture-vs">vs</span>
+                    <span class="fixture-away${rbcA?' is-rbc':''}">${away}</span>
+                    <span class="fixture-time">${time}</span>
                 </div>`;
             });
         });
@@ -470,158 +915,39 @@ function buildProgramma(doc) {
     return html;
 }
 
-// ── SCOREBOARD ─────────────────────────────────────────────────────────────
-function buildScoreboard(doc) {
-    const board   = document.getElementById('scoreboard');
-    const inner   = document.getElementById('scoreboard-inner');
-    const label   = document.getElementById('scoreboard-label');
-
-    // Find all Uitslagen match tables (results tables = have a score, not "uur")
-    let resultTables = [];
-    for (const h2 of doc.querySelectorAll('h2')) {
-        if (h2.textContent.includes('Uitslagen')) {
-            let container = h2.parentElement;
-            while (container && !container.querySelector('table.match, table[class*="match"]')) {
-                container = container.parentElement;
-                if (!container || container.tagName === 'BODY') break;
-            }
-            if (container) {
-                container.querySelectorAll('table.match, table[class*="match"]').forEach(t => {
-                    const res = t.querySelector('td.result, td[class*="result"]');
-                    if (res) {
-                        const txt = res.textContent.trim();
-                        if (/\d/.test(txt) && !txt.includes('uur')) resultTables.push(t);
-                    }
-                });
-            }
-            break;
-        }
-    }
-    if (!resultTables.length) { board.style.display = 'none'; return; }
-
-    // Get the most recent date group
-    const now = new Date();
-    const todayStr = now.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
-
-    // Find latest date from captions
-    let latestDateText = '';
-    let latestMatches = [];
-    const byDate = {};
-    const dateOrder = [];
-    resultTables.forEach(t => {
-        const cap = t.querySelector('caption time, caption');
-        const d = cap ? cap.textContent.trim() : '';
-        if (!byDate[d]) { byDate[d] = []; dateOrder.push(d); }
-        byDate[d].push(t);
-    });
-    // Parse each date key to a real Date, pick the most recent
-    function parseDutchDate(str) {
-        const months = { januari:0,februari:1,maart:2,april:3,mei:4,juni:5,
-                         juli:6,augustus:7,september:8,oktober:9,november:10,december:11 };
-        // "vrijdag 13 maart 2026" or "13 maart 2026"
-        const m = str.replace(/^\w+ /, '').match(/(\d+)\s+(\w+)\s+(\d{4})/);
-        if (!m) return new Date(0);
-        return new Date(parseInt(m[3]), months[m[2].toLowerCase()] ?? 0, parseInt(m[1]));
-    }
-    let latestDate = new Date(0);
-    dateOrder.forEach(d => {
-        const parsed = parseDutchDate(d);
-        if (parsed > latestDate) { latestDate = parsed; latestDateText = d; }
-    });
-    latestMatches = byDate[latestDateText] || [];
-
-    if (!latestMatches.length) { board.style.display = 'none'; return; }
-
-    // Is this today? → could be live
-    const isToday = latestDateText.includes(todayStr) ||
-        latestDateText.replace(/\w+ /, '') === todayStr; // strip weekday
-
-    // Determine if matches might be in progress:
-    // Dutch amateur matches typically 12:00–20:00; if today & within that window → live possible
-    const h = now.getHours();
-    const mightBeLive = isToday && h >= 12 && h < 20;
-
-    // Build pills
-    let pills = '';
-    latestMatches.forEach(t => {
-        const rows = t.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            if (cells.length < 4) return;
-            const home   = cells[0].textContent.trim().replace(/\s+/g, ' ');
-            const away   = cells[2].textContent.trim().replace(/\s+/g, ' ');
-            const result = cells[3].textContent.trim();
-            const isRBCHome = /^rbc$/i.test(home);
-            const isRBCAway = /^rbc$/i.test(away);
-            const isRBC = isRBCHome || isRBCAway;
-
-            const statusTag = mightBeLive
-                ? `<span class="live-dot"></span><span class="status-tag live">LIVE</span>`
-                : `<span class="status-tag">FT</span>`;
-
-            pills += `<div class="score-pill${isRBC ? ' rbc-pill' : ''}">
-                <span class="score-home${isRBCHome ? ' rbc' : ''}">${home}</span>
-                <span class="score-result${mightBeLive ? ' live-result' : ''}">${result}</span>
-                <span class="score-away${isRBCAway ? ' rbc' : ''}">${away}</span>
-                ${statusTag}
-            </div>`;
-        });
-    });
-
-    if (!pills) { board.style.display = 'none'; return; }
-
-    // Set label
-    label.textContent = mightBeLive ? '🔴 LIVE' : latestDateText;
-
-    // Remove old pills (keep label)
-    inner.querySelectorAll('.score-pill').forEach(el => el.remove());
-    inner.insertAdjacentHTML('beforeend', pills);
-    board.style.display = 'block';
-}
-
-// ── MAIN ───────────────────────────────────────────────────────────────────
+// ── MAIN ──────────────────────────────────────────────────
 async function load(fullRefresh = true) {
-    const standEl    = document.getElementById('stand-content');
-    const periodesEl = document.getElementById('periodes-content');
-    const programmaEl= document.getElementById('programma-content');
-    const updatedEl  = document.getElementById('lastUpdated');
-
     try {
-        const res = await fetch(PROXY + encodeURIComponent(SOURCE));
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const html = await res.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(html, 'text/html');
+        const html = await fetchWithFallback(SOURCE);
+        const doc = new DOMParser().parseFromString(html, 'text/html');
 
         buildScoreboard(doc);
+        buildSpotlight(doc);
 
         if (fullRefresh) {
-            standEl.innerHTML     = buildStand(doc);
-            periodesEl.innerHTML  = buildPeriodes(doc);
-            programmaEl.innerHTML = buildProgramma(doc);
+            document.getElementById('stand-content').innerHTML    = buildStand(doc);
+            document.getElementById('periodes-content').innerHTML = buildPeriodes(doc);
+            document.getElementById('programma-content').innerHTML= buildProgramma(doc);
 
             const now = new Date();
-            updatedEl.textContent = 'Bijgewerkt op ' +
-                now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
-                ' om ' + now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('updatedBar').textContent = 'Bijgewerkt ' +
+                now.toLocaleDateString('nl-NL',{weekday:'long',day:'numeric',month:'long'}) +
+                ' om ' + now.toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
         }
-
-    } catch (err) {
+    } catch(err) {
         console.error(err);
         if (fullRefresh) {
-            const errHTML = `<div class="error">Kon data niet laden (${err.message}).<br><br>
-                <a href="${SOURCE}" target="_blank" rel="noopener" style="color:var(--rbc-orange)">
-                    Bekijk op HollandseVelden.nl &rarr;</a></div>`;
-            standEl.innerHTML = periodesEl.innerHTML = programmaEl.innerHTML = errHTML;
-            updatedEl.textContent = '';
+            const errHTML = `<div class="error-state">Kon data niet laden.<br><br>
+                <a href="${SOURCE}" target="_blank" rel="noopener">Bekijk op HollandseVelden.nl &rarr;</a></div>`;
+            ['stand-content','periodes-content','programma-content'].forEach(id => {
+                document.getElementById(id).innerHTML = errHTML;
+            });
+            document.getElementById('updatedBar').textContent = '';
         }
     }
 }
 
-// Initial full load
 load(true);
-
-// Refresh scoreboard every 60s (lightweight — only scoreboard updates)
 setInterval(() => load(false), 60000);
 </script>
 </body>
