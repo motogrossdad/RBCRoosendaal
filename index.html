@@ -3,135 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RBC Roosendaal - Periodestanden Derde Divisie B 2025/2026</title>
+<title>RBC Roosendaal - Derde Divisie B 2025/2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --rbc-orange: #FF6B00;
-        --dark: #0A0A0A;
-    }
+    :root { --rbc-orange: #FF6B00; --dark: #0A0A0A; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        background-color: var(--dark);
-        color: white;
-        font-family: 'Oswald', sans-serif;
-        min-height: 100vh;
-    }
-    header {
-        width: 100%;
-        padding: 30px 0;
-        text-align: center;
-        border-bottom: 2px solid var(--rbc-orange);
-        background: #111;
-    }
-    .logo {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 50px;
-        letter-spacing: 2px;
-    }
-    .main {
-        max-width: 1050px;
-        margin: 30px auto;
-        padding: 0 15px;
-    }
+    body { background-color: var(--dark); color: white; font-family: 'Oswald', sans-serif; min-height: 100vh; }
+
+    header { width: 100%; padding: 30px 0; text-align: center; border-bottom: 2px solid var(--rbc-orange); background: #111; }
+    .logo { font-family: 'Bebas Neue', sans-serif; font-size: 50px; letter-spacing: 2px; }
+
+    .main { max-width: 1100px; margin: 30px auto; padding: 0 15px; }
+
+    /* Section blocks */
+    .block { margin-bottom: 40px; }
     .section-title {
         font-family: 'Bebas Neue', sans-serif;
-        font-size: 26px;
+        font-size: 22px;
         letter-spacing: 2px;
         color: var(--rbc-orange);
-        margin-bottom: 8px;
-        text-align: center;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #222;
     }
-    .last-updated {
-        text-align: center;
-        color: #555;
-        font-size: 12px;
-        margin-bottom: 24px;
-        letter-spacing: 1px;
-    }
-    .periods-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-    }
-    .period-card {
-        background: #161616;
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    }
-    .period-header {
-        background: var(--rbc-orange);
-        padding: 12px 16px;
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        text-align: center;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-    }
-    th {
-        background: #222;
-        padding: 7px 10px;
-        text-align: left;
-        color: #888;
-        font-size: 11px;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-    }
-    th.right, td.right { text-align: right; }
-    td {
-        padding: 7px 10px;
-        border-bottom: 1px solid #1e1e1e;
-    }
-    tr:last-child td { border-bottom: none; }
-    tr.alt td { background: #1a1a1a; }
-    tr.rbc-row td {
-        background: rgba(255, 107, 0, 0.12);
-        color: var(--rbc-orange);
-        font-weight: 600;
-    }
-    tr.winner td { font-weight: 700; }
-    .pos { color: #555; width: 28px; }
-    .club-name { }
-    .pts { font-weight: 700; color: #fff; }
-    tr.rbc-row .pts { color: var(--rbc-orange); }
+    .last-updated { text-align: center; color: #555; font-size: 12px; margin-bottom: 28px; letter-spacing: 1px; }
+
+    /* --- STAND --- */
+    .stand-card { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .stand-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .stand-table thead tr th { background: #222; padding: 8px 10px; color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .stand-table tbody td { padding: 7px 10px; border-bottom: 1px solid #1e1e1e; white-space: nowrap; }
+    .stand-table tbody tr:last-child td { border-bottom: none; }
+    .stand-table tbody tr.alt td { background: #1a1a1a; }
+    .stand-table tbody tr.rbc-row td { background: rgba(255,107,0,0.12); color: var(--rbc-orange); font-weight: 600; }
+    .stand-table .pos-col { color: #555; width: 28px; text-align: right; padding-right: 6px; }
+    .stand-table .club-col { text-align: left; min-width: 130px; }
+    .stand-table .num-col { text-align: right; }
+    .stand-table .pnt-col { text-align: right; font-weight: 700; color: #fff; }
+    .stand-table tr.rbc-row .pnt-col { color: var(--rbc-orange); }
+    .stand-table .wgv-col { text-align: right; color: #aaa; font-size: 12px; }
+    .stand-table .ds-pos { color: #4caf50; }
+    .stand-table .ds-neg { color: #f44336; }
+    .stand-table .ds-zero { color: #666; }
+    .stand-table .promo-line td { border-bottom: 2px solid #4caf50 !important; }
+    .stand-table .playoff-line td { border-bottom: 2px solid #ff9800 !important; }
+    .stand-table .relegate-line td { border-bottom: 2px solid #f44336 !important; }
+    @media (max-width: 600px) { .stand-table .hide-sm { display: none; } }
+
+    /* --- PERIODS --- */
+    .periods-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .period-card { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .period-header { background: var(--rbc-orange); padding: 12px 16px; font-size: 15px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; text-align: center; }
+    .period-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .period-table thead tr th { background: #222; padding: 7px 10px; color: #888; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+    .period-table thead tr th.right, .period-table td.right { text-align: right; }
+    .period-table td { padding: 7px 10px; border-bottom: 1px solid #1e1e1e; }
+    .period-table tbody tr:last-child td { border-bottom: none; }
+    .period-table tr.alt td { background: #1a1a1a; }
+    .period-table tr.rbc-row td { background: rgba(255,107,0,0.12); color: var(--rbc-orange); font-weight: 600; }
+    .period-table .pts { font-weight: 700; color: #fff; }
+    .period-table tr.rbc-row .pts { color: var(--rbc-orange); }
     .ds-pos { color: #4caf50; }
     .ds-neg { color: #f44336; }
-    .ds-zero { color: #888; }
-    .trophy { font-size: 12px; margin-right: 4px; }
-    .loading {
-        text-align: center;
-        padding: 60px 20px;
-        color: #555;
-        font-size: 18px;
-        letter-spacing: 2px;
-    }
-    .error {
-        text-align: center;
-        padding: 40px 20px;
-        color: #ff4444;
-        font-size: 14px;
-    }
-    footer {
-        padding: 24px;
-        color: #444;
-        font-size: 12px;
-        text-align: center;
-        margin-top: 30px;
-        border-top: 1px solid #1a1a1a;
-    }
+    .ds-zero { color: #666; }
+
+    /* --- PROGRAMMA --- */
+    .programma-list { display: flex; flex-direction: column; gap: 16px; }
+    .date-block { background: #161616; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .date-header { background: #222; padding: 10px 16px; font-size: 13px; color: #aaa; letter-spacing: 1px; text-transform: uppercase; }
+    .match-row { display: flex; align-items: center; padding: 10px 16px; border-bottom: 1px solid #1e1e1e; font-size: 14px; gap: 8px; }
+    .match-row:last-child { border-bottom: none; }
+    .match-row.rbc-match { background: rgba(255,107,0,0.08); }
+    .team-home { flex: 1; text-align: right; }
+    .team-away { flex: 1; text-align: left; }
+    .team-home.rbc, .team-away.rbc { color: var(--rbc-orange); font-weight: 600; }
+    .sep { color: #444; padding: 0 6px; flex-shrink: 0; }
+    .match-time { width: 70px; text-align: center; color: #888; font-size: 12px; flex-shrink: 0; }
+
+    /* Shared */
+    .loading { text-align: center; padding: 60px 20px; color: #555; font-size: 18px; letter-spacing: 2px; }
+    .error { text-align: center; padding: 40px 20px; color: #ff4444; font-size: 14px; }
+    footer { padding: 24px; color: #444; font-size: 12px; text-align: center; margin-top: 30px; border-top: 1px solid #1a1a1a; }
     footer a { color: #555; text-decoration: none; }
     footer a:hover { color: var(--rbc-orange); }
-
-    @media (max-width: 600px) {
-        .logo { font-size: 36px; }
-        .section-title { font-size: 20px; }
-    }
+    @media (max-width: 600px) { .logo { font-size: 36px; } .section-title { font-size: 18px; } }
 </style>
 </head>
 <body>
@@ -142,9 +97,25 @@
 </header>
 
 <div class="main">
-    <h1 class="section-title">&#x1F4CA; Periodestanden Derde Divisie B &mdash; 2025/2026</h1>
     <p class="last-updated" id="lastUpdated">Laden...</p>
-    <div id="content"><div class="loading">&#x23F3; DATA WORDT GELADEN...</div></div>
+
+    <!-- STAND -->
+    <div class="block">
+        <h2 class="section-title">&#x1F4CA; Stand Derde Divisie B &mdash; 2025/2026</h2>
+        <div id="stand-content"><div class="loading">&#x23F3; LADEN...</div></div>
+    </div>
+
+    <!-- PERIODES -->
+    <div class="block">
+        <h2 class="section-title">&#x1F3C6; Periodestanden Derde Divisie B &mdash; 2025/2026</h2>
+        <div id="periodes-content"><div class="loading">&#x23F3; LADEN...</div></div>
+    </div>
+
+    <!-- PROGRAMMA -->
+    <div class="block">
+        <h2 class="section-title">&#x1F4C5; Resterende Wedstrijden Derde Divisie B &mdash; 2025/2026</h2>
+        <div id="programma-content"><div class="loading">&#x23F3; LADEN...</div></div>
+    </div>
 </div>
 
 <footer>
@@ -158,62 +129,108 @@ const SOURCE = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/d
 
 function dsClass(val) {
     const n = parseInt(val, 10);
-    if (n > 0) return 'ds-pos';
-    if (n < 0) return 'ds-neg';
-    return 'ds-zero';
+    return n > 0 ? 'ds-pos' : (n < 0 ? 'ds-neg' : 'ds-zero');
 }
 
-function buildTable(periodTable, periodIndex) {
-    // Extract caption / period name
-    const caption = periodTable.querySelector('caption, thead h3, thead th h3');
-    let periodName = caption ? caption.textContent.trim() : ('Periode ' + (periodIndex + 1));
+// ── STAND ──────────────────────────────────────────────────────────────────
+function buildStand(doc) {
+    let standTable = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (h2.textContent.includes('Stand')) {
+            let el = h2.nextElementSibling;
+            while (el) {
+                const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
+                if (t) { standTable = t; break; }
+                if (el.matches('h2,h3')) break;
+                el = el.nextElementSibling;
+            }
+            if (!standTable) {
+                // try parent container
+                let parent = h2.parentElement;
+                while (parent) {
+                    const t = parent.querySelector('table');
+                    if (t) { standTable = t; break; }
+                    parent = parent.parentElement;
+                    if (!parent || parent.tagName === 'BODY') break;
+                }
+            }
+            break;
+        }
+    }
+    if (!standTable) return '<div class="error">Stand niet gevonden</div>';
 
-    const rows = periodTable.querySelectorAll('tbody tr');
-    if (!rows.length) return null;
+    const rows = standTable.querySelectorAll('tbody tr');
+    // Determine promo/playoff/relegate boundaries from table class
+    const tableClass = standTable.className;
+    const promoteMatch = tableClass.match(/promote-(\d+)/);
+    const playoffMatch = tableClass.match(/playoff-(\d+)/);
+    const relegateMatch = tableClass.match(/relegate-(\d+)/);
+    const totalRows = rows.length;
+    const promoteUntil  = promoteMatch  ? parseInt(promoteMatch[1])  : 1;
+    const playoffUntil  = playoffMatch  ? parseInt(playoffMatch[1])  : 0;
+    const relegateFrom  = relegateMatch ? (totalRows - parseInt(relegateMatch[1]) + 1) : totalRows + 1;
 
-    let html = `<div class="period-card">
-        <div class="period-header">${periodName}</div>
-        <table>
-            <thead>
-                <tr>
-                    <th class="pos">#</th>
-                    <th>Club</th>
-                    <th class="right">Wed</th>
-                    <th class="right">Pnt</th>
-                    <th class="right">DS</th>
-                </tr>
-            </thead>
-            <tbody>`;
+    let html = `<div class="stand-card"><table class="stand-table">
+        <thead><tr>
+            <th class="pos-col">#</th>
+            <th class="club-col">Club</th>
+            <th class="num-col">Wed</th>
+            <th class="num-col hide-sm">W-G-V</th>
+            <th class="pnt-col">Pnt</th>
+            <th class="num-col hide-sm">DV</th>
+            <th class="num-col hide-sm">DT</th>
+            <th class="num-col">DS</th>
+        </tr></thead><tbody>`;
 
     rows.forEach((row, i) => {
         const cells = row.querySelectorAll('th, td');
-        if (cells.length < 4) return;
+        if (cells.length < 5) return;
 
-        const pos     = cells[0].textContent.trim();
-        const club    = cells[1].textContent.trim().replace(/\s+/g, ' ');
-        const wed     = cells[2].textContent.trim();
-        const pnt     = cells[3].textContent.trim();
-        const ds      = cells[4] ? cells[4].textContent.trim() : '';
+        const pos  = cells[0].textContent.trim();
+        const club = cells[1].textContent.trim().replace(/\s+/g, ' ');
+        const wed  = cells[2] ? cells[2].textContent.trim() : '';
+        // W-G-V is combined or separate
+        let wgv = '', pnt = '', dv = '', dt = '', ds = '';
+        if (cells.length >= 9) {
+            // main site: pos, club, wed, W-G-V, pnt, DV, DT, DS, vorm
+            wgv = cells[3] ? cells[3].textContent.trim() : '';
+            pnt = cells[4] ? cells[4].textContent.trim() : '';
+            dv  = cells[5] ? cells[5].textContent.trim() : '';
+            dt  = cells[6] ? cells[6].textContent.trim() : '';
+            ds  = cells[7] ? cells[7].textContent.trim() : '';
+        } else {
+            // embed: pos, club, wed, W, G, V, DV, DT, +/-, pnt, min
+            const w = cells[3] ? cells[3].textContent.trim() : '';
+            const g = cells[4] ? cells[4].textContent.trim() : '';
+            const v = cells[5] ? cells[5].textContent.trim() : '';
+            wgv = `${w}-${g}-${v}`;
+            dv  = cells[6] ? cells[6].textContent.trim() : '';
+            dt  = cells[7] ? cells[7].textContent.trim() : '';
+            ds  = cells[8] ? cells[8].textContent.trim() : '';
+            pnt = cells[9] ? cells[9].textContent.trim() : '';
+        }
 
-        const isRBC     = /^rbc$/i.test(club);
-        const isWinner  = pos === '1';
-        const isAlt     = i % 2 === 1;
+        const posNum = parseInt(pos, 10);
+        const isRBC  = /^rbc$/i.test(club);
+        const isAlt  = i % 2 === 1;
 
-        let rowClass = '';
-        if (isRBC) rowClass = 'rbc-row';
-        else if (isWinner) rowClass = 'winner' + (isAlt ? ' alt' : '');
-        else if (isAlt) rowClass = 'alt';
+        let rowClass = isRBC ? 'rbc-row' : (isAlt ? 'alt' : '');
 
-        const dsHtml = ds
-            ? `<td class="right ${dsClass(ds)}">${ds}</td>`
-            : '<td></td>';
+        // Zone separator lines
+        let extraStyle = '';
+        if (posNum === promoteUntil)  rowClass += ' promo-line';
+        if (posNum === playoffUntil)  rowClass += ' playoff-line';
+        if (posNum === relegateFrom - 1) rowClass += ' relegate-line';
 
-        html += `<tr class="${rowClass}">
-            <td class="pos">${pos}</td>
-            <td class="club-name">${isWinner && !isRBC ? '<span class="trophy">&#x1F3C6;</span>' : ''}${club}</td>
-            <td class="right">${wed}</td>
-            <td class="right pts">${pnt}</td>
-            ${dsHtml}
+        html += `<tr class="${rowClass.trim()}">
+            <td class="pos-col">${pos}</td>
+            <td class="club-col">${club}</td>
+            <td class="num-col">${wed}</td>
+            <td class="num-col wgv-col hide-sm">${wgv}</td>
+            <td class="num-col pnt-col">${pnt}</td>
+            <td class="num-col hide-sm">${dv}</td>
+            <td class="num-col hide-sm">${dt}</td>
+            <td class="num-col ${dsClass(ds)}">${ds}</td>
         </tr>`;
     });
 
@@ -221,45 +238,158 @@ function buildTable(periodTable, periodIndex) {
     return html;
 }
 
+// ── PERIODES ───────────────────────────────────────────────────────────────
+function buildPeriodes(doc) {
+    let periodesContainer = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (h2.textContent.includes('Periodestanden')) {
+            let el = h2.parentElement;
+            while (el && !el.querySelector('table.league-sm, table[class*="league"]')) {
+                el = el.parentElement;
+            }
+            periodesContainer = el || h2.closest('.card') || h2.parentElement;
+            break;
+        }
+    }
+    if (!periodesContainer) return '<div class="error">Periodestanden niet gevonden</div>';
+
+    const tables = periodesContainer.querySelectorAll('table');
+    if (!tables.length) return '<div class="error">Geen periode-tabellen gevonden</div>';
+
+    let grid = '<div class="periods-grid">';
+    tables.forEach((table, idx) => {
+        const caption = table.querySelector('caption, thead h3');
+        const periodName = caption ? caption.textContent.trim() : ('Periode ' + (idx + 1));
+        const rows = table.querySelectorAll('tbody tr');
+        if (!rows.length) return;
+
+        let card = `<div class="period-card">
+            <div class="period-header">${periodName}</div>
+            <table class="period-table">
+                <thead><tr>
+                    <th style="width:28px">#</th>
+                    <th>Club</th>
+                    <th class="right">Wed</th>
+                    <th class="right">Pnt</th>
+                    <th class="right">DS</th>
+                </tr></thead><tbody>`;
+
+        rows.forEach((row, i) => {
+            const cells = row.querySelectorAll('th, td');
+            if (cells.length < 4) return;
+            const pos  = cells[0].textContent.trim();
+            const club = cells[1].textContent.trim().replace(/\s+/g, ' ');
+            const wed  = cells[2].textContent.trim();
+            const pnt  = cells[3].textContent.trim();
+            const ds   = cells[4] ? cells[4].textContent.trim() : '';
+            const isRBC    = /^rbc$/i.test(club);
+            const isWinner = pos === '1';
+            const isAlt    = i % 2 === 1;
+            let rowClass = isRBC ? 'rbc-row' : (isAlt ? 'alt' : '');
+
+            card += `<tr class="${rowClass}">
+                <td>${pos}</td>
+                <td>${isWinner && !isRBC ? '&#x1F3C6; ' : ''}${club}</td>
+                <td class="right">${wed}</td>
+                <td class="right pts">${pnt}</td>
+                <td class="right ${dsClass(ds)}">${ds}</td>
+            </tr>`;
+        });
+
+        card += `</tbody></table></div>`;
+        grid += card;
+    });
+    grid += '</div>';
+    return grid;
+}
+
+// ── PROGRAMMA ──────────────────────────────────────────────────────────────
+function buildProgramma(doc) {
+    let programmaContainer = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (h2.textContent.includes('Programma')) {
+            let el = h2.parentElement;
+            while (el && !el.querySelector('#programma-target, table.match:not(.match-result)')) {
+                el = el.parentElement;
+                if (!el || el.tagName === 'BODY') break;
+            }
+            programmaContainer = el;
+            break;
+        }
+    }
+    if (!programmaContainer) return '<div class="error">Programma niet gevonden</div>';
+
+    // Get all match tables that are NOT results (future fixtures have no result score)
+    const matchTables = programmaContainer.querySelectorAll('table.match, table[class*="match"]');
+    const futureTables = [];
+    matchTables.forEach(t => {
+        // A future fixture has time text (e.g. "14.30 uur"), not a score (digit - digit)
+        const resultCell = t.querySelector('td.result, td[class*="result"]');
+        if (resultCell) {
+            const text = resultCell.textContent.trim();
+            if (/^\d/.test(text) && text.includes('-') && !text.includes('uur')) return; // skip results
+        }
+        futureTables.push(t);
+    });
+
+    if (!futureTables.length) return '<div class="error">Geen resterende wedstrijden gevonden</div>';
+
+    // Group by date using the caption
+    const dateGroups = {};
+    const dateOrder = [];
+    futureTables.forEach(table => {
+        const caption = table.querySelector('caption time, caption');
+        const dateKey = caption ? caption.textContent.trim() : 'Onbekende datum';
+        if (!dateGroups[dateKey]) { dateGroups[dateKey] = []; dateOrder.push(dateKey); }
+        dateGroups[dateKey].push(table);
+    });
+
+    let html = '<div class="programma-list">';
+    dateOrder.forEach(date => {
+        html += `<div class="date-block">
+            <div class="date-header">${date}</div>`;
+        dateGroups[date].forEach(table => {
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cells = row.querySelectorAll('td');
+                if (cells.length < 4) return;
+                const home = cells[0].textContent.trim().replace(/\s+/g, ' ');
+                const away = cells[2].textContent.trim().replace(/\s+/g, ' ');
+                const time = cells[3].textContent.trim();
+                const isRBCHome = /^rbc$/i.test(home);
+                const isRBCAway = /^rbc$/i.test(away);
+                const isRBCMatch = isRBCHome || isRBCAway;
+                html += `<div class="match-row${isRBCMatch ? ' rbc-match' : ''}">
+                    <span class="team-home${isRBCHome ? ' rbc' : ''}">${home}</span>
+                    <span class="sep">&mdash;</span>
+                    <span class="team-away${isRBCAway ? ' rbc' : ''}">${away}</span>
+                    <span class="match-time">${time}</span>
+                </div>`;
+            });
+        });
+        html += '</div>';
+    });
+    html += '</div>';
+    return html;
+}
+
+// ── MAIN ───────────────────────────────────────────────────────────────────
 async function load() {
-    const contentEl = document.getElementById('content');
-    const updatedEl = document.getElementById('lastUpdated');
+    const standEl    = document.getElementById('stand-content');
+    const periodesEl = document.getElementById('periodes-content');
+    const programmaEl= document.getElementById('programma-content');
+    const updatedEl  = document.getElementById('lastUpdated');
 
     try {
         const res = await fetch(PROXY + encodeURIComponent(SOURCE));
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const html = await res.text();
-
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        // Find the container holding the periodestanden h2
-        let periodesContainer = null;
-        for (const h2 of doc.querySelectorAll('h2')) {
-            if (h2.textContent.includes('Periodestanden')) {
-                // Walk up to find a card/section wrapper that contains tables
-                let el = h2.parentElement;
-                while (el && !el.querySelector('table.league-sm, table[class*="league"]')) {
-                    el = el.parentElement;
-                }
-                periodesContainer = el || h2.closest('.card') || h2.parentElement;
-                break;
-            }
-        }
-
-        if (!periodesContainer) throw new Error('Periodestanden sectie niet gevonden');
-
-        const tables = periodesContainer.querySelectorAll('table');
-        if (!tables.length) throw new Error('Geen tabellen gevonden');
-
-        let gridHTML = '<div class="periods-grid">';
-        tables.forEach((table, i) => {
-            const built = buildTable(table, i);
-            if (built) gridHTML += built;
-        });
-        gridHTML += '</div>';
-
-        contentEl.innerHTML = gridHTML;
+        standEl.innerHTML     = buildStand(doc);
+        periodesEl.innerHTML  = buildPeriodes(doc);
+        programmaEl.innerHTML = buildProgramma(doc);
 
         const now = new Date();
         updatedEl.textContent = 'Bijgewerkt op ' +
@@ -268,18 +398,15 @@ async function load() {
 
     } catch (err) {
         console.error(err);
-        contentEl.innerHTML = `<div class="error">
-            Kon data niet laden (${err.message}).<br><br>
+        const errHTML = `<div class="error">Kon data niet laden (${err.message}).<br><br>
             <a href="${SOURCE}" target="_blank" rel="noopener" style="color:var(--rbc-orange)">
-                Bekijk op HollandseVelden.nl &rarr;
-            </a>
-        </div>`;
+                Bekijk op HollandseVelden.nl &rarr;</a></div>`;
+        standEl.innerHTML = periodesEl.innerHTML = programmaEl.innerHTML = errHTML;
         updatedEl.textContent = '';
     }
 }
 
 load();
 </script>
-
 </body>
 </html>
