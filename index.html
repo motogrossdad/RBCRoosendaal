@@ -759,6 +759,107 @@ footer a:hover { color: var(--orange); }
     min-width: 28px;
     text-align: center;
 }
+
+/* ── SQUAD GRID ──────────────────────────────────────────── */
+.squad-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+@media (min-width: 700px) {
+    .squad-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+}
+@media (min-width: 1000px) {
+    .squad-grid { grid-template-columns: repeat(5, 1fr); }
+}
+.squad-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.squad-img-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #111;
+}
+.squad-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.5s ease, filter 0.5s ease;
+    display: block;
+}
+.squad-badge {
+    position: absolute;
+    bottom: -50px;
+    right: 8px;
+    width: 56px;
+    height: 56px;
+    opacity: 0;
+    transition: bottom 0.45s cubic-bezier(0.34,1.56,0.64,1), opacity 0.35s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+    z-index: 3;
+}
+.squad-hand {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(to top, rgba(255,107,0,0.0) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+.squad-card:hover .squad-img,
+.squad-card.touched .squad-img {
+    transform: scale(1.08) translateY(-4px);
+    filter: brightness(0.75);
+}
+.squad-card:hover .squad-badge,
+.squad-card.touched .squad-badge {
+    bottom: 10px;
+    opacity: 1;
+}
+.squad-card:hover .squad-hand,
+.squad-card.touched .squad-hand {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(255,107,0,0.15) 0%, transparent 100%);
+}
+.squad-number {
+    position: absolute;
+    top: 6px; left: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1;
+    z-index: 4;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+.squad-info {
+    padding: 10px 10px 12px;
+    text-align: center;
+}
+.squad-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.squad-flag {
+    font-size: 12px;
+    margin-top: 2px;
+}
 </style>
 </head>
 <body>
@@ -840,6 +941,17 @@ footer a:hover { color: var(--orange); }
         </div>
     </div>
 </div>
+
+    <!-- SELECTIE -->
+    <div class="block" id="section-selectie">
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Selectie &mdash; 2025/2026</span>
+        </div>
+        <div class="squad-grid" id="squad-grid">
+            <div class="loading-state"><div class="spinner"></div>Selectie laden</div>
+        </div>
+    </div>
 
     <!-- QUIZ SECTION -->
     <div class="block" id="section-quiz">
@@ -1761,6 +1873,39 @@ function quizNext() {
 }
 
 quizInit();
+
+// ── SQUAD ────────────────────────────────────────────────
+function loadSquad() {
+    fetch('data.json?v=' + Date.now())
+        .then(r => r.json())
+        .then(data => {
+            const grid = document.getElementById('squad-grid');
+            const squad = (data.squad || []).sort((a,b) => a.number - b.number);
+            if (!squad.length) { grid.innerHTML = '<div class="error-state">Geen selectie data</div>'; return; }
+
+            const flags = { NL: '\u{1F1F3}\u{1F1F1}', BR: '\u{1F1E7}\u{1F1F7}', BE: '\u{1F1E7}\u{1F1EA}' };
+
+            grid.innerHTML = squad.map(p => `
+                <div class="squad-card" ontouchstart="this.classList.add('touched')" ontouchend="setTimeout(()=>this.classList.remove('touched'),800)">
+                    <div class="squad-img-wrap">
+                        <span class="squad-number">${p.number}</span>
+                        <img class="squad-img" src="${p.photo}" alt="${p.name}" loading="lazy"
+                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23222%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22210%22 fill=%22%23444%22 font-size=%2240%22 text-anchor=%22middle%22>${p.number}</text></svg>'">
+                        <img class="squad-badge" src="/rbc.png" alt="RBC">
+                        <div class="squad-hand"></div>
+                    </div>
+                    <div class="squad-info">
+                        <div class="squad-name">${p.name}</div>
+                        <div class="squad-flag">${flags[p.nationality] || '\u{1F1F3}\u{1F1F1}'}</div>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(() => {
+            document.getElementById('squad-grid').innerHTML = '<div class="error-state">Selectie kon niet geladen worden</div>';
+        });
+}
+loadSquad();
 </script>
 <button id="install-banner" onclick="installApp()">&#x2B07; Installeer App</button>
 </body>
