@@ -1727,8 +1727,8 @@ setInterval(() => buildEredivisie(), 60000);
 async function loadSeizoen() {
     const container = document.getElementById('seizoen-content');
     try {
-        const html = await fetchWithFallback('https://rbcvoetbal.nl/wedstrijden');
-        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const rawHtml = await fetchWithFallback('https://rbcvoetbal.nl/wedstrijden');
+        const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
 
         // Parse all matches — structure: .game_date (date header), then .game_data rows
         const allDates = doc.querySelectorAll('.game_date');
