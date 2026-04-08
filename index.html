@@ -444,6 +444,43 @@ footer {
 footer a { color: #555; text-decoration: none; }
 footer a:hover { color: var(--orange); }
 
+/* ── DESKTOP NAV ────────────────────────────────────────── */
+.desktop-nav {
+    background: rgba(14,14,14,0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+@media (max-width: 768px) {
+    .desktop-nav { display: none; }
+}
+.desktop-nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+}
+.desktop-nav-link {
+    padding: 14px 22px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+.desktop-nav-link:hover { color: var(--text); }
+.desktop-nav-link.active {
+    color: var(--orange);
+    border-bottom-color: var(--orange);
+}
+
 /* ── FORM DOTS ───────────────────────────────────────────── */
 .form-dots {
     display: flex;
@@ -499,7 +536,7 @@ footer a:hover { color: var(--orange); }
     transition: color 0.15s;
     -webkit-tap-highlight-color: transparent;
 }
-.nav-tab svg { width: 18px; height: 18px; stroke-width: 1.8; }
+.nav-tab svg { width: 16px; height: 16px; stroke-width: 1.8; }
 .nav-tab.active { color: var(--orange); }
 .nav-tab-dot {
     width: 4px; height: 4px;
@@ -973,6 +1010,19 @@ footer a:hover { color: var(--orange); }
     </div>
 </header>
 
+<!-- DESKTOP NAV -->
+<nav class="desktop-nav" id="desktop-nav">
+    <div class="desktop-nav-inner">
+        <a href="#section-stand" class="desktop-nav-link active" data-section="section-stand">Stand</a>
+        <a href="#section-uitslagen" class="desktop-nav-link" data-section="section-uitslagen">Uitslagen</a>
+        <a href="#section-seizoen" class="desktop-nav-link" data-section="section-seizoen">Seizoen</a>
+        <a href="#section-periodes" class="desktop-nav-link" data-section="section-periodes">Periodes</a>
+        <a href="#section-wedstrijden" class="desktop-nav-link" data-section="section-wedstrijden">Programma</a>
+        <a href="#section-selectie" class="desktop-nav-link" data-section="section-selectie">Selectie</a>
+        <a href="#section-quiz" class="desktop-nav-link" data-section="section-quiz">Quiz</a>
+    </div>
+</nav>
+
 <!-- LIVE HERO (NOS TELETEKST) -->
 <div id="live-hero"></div>
 
@@ -1051,7 +1101,6 @@ footer a:hover { color: var(--orange); }
             <div class="loading-state"><div class="spinner"></div>Programma laden</div>
         </div>
     </div>
-</div>
 
     <!-- SELECTIE -->
     <div class="block" id="section-selectie">
@@ -1099,7 +1148,14 @@ footer a:hover { color: var(--orange); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
-        Uitslagen
+        Scores
+        <div class="nav-tab-dot"></div>
+    </button>
+    <button class="nav-tab" onclick="navTo('section-seizoen',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 20V10M12 20V4M6 20v-6"/>
+        </svg>
+        Seizoen
         <div class="nav-tab-dot"></div>
     </button>
     <button class="nav-tab" onclick="navTo('section-periodes',this)">
@@ -1113,7 +1169,15 @@ footer a:hover { color: var(--orange); }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
             <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
         </svg>
-        Programma
+        Schema
+        <div class="nav-tab-dot"></div>
+    </button>
+    <button class="nav-tab" onclick="navTo('section-selectie',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Selectie
         <div class="nav-tab-dot"></div>
     </button>
     <button class="nav-tab" onclick="navTo('section-quiz',this)">
@@ -1988,9 +2052,10 @@ function navTo(sectionId, btn) {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Highlight active tab on scroll
-const sections = ['section-stand','section-uitslagen','section-periodes','section-wedstrijden','section-quiz'];
+// Highlight active tab on scroll (mobile + desktop)
+const sections = ['section-stand','section-uitslagen','section-seizoen','section-periodes','section-wedstrijden','section-selectie','section-quiz'];
 const tabs = document.querySelectorAll('.nav-tab');
+const deskLinks = document.querySelectorAll('.desktop-nav-link');
 if ('IntersectionObserver' in window) {
     const obs = new IntersectionObserver(entries => {
         entries.forEach(entry => {
@@ -1999,12 +2064,30 @@ if ('IntersectionObserver' in window) {
                 if (idx >= 0) {
                     tabs.forEach(t => t.classList.remove('active'));
                     if (tabs[idx]) tabs[idx].classList.add('active');
+                    deskLinks.forEach(l => l.classList.remove('active'));
+                    if (deskLinks[idx]) deskLinks[idx].classList.add('active');
                 }
             }
         });
     }, { rootMargin: '-40% 0px -50% 0px' });
     sections.forEach(id => { const el = document.getElementById(id); if(el) obs.observe(el); });
 }
+
+// Desktop nav click handling
+deskLinks.forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        const sectionId = link.dataset.section;
+        const el = document.getElementById(sectionId);
+        if (el) {
+            const navH = document.querySelector('.desktop-nav')?.offsetHeight || 0;
+            const top = el.getBoundingClientRect().top + window.scrollY - navH - 8;
+            window.scrollTo({ top, behavior: 'smooth' });
+        }
+        deskLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+    });
+});
 
 // ── QUIZ ─────────────────────────────────────────────────
 const QUIZ_QUESTIONS = [
