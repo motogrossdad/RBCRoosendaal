@@ -621,35 +621,61 @@ footer a:hover { color: var(--orange); }
     -webkit-tap-highlight-color: transparent;
 }
 .quiz-next:hover { opacity: 0.88; }
-#ere-scoreboard {
-    background: #0c0c0c;
-    border-bottom: 1px solid var(--border);
+/* ── TITELRACE ────────────────────────────────────────────── */
+.tr-hint { color: var(--muted); font-size: 11px; padding: 0 0 12px; line-height: 1.5; }
+.tr-standings-wrap { padding: 0 0 4px; overflow-x: auto; }
+.tr-standings { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 320px; }
+.tr-standings thead th {
+    background: var(--card2); color: var(--muted);
+    font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    padding: 8px 10px; text-align: right;
 }
-.ere-pill {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 13px;
-    border-right: 1px solid var(--border);
-    font-size: 12px;
-    white-space: nowrap;
-    flex-shrink: 0;
+.tr-standings thead th.left { text-align: left; }
+.tr-standings td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; }
+.tr-standings tr:last-child td { border-bottom: none; }
+.tr-standings tr.rbc td { background: var(--orange-dim); color: var(--orange); font-weight: 700; }
+.tr-standings tr.first td { color: #fff; }
+.tr-standings .club { text-align: left; font-weight: 500; }
+.tr-standings .proj { color: #fff; font-weight: 800; }
+.tr-standings .delta { font-size: 10px; color: var(--muted); margin-left: 4px; }
+.tr-standings .delta.up { color: var(--green); }
+.tr-standings tr.rbc .proj { color: var(--orange); }
+.tr-fixtures-head {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--muted); padding: 16px 0 10px;
 }
-.ere-team { color: #888; font-weight: 500; font-size: 12px; }
-.ere-score {
-    font-weight: 800;
-    font-size: 12px;
-    color: #ccc;
-    background: var(--card2);
-    padding: 2px 7px;
-    border-radius: 4px;
-    letter-spacing: 1px;
+.tr-fixture {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 10px; padding: 10px 12px;
+    background: var(--card2); border: 1px solid var(--border); border-radius: 6px;
+    margin-bottom: 8px; align-items: center;
+}
+.tr-fix-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tr-fix-date { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.tr-fix-teams { font-size: 13px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.tr-fix-teams .t { font-weight: 500; }
+.tr-fix-teams .t.is-c { font-weight: 700; color: #fff; }
+.tr-fix-teams .t.is-rbc { color: var(--orange); }
+.tr-fix-teams .v { color: var(--muted); font-size: 10px; }
+.tr-picker { display: flex; gap: 4px; }
+.tr-picker button {
+    background: var(--card); border: 1px solid var(--border); color: var(--muted);
+    font-size: 11px; font-weight: 700;
+    padding: 6px 10px; border-radius: 4px; cursor: pointer;
     min-width: 32px;
-    text-align: center;
+    transition: all 0.12s;
+    -webkit-tap-highlight-color: transparent;
 }
-.ere-score.is-live { background: var(--red); color: #fff; animation: sb-pulse 1.4s ease-in-out infinite; }
-.ere-status { font-size: 8px; font-weight: 700; letter-spacing: 1px; color: var(--muted); }
-.ere-status.is-live { color: var(--red); }
+.tr-picker button:hover { border-color: var(--orange); color: #fff; }
+.tr-picker button.active { background: var(--orange); border-color: var(--orange); color: #000; }
+.tr-reset {
+    display: block; margin: 14px auto 0;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 8px 16px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
+}
+.tr-reset:hover { border-color: var(--orange); color: var(--orange); }
 #install-banner {
     display: none;
     position: fixed;
@@ -1033,13 +1059,6 @@ footer a:hover { color: var(--orange); }
     </div>
 </div>
 
-<!-- EREDIVISIE BAR -->
-<div id="ere-scoreboard" style="display:none">
-    <div class="sb-inner" id="ere-inner">
-        <span class="sb-label" id="ere-label" style="font-size:8px">Eredivisie</span>
-    </div>
-</div>
-
 <!-- MAIN -->
 <div class="main">
     <p class="updated-bar" id="updatedBar">Laden...</p>
@@ -1088,6 +1107,17 @@ footer a:hover { color: var(--orange); }
         </div>
         <div id="periodes-content">
             <div class="loading-state"><div class="spinner"></div>Periodes laden</div>
+        </div>
+    </div>
+
+    <!-- TITELRACE 3E PERIODE -->
+    <div class="block" id="section-titelrace">
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Titelrace 3e Periode</span>
+        </div>
+        <div id="titelrace-content">
+            <div class="loading-state"><div class="spinner"></div>Titelrace laden</div>
         </div>
     </div>
 
@@ -1678,56 +1708,193 @@ function buildUitslagen(doc) {
     return html;
 }
 
-// ── EREDIVISIE ────────────────────────────────────────────
-async function buildEredivisie() {
-    const board = document.getElementById('ere-scoreboard');
-    const inner = document.getElementById('ere-inner');
-    const label = document.getElementById('ere-label');
-    try {
-        const res = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/ned.1/scoreboard', { signal: AbortSignal.timeout(6000) });
-        if (!res.ok) return;
-        const data = await res.json();
-        const events = data.events || [];
-        if (!events.length) return;
+// ── TITELRACE 3E PERIODE ──────────────────────────────────
+const titelrace = { contenders: [], fixtures: [], picks: {} };
 
-        const now = new Date();
-        const h = now.getHours();
-        let pills = '';
-        let hasLive = false;
+function normClub(s) { return (s||'').trim().replace(/\s+/g,' ').toLowerCase(); }
+function parseGDNum(s) {
+    const m = (s||'').match(/-?\d+/);
+    return m ? parseInt(m[0],10) : 0;
+}
 
-        events.forEach(ev => {
-            const comp = ev.competitions?.[0];
-            if (!comp) return;
-            const home = comp.competitors?.find(c => c.homeAway === 'home');
-            const away = comp.competitors?.find(c => c.homeAway === 'away');
-            if (!home || !away) return;
-            const homeTeam = home.team?.shortDisplayName || home.team?.displayName || '?';
-            const awayTeam = away.team?.shortDisplayName || away.team?.displayName || '?';
-            const homeScore = home.score ?? '';
-            const awayScore = away.score ?? '';
-            const statusName = ev.status?.type?.name || '';
-            const isLive = statusName === 'STATUS_IN_PROGRESS' || statusName === 'STATUS_HALFTIME';
-            const isFinal = statusName === 'STATUS_FINAL';
-            const shortDetail = ev.status?.type?.shortDetail || '';
-            if (!isFinal && !isLive) return; // skip scheduled
-            if (isLive) hasLive = true;
-            const scoreDisplay = (homeScore !== '' && awayScore !== '') ? `${homeScore} - ${awayScore}` : '? - ?';
-            const statusLabel = isLive ? shortDetail || 'LIVE' : 'FT';
-            pills += `<div class="ere-pill">
-                <span class="ere-team">${homeTeam}</span>
-                <span class="ere-score${isLive ? ' is-live' : ''}">${scoreDisplay}</span>
-                <span class="ere-team">${awayTeam}</span>
-                <span class="ere-status${isLive ? ' is-live' : ''}">${statusLabel}</span>
+function buildTitelrace(doc) {
+    // 1) Periode 3 = last periodestand table on the page
+    let container = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Periodestanden')) continue;
+        let el = h2.parentElement;
+        while (el && !el.querySelector('table.league-sm,table[class*="league"]')) { el=el.parentElement; }
+        container = el || h2.closest('.card') || h2.parentElement;
+        break;
+    }
+    if (!container) return '<div class="error-state">Periodestand niet gevonden</div>';
+    const tables = container.querySelectorAll('table');
+    if (!tables.length) return '<div class="error-state">Geen periode-tabellen</div>';
+    const p3 = tables[tables.length - 1];
+    const rows = p3.querySelectorAll('tbody tr');
+    if (!rows.length) return '<div class="error-state">Periode 3 nog niet gestart</div>';
+
+    const teams = [];
+    rows.forEach(row => {
+        const c = row.querySelectorAll('th,td');
+        if (c.length < 4) return;
+        teams.push({
+            club: c[1].textContent.trim().replace(/\s+/g,' '),
+            played: parseInt(c[2].textContent.trim(),10)||0,
+            points: parseInt(c[3].textContent.trim(),10)||0,
+            gd: parseGDNum(c[4]?.textContent || '0')
+        });
+    });
+
+    // 2) RBC + teams at or above RBC's points
+    const rbc = teams.find(t => /^rbc$/i.test(t.club));
+    if (!rbc) return '<div class="error-state">RBC niet gevonden in periodestand</div>';
+    const contenders = teams.filter(t => t.points >= rbc.points);
+    const contenderKeys = new Set(contenders.map(t => normClub(t.club)));
+    titelrace.contenders = contenders;
+
+    // 3) Remaining fixtures involving any contender
+    let progContainer = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Programma')) continue;
+        let el = h2.parentElement;
+        while (el && !el.querySelector('#programma-target,table.match')) {
+            el = el.parentElement; if (!el||el.tagName==='BODY') break;
+        }
+        progContainer = el; break;
+    }
+    const fixtures = [];
+    if (progContainer) {
+        const matchTables = [...progContainer.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
+            const r = t.querySelector('td.result,td[class*="result"]');
+            if (!r) return false;
+            const txt = r.textContent.trim();
+            return txt.includes('uur') || !((/^\d/.test(txt)) && txt.includes('-'));
+        });
+        matchTables.forEach(t => {
+            const cap = t.querySelector('caption time,caption');
+            const date = cap ? cap.textContent.trim() : 'Onbekend';
+            t.querySelectorAll('tbody tr').forEach(row => {
+                const c = row.querySelectorAll('td');
+                if (c.length < 4) return;
+                const home = c[0].textContent.trim().replace(/\s+/g,' ');
+                const away = c[2].textContent.trim().replace(/\s+/g,' ');
+                const time = c[3].textContent.trim();
+                const hIn = contenderKeys.has(normClub(home));
+                const aIn = contenderKeys.has(normClub(away));
+                if (!hIn && !aIn) return;
+                fixtures.push({ id: `${date}|${home}|${away}`, date, home, away, time, hIn, aIn });
+            });
+        });
+    }
+    titelrace.fixtures = fixtures;
+
+    // Drop picks for fixtures that no longer exist (e.g. after a refresh)
+    const validIds = new Set(fixtures.map(f => f.id));
+    Object.keys(titelrace.picks).forEach(k => { if (!validIds.has(k)) delete titelrace.picks[k]; });
+
+    return renderTitelrace();
+}
+
+function renderTitelrace() {
+    const proj = {};
+    titelrace.contenders.forEach(c => { proj[normClub(c.club)] = c.points; });
+    titelrace.fixtures.forEach(f => {
+        const pick = titelrace.picks[f.id];
+        if (!pick) return;
+        const hk = normClub(f.home), ak = normClub(f.away);
+        if (pick === 'home') { if (proj[hk]!=null) proj[hk] += 3; }
+        else if (pick === 'away') { if (proj[ak]!=null) proj[ak] += 3; }
+        else if (pick === 'draw') {
+            if (proj[hk]!=null) proj[hk] += 1;
+            if (proj[ak]!=null) proj[ak] += 1;
+        }
+    });
+
+    const ranked = titelrace.contenders.map(c => {
+        const p = proj[normClub(c.club)] ?? c.points;
+        return { ...c, projPoints: p, delta: p - c.points };
+    }).sort((a,b) => b.projPoints - a.projPoints || b.gd - a.gd);
+
+    const picksUsed = Object.keys(titelrace.picks).length;
+
+    let html = `<p class="tr-hint">Teams met gelijk of meer punten dan RBC in periode 3. Tik <b>1</b> (thuis wint), <b>X</b> (gelijk) of <b>2</b> (uit wint) om de stand te simuleren.</p>
+    <div class="tr-standings-wrap">
+    <table class="tr-standings">
+        <thead><tr>
+            <th class="left" style="width:24px">#</th>
+            <th class="left">Club</th>
+            <th>Wed</th>
+            <th>Pnt</th>
+            <th>Proj</th>
+            <th>DS</th>
+        </tr></thead><tbody>`;
+    ranked.forEach((t,i) => {
+        const isRBC = /^rbc$/i.test(t.club);
+        const cls = [isRBC?'rbc':'', i===0?'first':''].filter(Boolean).join(' ');
+        html += `<tr class="${cls}">
+            <td>${i+1}</td>
+            <td class="club">${i===0&&!isRBC?'&#x1F947; ':''}${t.club}</td>
+            <td>${t.played}</td>
+            <td>${t.points}</td>
+            <td class="proj">${t.projPoints}${t.delta>0?`<span class="delta up">+${t.delta}</span>`:''}</td>
+            <td>${t.gd>0?'+':''}${t.gd}</td>
+        </tr>`;
+    });
+    html += `</tbody></table></div>`;
+
+    if (!titelrace.fixtures.length) {
+        html += '<div class="error-state" style="margin-top:14px">Geen resterende wedstrijden voor deze teams</div>';
+        return html;
+    }
+
+    html += `<div class="tr-fixtures-head">Resterende wedstrijden &mdash; ${titelrace.fixtures.length}${picksUsed?` (${picksUsed} ingevuld)`:''}</div>`;
+    const byDate = {}, order = [];
+    titelrace.fixtures.forEach(f => { if (!byDate[f.date]) { byDate[f.date]=[]; order.push(f.date); } byDate[f.date].push(f); });
+    order.forEach(date => {
+        byDate[date].forEach(f => {
+            const pick = titelrace.picks[f.id];
+            const rbcH = /^rbc$/i.test(f.home), rbcA = /^rbc$/i.test(f.away);
+            const fid = f.id.replace(/"/g,'&quot;');
+            html += `<div class="tr-fixture">
+                <div class="tr-fix-main">
+                    <div class="tr-fix-date">${f.date} &bull; ${f.time}</div>
+                    <div class="tr-fix-teams">
+                        <span class="t ${f.hIn?'is-c':''} ${rbcH?'is-rbc':''}">${f.home}</span>
+                        <span class="v">vs</span>
+                        <span class="t ${f.aIn?'is-c':''} ${rbcA?'is-rbc':''}">${f.away}</span>
+                    </div>
+                </div>
+                <div class="tr-picker" data-fix="${fid}">
+                    <button data-pick="home" class="${pick==='home'?'active':''}">1</button>
+                    <button data-pick="draw" class="${pick==='draw'?'active':''}">X</button>
+                    <button data-pick="away" class="${pick==='away'?'active':''}">2</button>
+                </div>
             </div>`;
         });
-
-        if (!pills) return;
-        label.textContent = hasLive ? '🔴 Eredivisie' : 'Eredivisie';
-        inner.querySelectorAll('.ere-pill').forEach(el => el.remove());
-        inner.insertAdjacentHTML('beforeend', pills);
-        board.style.display = 'block';
-    } catch(e) { /* silent fail */ }
+    });
+    html += `<button class="tr-reset" onclick="resetTitelrace()">Reset voorspellingen</button>`;
+    return html;
 }
+
+function pickTitelrace(fixId, pick) {
+    if (titelrace.picks[fixId] === pick) delete titelrace.picks[fixId];
+    else titelrace.picks[fixId] = pick;
+    const el = document.getElementById('titelrace-content');
+    if (el) el.innerHTML = renderTitelrace();
+}
+function resetTitelrace() {
+    titelrace.picks = {};
+    const el = document.getElementById('titelrace-content');
+    if (el) el.innerHTML = renderTitelrace();
+}
+document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.tr-picker button');
+    if (!btn) return;
+    const picker = btn.closest('.tr-picker');
+    if (!picker || !picker.dataset.fix) return;
+    pickTitelrace(picker.dataset.fix, btn.dataset.pick);
+});
 
 // ── MAIN ──────────────────────────────────────────────────
 async function load(fullRefresh = true) {
@@ -1736,12 +1903,12 @@ async function load(fullRefresh = true) {
         const doc = new DOMParser().parseFromString(html, 'text/html');
 
         buildScoreboard(doc);
-        buildEredivisie();
         buildSpotlight(doc);
 
         if (fullRefresh) {
             document.getElementById('stand-content').innerHTML    = buildStand(doc);
             document.getElementById('periodes-content').innerHTML = buildPeriodes(doc);
+            document.getElementById('titelrace-content').innerHTML= buildTitelrace(doc);
             document.getElementById('programma-content').innerHTML= buildProgramma(doc);
             document.getElementById('uitslagen-content').innerHTML= buildUitslagen(doc);
 
@@ -1755,7 +1922,7 @@ async function load(fullRefresh = true) {
         if (fullRefresh) {
             const errHTML = `<div class="error-state">Kon data niet laden.<br><br>
                 <a href="${SOURCE}" target="_blank" rel="noopener">Bekijk op HollandseVelden.nl &rarr;</a></div>`;
-            ['stand-content','uitslagen-content','periodes-content','programma-content'].forEach(id => {
+            ['stand-content','uitslagen-content','periodes-content','titelrace-content','programma-content'].forEach(id => {
                 document.getElementById(id).innerHTML = errHTML;
             });
             document.getElementById('updatedBar').textContent = '';
@@ -1785,7 +1952,6 @@ function installApp() {
 
 load(true);
 setInterval(() => load(false), 60000);
-setInterval(() => buildEredivisie(), 60000);
 
 // ── SEIZOEN RBC 1 (rbcvoetbal.nl) ────────────────────────
 async function loadSeizoen() {
