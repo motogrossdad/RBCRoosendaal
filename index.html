@@ -1717,7 +1717,10 @@ function parseGDNum(s) {
     return m ? parseInt(m[0],10) : 0;
 }
 
-function buildTitelrace(doc) {
+let _progDocCache = null;
+const FULL_PROGRAMMA_URL = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/programma/';
+
+async function buildTitelrace(doc) {
     // 1) Periode 3 = last periodestand table on the page
     let container = null;
     for (const h2 of doc.querySelectorAll('h2')) {
@@ -1753,40 +1756,40 @@ function buildTitelrace(doc) {
     const contenderKeys = new Set(contenders.map(t => normClub(t.club)));
     titelrace.contenders = contenders;
 
-    // 3) Remaining fixtures involving any contender
-    let progContainer = null;
-    for (const h2 of doc.querySelectorAll('h2')) {
-        if (!h2.textContent.includes('Programma')) continue;
-        let el = h2.parentElement;
-        while (el && !el.querySelector('#programma-target,table.match')) {
-            el = el.parentElement; if (!el||el.tagName==='BODY') break;
+    // 3) Full remaining schedule from /programma/ (overview page only has next round)
+    let progDoc = _progDocCache;
+    if (!progDoc) {
+        try {
+            const progHtml = await fetchWithFallback(FULL_PROGRAMMA_URL);
+            progDoc = new DOMParser().parseFromString(progHtml, 'text/html');
+            _progDocCache = progDoc;
+        } catch(e) {
+            progDoc = doc; // fallback: overview page (next round only)
         }
-        progContainer = el; break;
     }
+
     const fixtures = [];
-    if (progContainer) {
-        const matchTables = [...progContainer.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
-            const r = t.querySelector('td.result,td[class*="result"]');
-            if (!r) return false;
-            const txt = r.textContent.trim();
-            return txt.includes('uur') || !((/^\d/.test(txt)) && txt.includes('-'));
+    const matchTables = [...progDoc.querySelectorAll('table.match,table[class*="match"]')].filter(t => {
+        const r = t.querySelector('td.result,td[class*="result"]');
+        if (!r) return false;
+        const txt = r.textContent.trim();
+        return txt.includes('uur') || !((/^\d/.test(txt)) && txt.includes('-'));
+    });
+    matchTables.forEach(t => {
+        const cap = t.querySelector('caption time,caption');
+        const date = cap ? cap.textContent.trim() : 'Onbekend';
+        t.querySelectorAll('tbody tr').forEach(row => {
+            const c = row.querySelectorAll('td');
+            if (c.length < 4) return;
+            const home = c[0].textContent.trim().replace(/\s+/g,' ');
+            const away = c[2].textContent.trim().replace(/\s+/g,' ');
+            const time = c[3].textContent.trim();
+            const hIn = contenderKeys.has(normClub(home));
+            const aIn = contenderKeys.has(normClub(away));
+            if (!hIn && !aIn) return;
+            fixtures.push({ id: `${date}|${home}|${away}`, date, home, away, time, hIn, aIn });
         });
-        matchTables.forEach(t => {
-            const cap = t.querySelector('caption time,caption');
-            const date = cap ? cap.textContent.trim() : 'Onbekend';
-            t.querySelectorAll('tbody tr').forEach(row => {
-                const c = row.querySelectorAll('td');
-                if (c.length < 4) return;
-                const home = c[0].textContent.trim().replace(/\s+/g,' ');
-                const away = c[2].textContent.trim().replace(/\s+/g,' ');
-                const time = c[3].textContent.trim();
-                const hIn = contenderKeys.has(normClub(home));
-                const aIn = contenderKeys.has(normClub(away));
-                if (!hIn && !aIn) return;
-                fixtures.push({ id: `${date}|${home}|${away}`, date, home, away, time, hIn, aIn });
-            });
-        });
-    }
+    });
     titelrace.fixtures = fixtures;
 
     // Drop picks for fixtures that no longer exist (e.g. after a refresh)
@@ -1908,7 +1911,7 @@ async function load(fullRefresh = true) {
         if (fullRefresh) {
             document.getElementById('stand-content').innerHTML    = buildStand(doc);
             document.getElementById('periodes-content').innerHTML = buildPeriodes(doc);
-            document.getElementById('titelrace-content').innerHTML= buildTitelrace(doc);
+            document.getElementById('titelrace-content').innerHTML= await buildTitelrace(doc);
             document.getElementById('programma-content').innerHTML= buildProgramma(doc);
             document.getElementById('uitslagen-content').innerHTML= buildUitslagen(doc);
 
