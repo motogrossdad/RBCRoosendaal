@@ -1,4 +1,4 @@
-const CACHE = 'rbc-v1';
+const CACHE = 'rbc-v2-2026-2027';
 const ASSETS = ['/', '/index.html'];
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
@@ -10,9 +10,10 @@ self.addEventListener('activate', e => {
     self.clients.claim();
 });
 self.addEventListener('fetch', e => {
-    if (e.request.url.includes('hollandsevelden') || e.request.url.includes('allorigins') ||
-        e.request.url.includes('corsproxy') || e.request.url.includes('codetabs') ||
-        e.request.url.includes('fonts.google')) return;
+    // Never cache live data or the CORS proxies that fetch it.
+    const bypass = ['hollandsevelden', 'rbcvoetbal', 'sofascore', 'svsplus', 'nos.nl',
+                    'allorigins', 'codetabs', 'cors.lol', 'fonts.google'];
+    if (bypass.some(h => e.request.url.includes(h))) return;
     e.respondWith(
         fetch(e.request).catch(() => caches.match(e.request))
     );

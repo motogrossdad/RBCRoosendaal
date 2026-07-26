@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="RBC">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/rbc.png">
-<title>RBC Roosendaal – Derde Divisie B 2025/2026</title>
+<title>RBC Roosendaal – Derde Divisie B 2026/2027</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -944,6 +944,111 @@ footer a:hover { color: var(--orange); }
 .live-hero-x-btn:hover { background: #1a1a1a; border-color: #555; }
 .live-hero-x-btn svg { width: 16px; height: 16px; fill: #fff; flex-shrink: 0; }
 
+/* ── NIEUWS ──────────────────────────────────────────────── */
+.news-item {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+}
+.news-item:last-child { border-bottom: none; }
+.news-item.no-img { grid-template-columns: 1fr; }
+.news-thumb {
+    width: 92px; height: 68px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #1a1a1a;
+    display: block;
+}
+.news-date {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 4px;
+}
+.news-title {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 5px;
+}
+.news-title a { color: inherit; text-decoration: none; }
+.news-title a:hover { color: var(--orange); }
+.news-excerpt {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.news-more {
+    display: block;
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.news-more:hover { color: var(--orange); border-color: var(--orange); }
+
+/* ── TRANSFERS ───────────────────────────────────────────── */
+.tf-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+@media (max-width: 600px) { .tf-cols { grid-template-columns: 1fr; gap: 22px; } }
+.tf-head {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+}
+.tf-head.in { color: var(--green); }
+.tf-head.out { color: var(--red); }
+.tf-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.tf-row:last-child { border-bottom: none; }
+.tf-name { font-size: 13px; font-weight: 600; }
+.tf-pos {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin-left: 6px;
+}
+.tf-club {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: right;
+    flex-shrink: 0;
+    max-width: 45%;
+}
+
 /* ── SEASON HISTORY ──────────────────────────────────────── */
 .season-stats {
     display: grid;
@@ -1031,7 +1136,7 @@ footer a:hover { color: var(--orange); }
 <header>
     <div class="logo-badge">
         <div class="logo-text">RBC <span>Roosendaal</span></div>
-        <div class="logo-sub">Derde Divisie B &mdash; 2025/2026</div>
+        <div class="logo-sub">Derde Divisie B &mdash; <span data-season></span></div>
         <div class="header-divider"></div>
     </div>
 </header>
@@ -1041,6 +1146,7 @@ footer a:hover { color: var(--orange); }
     <div class="desktop-nav-inner">
         <a href="#section-stand" class="desktop-nav-link active" data-section="section-stand">Stand</a>
         <a href="#section-uitslagen" class="desktop-nav-link" data-section="section-uitslagen">Uitslagen</a>
+        <a href="#section-nieuws" class="desktop-nav-link" data-section="section-nieuws">Nieuws</a>
         <a href="#section-seizoen" class="desktop-nav-link" data-section="section-seizoen">Seizoen</a>
         <a href="#section-periodes" class="desktop-nav-link" data-section="section-periodes">Periodes</a>
         <a href="#section-wedstrijden" class="desktop-nav-link" data-section="section-wedstrijden">Programma</a>
@@ -1088,11 +1194,33 @@ footer a:hover { color: var(--orange); }
         </div>
     </div>
 
+    <!-- NIEUWS (rbcvoetbal.nl) -->
+    <div class="block" id="section-nieuws">
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Clubnieuws</span>
+        </div>
+        <div id="nieuws-content">
+            <div class="loading-state"><div class="spinner"></div>Nieuws laden</div>
+        </div>
+    </div>
+
+    <!-- TRANSFERS (Sofascore) -->
+    <div class="block" id="section-transfers">
+        <div class="section-header">
+            <div class="section-header-bar"></div>
+            <span class="section-title">Transfers &mdash; <span data-season></span></span>
+        </div>
+        <div id="transfers-content">
+            <div class="loading-state"><div class="spinner"></div>Transfers laden</div>
+        </div>
+    </div>
+
     <!-- SEIZOEN RBC 1 -->
     <div class="block" id="section-seizoen">
         <div class="section-header">
             <div class="section-header-bar"></div>
-            <span class="section-title">Seizoen RBC 1 &mdash; 2025/2026</span>
+            <span class="section-title">Seizoen RBC 1 &mdash; <span data-season></span></span>
         </div>
         <div id="seizoen-content">
             <div class="loading-state"><div class="spinner"></div>Seizoensoverzicht laden</div>
@@ -1136,7 +1264,7 @@ footer a:hover { color: var(--orange); }
     <div class="block" id="section-selectie">
         <div class="section-header">
             <div class="section-header-bar"></div>
-            <span class="section-title">Selectie &mdash; 2025/2026</span>
+            <span class="section-title">Selectie &mdash; <span data-season></span></span>
         </div>
         <div class="squad-grid" id="squad-grid">
             <div class="loading-state"><div class="spinner"></div>Selectie laden</div>
@@ -1161,7 +1289,9 @@ footer a:hover { color: var(--orange); }
 
 <footer>
     &copy; 2026 RBC Roosendaal Fansite &nbsp;&bull;&nbsp;
-    Data: <a href="https://www.hollandsevelden.nl/" target="_blank" rel="noopener">HollandseVelden.nl</a>
+    Data: <a href="https://www.hollandsevelden.nl/" target="_blank" rel="noopener">HollandseVelden.nl</a>,
+    <a href="https://rbcvoetbal.nl/" target="_blank" rel="noopener">rbcvoetbal.nl</a>,
+    <a href="https://www.sofascore.com/nl/football/team/rbc-roosendaal/2969" target="_blank" rel="noopener">Sofascore</a>
 </footer>
 
 <!-- BOTTOM NAV -->
@@ -1179,6 +1309,14 @@ footer a:hover { color: var(--orange); }
             <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
         </svg>
         Scores
+        <div class="nav-tab-dot"></div>
+    </button>
+    <button class="nav-tab" onclick="navTo('section-nieuws',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9h4"/>
+            <path d="M18 14h-8M18 18h-8M18 6h-8v4h8Z"/>
+        </svg>
+        Nieuws
         <div class="nav-tab-dot"></div>
     </button>
     <button class="nav-tab" onclick="navTo('section-seizoen',this)">
@@ -1220,11 +1358,17 @@ footer a:hover { color: var(--orange); }
 </nav>
 
 <script>
-const SOURCE = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/';
+const SEASON = '2026-2027';
+const SEASON_LABEL = '2026/2027';
+// Stamp the season into every label that carries it, so a new season is a one-line change.
+document.querySelectorAll('[data-season]').forEach(el => el.textContent = SEASON_LABEL);
+document.title = `RBC Roosendaal \u2013 Derde Divisie B ${SEASON_LABEL}`;
+const SOURCE = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/`;
+// corsproxy.io requires a paid plan since 2026 — removed.
 const PROXIES = [
     'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-    'https://api.codetabs.com/v1/proxy?quest='
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.cors.lol/?url='
 ];
 
 async function fetchWithFallback(url) {
@@ -1718,7 +1862,7 @@ function parseGDNum(s) {
 }
 
 let _progDocCache = null;
-const FULL_PROGRAMMA_URL = 'https://www.hollandsevelden.nl/competities/2025-2026/landelijk/derde-divisie-b/programma/';
+const FULL_PROGRAMMA_URL = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/programma/`;
 
 async function buildTitelrace(doc) {
     // 1) Periode 3 = last periodestand table on the page
@@ -2222,7 +2366,7 @@ function navTo(sectionId, btn) {
 }
 
 // Highlight active tab on scroll (mobile + desktop)
-const sections = ['section-stand','section-uitslagen','section-seizoen','section-periodes','section-wedstrijden','section-selectie','section-quiz'];
+const sections = ['section-stand','section-uitslagen','section-nieuws','section-seizoen','section-periodes','section-wedstrijden','section-selectie','section-quiz'];
 const tabs = document.querySelectorAll('.nav-tab');
 const deskLinks = document.querySelectorAll('.desktop-nav-link');
 if ('IntersectionObserver' in window) {
@@ -2377,38 +2521,238 @@ function quizNext() {
 
 quizInit();
 
-// ── SQUAD ────────────────────────────────────────────────
+// ── CLUBNIEUWS (rbcvoetbal.nl) ────────────────────────────
+const NIEUWS_HOME = 'https://rbcvoetbal.nl/';
+const NIEUWS_ARCHIVE = 'https://rbcvoetbal.nl/nieuws';
+
+function absUrl(href) {
+    if (!href) return NIEUWS_ARCHIVE;
+    if (href.startsWith('//')) return 'https:' + href;
+    if (href.startsWith('/')) return 'https://rbcvoetbal.nl' + href;
+    return href;
+}
+
+// Homepage carries the 3 newest items in a small (~40KB) payload — fast first paint.
+function parseNieuwsHome(doc) {
+    const out = [];
+    const wrap = doc.querySelector('.news');
+    if (!wrap) return out;
+    wrap.querySelectorAll('.row').forEach(row => {
+        const h3 = row.querySelector('h3');
+        const link = row.querySelector('a[href*="nieuws/"]');
+        if (!h3 || !link) return;
+        const title = h3.textContent.trim();
+        if (/^nieuwsarchief$/i.test(title)) return; // permanent pointer post, not news
+        const span = row.querySelector('span');
+        const img = row.querySelector('img');
+        const p = row.querySelector('div[style*="break-word"]');
+        out.push({
+            title,
+            date: span ? span.textContent.trim() : '',
+            excerpt: p ? p.textContent.trim().replace(/\s+/g, ' ') : '',
+            img: img ? img.getAttribute('src') : null,
+            url: absUrl(link.getAttribute('href'))
+        });
+    });
+    return out;
+}
+
+// Full archive (~1.8MB) — newest first. Only fetched in the background.
+// Each .row.post is [.col-sm-3 = optional thumb link][.col-sm-9 = title link + body].
+// The thumb's <a> also points at nieuws/ but has no text, so scope to .col-sm-9.
+function parseNieuwsArchive(doc, limit) {
+    const out = [];
+    for (const post of doc.querySelectorAll('.newsArchive .row.post')) {
+        const body = post.querySelector('.col-sm-9');
+        if (!body) continue;
+        const link = [...body.querySelectorAll('a[href*="nieuws/"]')]
+            .find(a => a.textContent.trim() && !/lees\s*meer/i.test(a.textContent));
+        if (!link) continue;
+        const raw = link.textContent.trim();
+        const m = raw.match(/^(\d{2}-\d{2}-\d{4})\s*:\s*(.+)$/);
+        const title = m ? m[2] : raw;
+        if (/^nieuwsarchief$/i.test(title)) continue;
+
+        // The styled <p> wrapper is emptied by HTML tag-soup repair, so take the
+        // body text with every link stripped out instead.
+        const clone = body.cloneNode(true);
+        clone.querySelectorAll('a').forEach(a => a.remove());
+        const excerpt = clone.textContent.trim().replace(/\s+/g, ' ');
+
+        const img = post.querySelector('.col-sm-3 img');
+        out.push({
+            title,
+            date: m ? m[1] : '',
+            excerpt,
+            img: img ? img.getAttribute('src') : null,
+            url: absUrl(link.getAttribute('href'))
+        });
+        if (out.length >= limit) break;
+    }
+    return out;
+}
+
+function renderNieuws(items, partial) {
+    if (!items.length) {
+        return '<div class="error-state">Geen nieuws gevonden.<br><a href="' + NIEUWS_ARCHIVE + '" target="_blank" rel="noopener">Bekijk op rbcvoetbal.nl &rarr;</a></div>';
+    }
+    let html = items.map(n => `
+        <div class="news-item${n.img ? '' : ' no-img'}">
+            ${n.img ? `<img class="news-thumb" src="${n.img}" alt="" loading="lazy"
+                 onerror="this.closest('.news-item').classList.add('no-img'); this.remove()">` : ''}
+            <div>
+                ${n.date ? `<div class="news-date">${n.date}</div>` : ''}
+                <div class="news-title"><a href="${n.url}" target="_blank" rel="noopener">${n.title}</a></div>
+                ${n.excerpt ? `<div class="news-excerpt">${n.excerpt}</div>` : ''}
+            </div>
+        </div>`).join('');
+    html += partial
+        ? '<div class="tr-hint" style="margin-top:12px">Meer nieuws laden&hellip;</div>'
+        : `<a class="news-more" href="${NIEUWS_ARCHIVE}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Volledig nieuwsarchief &rarr;</a>`;
+    return html;
+}
+
+async function loadNieuws() {
+    const el = document.getElementById('nieuws-content');
+    let shown = false;
+    try {
+        const doc = new DOMParser().parseFromString(await fetchWithFallback(NIEUWS_HOME), 'text/html');
+        const items = parseNieuwsHome(doc);
+        if (items.length) { el.innerHTML = renderNieuws(items, true); shown = true; }
+    } catch (e) { /* fall through to archive */ }
+
+    try {
+        const doc = new DOMParser().parseFromString(await fetchWithFallback(NIEUWS_ARCHIVE), 'text/html');
+        const items = parseNieuwsArchive(doc, 10);
+        if (items.length) { el.innerHTML = renderNieuws(items, false); return; }
+    } catch (e) { /* keep whatever the homepage gave us */ }
+
+    if (!shown) {
+        el.innerHTML = '<div class="error-state">Nieuws kon niet geladen worden.<br><a href="' + NIEUWS_ARCHIVE + '" target="_blank" rel="noopener">Bekijk op rbcvoetbal.nl &rarr;</a></div>';
+    } else {
+        el.innerHTML = el.innerHTML.replace('Meer nieuws laden&hellip;', '') +
+            `<a class="news-more" href="${NIEUWS_ARCHIVE}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Volledig nieuwsarchief &rarr;</a>`;
+    }
+}
+loadNieuws();
+
+// ── SOFASCORE (selectie + transfers) ──────────────────────
+const SOFASCORE_TEAM = 'https://www.sofascore.com/nl/football/team/rbc-roosendaal/2969';
+const POS_LABEL = { G: 'K', D: 'V', M: 'M', F: 'A' };
+
+function flagEmoji(alpha2) {
+    if (!alpha2 || alpha2.length !== 2) return '\u{1F3F3}';
+    return String.fromCodePoint(...[...alpha2.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+}
+
+// RBC's own photo library keys files on name-slug + shirt number.
+function svsPhoto(name, number) {
+    const slug = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return `https://rbc.svsplus.nl/php/image.php?image=${slug}-${number}-.jpg&category=members`;
+}
+
+// Sofascore's own JSON API is Cloudflare-gated, but the team page ships the
+// same payload server-side in __NEXT_DATA__.
+async function fetchSofascore() {
+    const html = await fetchWithFallback(SOFASCORE_TEAM);
+    const m = html.match(/id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+    const json = m ? m[1] : html.slice(html.indexOf('{"props"'));
+    return JSON.parse(json).props.pageProps;
+}
+
+function renderTransfers(tf) {
+    const side = (list, dir) => {
+        if (!list || !list.length) return '<div class="tf-row"><span class="tf-club">Geen</span></div>';
+        return list.map(e => {
+            const p = e.player || {};
+            // The flat *TeamName fields are the reliable ones — the nested
+            // transferFrom/transferTo objects are missing on some records.
+            const nested = (dir === 'in' ? e.transferFrom : e.transferTo) || {};
+            let club = (dir === 'in' ? e.fromTeamName : e.toTeamName) || nested.name || '';
+            if (/^no team$/i.test(club)) club = 'Clubloos';
+            else if (/^retired$/i.test(club)) club = 'Gestopt';
+            else if (/^RBC/i.test(club)) club = dir === 'in' ? 'Eigen jeugd' : 'Vertrokken';
+            const pos = POS_LABEL[p.position] || '';
+            return `<div class="tf-row">
+                <span class="tf-name">${p.name || '&ndash;'}${pos ? `<span class="tf-pos">${pos}</span>` : ''}</span>
+                <span class="tf-club">${club || (dir === 'in' ? 'Onbekend' : 'Vertrokken')}</span>
+            </div>`;
+        }).join('');
+    };
+    return `<div class="tf-cols">
+        <div>
+            <div class="tf-head in">&darr; Inkomend</div>
+            ${side(tf.transfersIn, 'in')}
+        </div>
+        <div>
+            <div class="tf-head out">&uarr; Uitgaand</div>
+            ${side(tf.transfersOut, 'out')}
+        </div>
+    </div>
+    <p class="tr-hint" style="margin-top:14px">Bron: Sofascore &mdash; transferoverzicht ${SEASON_LABEL}.</p>`;
+}
+
+function renderSquad(squad) {
+    return squad.map(p => `
+        <div class="squad-card" ontouchstart="this.classList.add('touched')" ontouchend="setTimeout(()=>this.classList.remove('touched'),800)">
+            <div class="squad-img-wrap">
+                <span class="squad-number">${p.number}</span>
+                <img class="squad-img" src="${p.photo}" alt="${p.name}" loading="lazy"
+                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23222%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22210%22 fill=%22%23444%22 font-size=%2240%22 text-anchor=%22middle%22>${p.number}</text></svg>'">
+                <img class="squad-badge" src="/rbc.png" alt="RBC">
+                <div class="squad-hand"></div>
+            </div>
+            <div class="squad-info">
+                <div class="squad-name">${p.name}</div>
+                <div class="squad-flag">${p.flag}</div>
+            </div>
+        </div>`).join('');
+}
+
+async function loadSofascore() {
+    const tfEl = document.getElementById('transfers-content');
+    const grid = document.getElementById('squad-grid');
+    try {
+        const pp = await fetchSofascore();
+
+        tfEl.innerHTML = renderTransfers(pp.teamTransfers || {});
+
+        const players = ((pp.players || {}).players || [])
+            .map(e => e.player)
+            .filter(p => p && p.jerseyNumber)
+            .map(p => ({
+                number: parseInt(p.jerseyNumber, 10),
+                name: p.name,
+                flag: flagEmoji((p.country || {}).alpha2),
+                photo: svsPhoto(p.name, parseInt(p.jerseyNumber, 10))
+            }))
+            .sort((a, b) => a.number - b.number);
+
+        if (players.length) { grid.innerHTML = renderSquad(players); return; }
+    } catch (e) {
+        tfEl.innerHTML = '<div class="error-state">Transfers kon niet geladen worden.<br><a href="' + SOFASCORE_TEAM + '" target="_blank" rel="noopener">Bekijk op Sofascore &rarr;</a></div>';
+    }
+    loadSquad(); // data.json fallback
+}
+loadSofascore();
+
+// ── SQUAD (fallback: data.json) ──────────────────────────
 function loadSquad() {
     fetch('data.json?v=' + Date.now())
         .then(r => r.json())
         .then(data => {
             const grid = document.getElementById('squad-grid');
-            const squad = (data.squad || []).sort((a,b) => a.number - b.number);
+            const squad = (data.squad || [])
+                .map(p => ({ number: p.number, name: p.name, photo: p.photo, flag: flagEmoji(p.nationality) }))
+                .sort((a, b) => a.number - b.number);
             if (!squad.length) { grid.innerHTML = '<div class="error-state">Geen selectie data</div>'; return; }
-
-            const flags = { NL: '\u{1F1F3}\u{1F1F1}', BR: '\u{1F1E7}\u{1F1F7}', BE: '\u{1F1E7}\u{1F1EA}' };
-
-            grid.innerHTML = squad.map(p => `
-                <div class="squad-card" ontouchstart="this.classList.add('touched')" ontouchend="setTimeout(()=>this.classList.remove('touched'),800)">
-                    <div class="squad-img-wrap">
-                        <span class="squad-number">${p.number}</span>
-                        <img class="squad-img" src="${p.photo}" alt="${p.name}" loading="lazy"
-                             onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23222%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22210%22 fill=%22%23444%22 font-size=%2240%22 text-anchor=%22middle%22>${p.number}</text></svg>'">
-                        <img class="squad-badge" src="/rbc.png" alt="RBC">
-                        <div class="squad-hand"></div>
-                    </div>
-                    <div class="squad-info">
-                        <div class="squad-name">${p.name}</div>
-                        <div class="squad-flag">${flags[p.nationality] || '\u{1F1F3}\u{1F1F1}'}</div>
-                    </div>
-                </div>
-            `).join('');
+            grid.innerHTML = renderSquad(squad);
         })
         .catch(() => {
             document.getElementById('squad-grid').innerHTML = '<div class="error-state">Selectie kon niet geladen worden</div>';
         });
 }
-loadSquad();
 </script>
 <button id="install-banner" onclick="installApp()">&#x2B07; Installeer App</button>
 </body>
