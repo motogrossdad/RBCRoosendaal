@@ -1291,7 +1291,8 @@ footer a:hover { color: var(--orange); }
     &copy; 2026 RBC Roosendaal Fansite &nbsp;&bull;&nbsp;
     Data: <a href="https://www.hollandsevelden.nl/" target="_blank" rel="noopener">HollandseVelden.nl</a>,
     <a href="https://rbcvoetbal.nl/" target="_blank" rel="noopener">rbcvoetbal.nl</a>,
-    <a href="https://www.sofascore.com/nl/football/team/rbc-roosendaal/2969" target="_blank" rel="noopener">Sofascore</a>
+    <a href="https://www.sofascore.com/nl/football/team/rbc-roosendaal/2969" target="_blank" rel="noopener">Sofascore</a>,
+    <a href="https://www.transfermarkt.nl/rbc-roosendaal/kader/verein/1227" target="_blank" rel="noopener">Transfermarkt</a>
 </footer>
 
 <!-- BOTTOM NAV -->
@@ -2645,11 +2646,17 @@ function flagEmoji(alpha2) {
     return String.fromCodePoint(...[...alpha2.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
 }
 
-// RBC's own photo library keys files on name-slug + shirt number.
-function svsPhoto(name, number) {
-    const slug = name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+function nameSlug(name) {
+    return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    return `https://rbc.svsplus.nl/php/image.php?image=${slug}-${number}-.jpg&category=members`;
+}
+
+// Portraits are curated locally under players/ — RBC's public library only
+// covers players who were already on the books last season, and it keys files
+// on the OLD shirt number, so it can't be derived from the live squad.
+let PHOTOS = {};
+function playerPhoto(name) {
+    return PHOTOS[name] || PHOTOS[nameSlug(name)] || null;
 }
 
 // Sofascore's own JSON API is Cloudflare-gated, but the team page ships the
@@ -2693,13 +2700,22 @@ function renderTransfers(tf) {
     <p class="tr-hint" style="margin-top:14px">Bron: Sofascore &mdash; transferoverzicht ${SEASON_LABEL}.</p>`;
 }
 
+// Players without a published portrait get a number tile rather than a
+// request for a URL we already know doesn't exist.
+function numberTile(number) {
+    return 'data:image/svg+xml,' + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">` +
+        `<rect fill="#222" width="300" height="400"/>` +
+        `<text x="150" y="210" fill="#444" font-size="40" text-anchor="middle">${number}</text></svg>`);
+}
+
 function renderSquad(squad) {
     return squad.map(p => `
         <div class="squad-card" ontouchstart="this.classList.add('touched')" ontouchend="setTimeout(()=>this.classList.remove('touched'),800)">
             <div class="squad-img-wrap">
                 <span class="squad-number">${p.number}</span>
-                <img class="squad-img" src="${p.photo}" alt="${p.name}" loading="lazy"
-                     onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%23222%22 width=%22300%22 height=%22400%22/><text x=%22150%22 y=%22210%22 fill=%22%23444%22 font-size=%2240%22 text-anchor=%22middle%22>${p.number}</text></svg>'">
+                <img class="squad-img" src="${p.photo || numberTile(p.number)}" alt="${p.name}" loading="lazy"
+                     onerror="this.src='${numberTile(p.number)}'">
                 <img class="squad-badge" src="/rbc.png" alt="RBC">
                 <div class="squad-hand"></div>
             </div>
@@ -2714,6 +2730,13 @@ async function loadSofascore() {
     const tfEl = document.getElementById('transfers-content');
     const grid = document.getElementById('squad-grid');
     try {
+        // Photo map first — the live squad is keyed to it by player name.
+        try {
+            const meta = await (await fetch('data.json?v=' + Date.now())).json();
+            PHOTOS = meta.photos || {};
+            Object.keys(PHOTOS).forEach(k => { PHOTOS[nameSlug(k)] = PHOTOS[k]; });
+        } catch (e) { /* portraits fall back to number tiles */ }
+
         const pp = await fetchSofascore();
 
         tfEl.innerHTML = renderTransfers(pp.teamTransfers || {});
@@ -2725,7 +2748,7 @@ async function loadSofascore() {
                 number: parseInt(p.jerseyNumber, 10),
                 name: p.name,
                 flag: flagEmoji((p.country || {}).alpha2),
-                photo: svsPhoto(p.name, parseInt(p.jerseyNumber, 10))
+                photo: playerPhoto(p.name)
             }))
             .sort((a, b) => a.number - b.number);
 

@@ -20,139 +20,175 @@
       "number": 1,
       "name": "Nick Frits",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=nick-frits-1-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 2,
       "name": "Amir Limouri",
       "nationality": "MA",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=amir-limouri-2-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 3,
       "name": "Daan van Reeuwijk",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=daan-van-reeuwijk-3-.jpg&category=members"
+      "photo": "players/daan-van-reeuwijk.jpg"
     },
     {
       "number": 4,
       "name": "Lloyd Boomaars",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=lloyd-boomaars-4-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 5,
       "name": "Jordi Ewanena",
       "nationality": "BE",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=jordi-ewanena-5-.jpg&category=members"
+      "photo": "players/jordi-ewanena.jpg"
     },
     {
       "number": 6,
       "name": "Wesley Spieringhs",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=wesley-spieringhs-6-.jpg&category=members"
+      "photo": "players/wesley-spieringhs.jpg"
     },
     {
       "number": 7,
       "name": "Lloyd Hendriks",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=lloyd-hendriks-7-.jpg&category=members"
+      "photo": "players/lloyd-hendriks.jpg"
     },
     {
       "number": 8,
       "name": "Marwin Reuvers",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=marwin-reuvers-8-.jpg&category=members"
+      "photo": "players/marwin-reuvers.jpg"
     },
     {
       "number": 9,
       "name": "Jens Verschuren",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=jens-verschuren-9-.jpg&category=members"
+      "photo": "players/jens-verschuren.jpg"
     },
     {
       "number": 10,
       "name": "Desley Ubbink",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=desley-ubbink-10-.jpg&category=members"
+      "photo": "players/desley-ubbink.jpg"
     },
     {
       "number": 11,
       "name": "Akram Tourki",
       "nationality": "MA",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=akram-tourki-11-.jpg&category=members"
+      "photo": "players/akram-tourki.jpg"
     },
     {
       "number": 12,
       "name": "Jelte Pal",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=jelte-pal-12-.jpg&category=members"
+      "photo": "players/jelte-pal.jpg"
     },
     {
       "number": 14,
       "name": "Oussama Bouyaghlafen",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=oussama-bouyaghlafen-14-.jpg&category=members"
+      "photo": "players/oussama-bouyaghlafen.jpg"
     },
     {
       "number": 15,
       "name": "Daniel Alexandrov",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=daniel-alexandrov-15-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 16,
       "name": "Timo Townsend",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=timo-townsend-16-.jpg&category=members"
+      "photo": "players/timo-townsend.jpg"
     },
     {
       "number": 17,
       "name": "Bruno Hiensch",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=bruno-hiensch-17-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 18,
       "name": "Jesper Troost",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=jesper-troost-18-.jpg&category=members"
+      "photo": "players/jesper-troost.jpg"
     },
     {
       "number": 19,
       "name": "Timo Regouin",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=timo-regouin-19-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 20,
       "name": "Luque Casas Diaz",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=luque-casas-diaz-20-.jpg&category=members"
+      "photo": "players/luque-casas-diaz.jpg"
     },
     {
       "number": 21,
       "name": "Wai Ming Yu",
       "nationality": "NL",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=wai-ming-yu-21-.jpg&category=members"
+      "photo": "players/wai-ming-yu.jpg"
     },
     {
       "number": 22,
       "name": "Gláucio Ventura Tiago",
       "nationality": "AO",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=glaucio-ventura-tiago-22-.jpg&category=members"
+      "photo": "players/glaucio-ventura-tiago.jpg"
     },
     {
       "number": 23,
       "name": "Irdjoailly Emelina",
       "nationality": "CW",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=irdjoailly-emelina-23-.jpg&category=members"
+      "photo": null
     },
     {
       "number": 24,
       "name": "Leonardo Rocha de Almeida",
       "nationality": "CV",
-      "photo": "https://rbc.svsplus.nl/php/image.php?image=leonardo-rocha-de-almeida-24-.jpg&category=members"
+      "photo": "players/leonardo-rocha-de-almeida.jpg"
     }
-  ]
+  ],
+  "photos": {
+    "Daan van Reeuwijk": "players/daan-van-reeuwijk.jpg",
+    "Jordi Ewanena": "players/jordi-ewanena.jpg",
+    "Wesley Spieringhs": "players/wesley-spieringhs.jpg",
+    "Lloyd Hendriks": "players/lloyd-hendriks.jpg",
+    "Marwin Reuvers": "players/marwin-reuvers.jpg",
+    "Jens Verschuren": "players/jens-verschuren.jpg",
+    "Desley Ubbink": "players/desley-ubbink.jpg",
+    "Akram Tourki": "players/akram-tourki.jpg",
+    "Jelte Pal": "players/jelte-pal.jpg",
+    "Oussama Bouyaghlafen": "players/oussama-bouyaghlafen.jpg",
+    "Timo Townsend": "players/timo-townsend.jpg",
+    "Jesper Troost": "players/jesper-troost.jpg",
+    "Luque Casas Diaz": "players/luque-casas-diaz.jpg",
+    "Wai Ming Yu": "players/wai-ming-yu.jpg",
+    "Gláucio Ventura Tiago": "players/glaucio-ventura-tiago.jpg",
+    "Leonardo Rocha de Almeida": "players/leonardo-rocha-de-almeida.jpg"
+  },
+  "photo_sources": {
+    "Daan van Reeuwijk": "news",
+    "Jordi Ewanena": "rbc-library",
+    "Wesley Spieringhs": "news",
+    "Lloyd Hendriks": "news",
+    "Marwin Reuvers": "rbc-library",
+    "Jens Verschuren": "rbc-library",
+    "Desley Ubbink": "news",
+    "Akram Tourki": "news",
+    "Jelte Pal": "rbc-library",
+    "Oussama Bouyaghlafen": "transfermarkt",
+    "Timo Townsend": "news",
+    "Jesper Troost": "news",
+    "Luque Casas Diaz": "news",
+    "Wai Ming Yu": "rbc-library",
+    "Gláucio Ventura Tiago": "rbc-library",
+    "Leonardo Rocha de Almeida": "rbc-library"
+  }
 }
