@@ -1,12 +1,12 @@
 {
-  "name": "RBC Roosendaal 16-bit",
+  "name": "RBC Roosendaal",
   "short_name": "RBC",
-  "description": "RBC Roosendaal in 16 bit - selectie, stand, wedstrijden en penalty's. Derde Divisie B 2026/2027.",
+  "description": "Live stand, periodes en wedstrijden - Derde Divisie B 2026/2027. Met 16-bit editie.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#10142B",
-  "theme_color": "#10142B",
-  "orientation": "any",
+  "background_color": "#0C1015",
+  "theme_color": "#0C1015",
+  "orientation": "portrait",
   "icons": [
     { "src": "/rbc.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/rbc.png", "sizes": "512x512", "type": "image/png" }

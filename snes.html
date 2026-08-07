@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RBC ROOSENDAAL — 16-BIT</title>
+<meta name="theme-color" content="#10142B">
+<meta name="description" content="RBC Roosendaal in 16 bit — selectie, stand, wedstrijden en penalty's. Derde Divisie B 2026/2027.">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/rbc.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RBC">
+<style>
+/* ════════════════════════════════════════════════════════════
+   RBC ROOSENDAAL — 16-bit editie
+   Alles zelfgemaakt: geen fonts, geen libraries, geen CDN.
+   Pixelportretten worden uit de echte foto's gegenereerd.
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+    /* SNES-achtig palet, gebouwd rond oranje-wit */
+    --ink:        #080A16;
+    --bg:         #10142B;
+    --bg2:        #1A2145;
+    --panel:      #232C57;
+    --panel-lit:  #33407A;
+    --line:       #4A5799;
+    --orange:     #F1942D;
+    --orange-lit: #FFC873;
+    --orange-dk:  #A85C0E;
+    --cream:      #F6F1E2;
+    --white:      #FFFFFF;
+    --grey:       #8A94BE;
+    --red:        #D9483C;
+    --green:      #4FC06B;
+    --px: 3px;                 /* basis pixelgrootte, JS stelt bij */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    background: var(--ink);
+    color: var(--cream);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    -webkit-font-smoothing: none;
+    font-smooth: never;
+    overflow: hidden;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ── de "console": vast venster, gecentreerd ─────────────── */
+#cab {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    background:
+        radial-gradient(ellipse at 50% 40%, #1B2038 0%, #080A16 78%);
+    padding: 8px;
+}
+#screen {
+    position: relative;
+    width: min(100%, calc(100vh * 4 / 3), 1024px);
+    aspect-ratio: 4 / 3;
+    background: var(--bg);
+    overflow: hidden;
+    box-shadow: 0 0 0 4px #000, 0 0 0 8px #2A2F45, 0 20px 60px -10px #000;
+    image-rendering: pixelated;
+}
+@media (max-aspect-ratio: 3/4) {
+    #screen { width: 100%; height: 100%; aspect-ratio: auto; }
+}
+
+/* scanlines + CRT-glans, puur decoratief */
+#crt {
+    position: absolute; inset: 0; z-index: 90; pointer-events: none;
+    background:
+        repeating-linear-gradient(to bottom,
+            rgba(0,0,0,.22) 0 1px, rgba(0,0,0,0) 1px 3px),
+        radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.05) 0%, rgba(0,0,0,.38) 100%);
+    mix-blend-mode: multiply;
+}
+#crt.off { display: none; }
+
+/* ── schermen ────────────────────────────────────────────── */
+.view { position: absolute; inset: 0; display: none; z-index: 10; }
+.view.on { display: block; }
+
+/* ── titelscherm ─────────────────────────────────────────── */
+#v-title {
+    display: none;
+    place-items: center; align-content: center; gap: 0;
+    text-align: center;
+    background:
+        linear-gradient(to bottom, #0B1024 0%, #1A2145 55%, #2A1A0B 100%);
+}
+#v-title.on { display: grid; }
+#title-crest { image-rendering: pixelated; margin-bottom: 4%; }
+#title-wordmark { image-rendering: pixelated; }
+#title-sub { image-rendering: pixelated; margin-top: 3%; }
+#title-press { image-rendering: pixelated; margin-top: 8%; animation: blink 1.1s steps(1) infinite; }
+@keyframes blink { 0%,55% { opacity: 1 } 56%,100% { opacity: 0 } }
+#title-foot { image-rendering: pixelated; position: absolute; bottom: 4%; opacity: .55; }
+
+/* sterretjes op de achtergrond */
+#stars { position: absolute; inset: 0; z-index: -1; }
+
+/* ── HUD-balk boven ──────────────────────────────────────── */
+.hud {
+    position: absolute; top: 0; left: 0; right: 0; height: 11%;
+    display: flex; align-items: center; gap: 3%;
+    padding: 0 3%;
+    background: linear-gradient(to bottom, #2A3566, #1A2145);
+    border-bottom: var(--px) solid var(--orange-dk);
+    z-index: 20;
+}
+.hud canvas { image-rendering: pixelated; }
+.hud-spacer { flex: 1 1 auto; }
+
+/* ── menu ────────────────────────────────────────────────── */
+/* Alle items moeten passen zonder scrollen: gelijke rijen tussen HUD en
+   footbar, hoeveel menu-items er ook bij komen. */
+#menu-list {
+    position: absolute; left: 6%; right: 6%; top: 13.5%; bottom: 14%;
+    display: grid; grid-auto-rows: 1fr; gap: 1.1%;
+}
+.mi {
+    display: flex; align-items: center; gap: 3%;
+    padding: 0 4%; min-height: 0; overflow: hidden;
+    background: linear-gradient(to bottom, var(--panel), #1B2349);
+    border: var(--px) solid var(--line);
+    cursor: pointer;
+}
+.mi canvas { image-rendering: pixelated; }
+.mi .cursor { width: 0; overflow: hidden; transition: none; }
+.mi.sel {
+    background: linear-gradient(to bottom, var(--orange), var(--orange-dk));
+    border-color: var(--orange-lit);
+}
+.mi.sel .cursor { width: auto; }
+
+/* ── generiek paneel ─────────────────────────────────────── */
+.pane {
+    position: absolute; left: 3%; right: 3%; top: 13%; bottom: 12%;
+    background: linear-gradient(to bottom, #1D2549, #151B38);
+    border: var(--px) solid var(--line);
+    box-shadow: inset 0 0 0 var(--px) #0D1128;
+    overflow: hidden;
+}
+.pane-scroll { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding: 2.5%; }
+.pane-scroll::-webkit-scrollbar { width: 8px; }
+.pane-scroll::-webkit-scrollbar-track { background: #0D1128; }
+.pane-scroll::-webkit-scrollbar-thumb { background: var(--orange-dk); }
+
+/* ── voetbalveld-onderbalk met knoppen ───────────────────── */
+.footbar {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 12%;
+    display: flex; align-items: center; gap: 2%;
+    padding: 0 3%;
+    background: linear-gradient(to bottom, #1A2145, #0D1128);
+    border-top: var(--px) solid var(--orange-dk);
+    z-index: 20;
+}
+.btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 1.4% 3%;
+    background: linear-gradient(to bottom, var(--panel-lit), var(--panel));
+    border: var(--px) solid var(--line);
+    cursor: pointer; user-select: none;
+}
+.btn:active, .btn.hit { background: linear-gradient(to bottom, var(--orange), var(--orange-dk)); border-color: var(--orange-lit); }
+.btn canvas { image-rendering: pixelated; }
+
+/* ── selectie / roster ───────────────────────────────────── */
+#roster { position: absolute; inset: 0; display: grid; grid-template-columns: 42% 58%; }
+#port-col {
+    position: relative;
+    display: grid; place-items: center; align-content: center; gap: 4%;
+    padding: 4%;
+    background: linear-gradient(to bottom, #202A55 0%, #141A36 100%);
+    border-right: var(--px) solid var(--line);
+}
+#portrait { image-rendering: pixelated; border: var(--px) solid var(--orange-dk); background: var(--bg2); }
+#port-name { image-rendering: pixelated; }
+#port-stats { display: grid; gap: 6px; width: 100%; }
+.statline { display: flex; align-items: center; gap: 6px; }
+.statline canvas { image-rendering: pixelated; }
+.bar { flex: 1 1 auto; height: 9px; background: #0D1128; border: 1px solid var(--line); position: relative; }
+.bar i { position: absolute; inset: 1px; width: 0; background: repeating-linear-gradient(to right, var(--orange) 0 3px, var(--orange-lit) 3px 6px); }
+#list-col { position: relative; overflow: hidden; }
+#list-scroll { position: absolute; inset: 0; overflow-y: auto; padding: 2% 3%; }
+.pl {
+    display: flex; align-items: center; gap: 3%;
+    padding: 1.5% 2.5%;
+    border-bottom: 1px solid #2A3358;
+    cursor: pointer;
+}
+.pl canvas { image-rendering: pixelated; }
+.pl.sel { background: linear-gradient(to right, var(--orange-dk), transparent 90%); }
+.pl .cursor { width: 0; overflow: hidden; }
+.pl.sel .cursor { width: auto; }
+.grouphdr { padding: 2.5% 2.5% 1%; }
+.grouphdr canvas { image-rendering: pixelated; }
+
+/* ── tabel (stand) ───────────────────────────────────────── */
+table.px { border-collapse: collapse; width: 100%; }
+table.px td { padding: 0; }
+table.px tr.rbc { background: linear-gradient(to right, var(--orange-dk), transparent); }
+table.px tr.alt { background: rgba(255,255,255,.03); }
+table.px canvas { image-rendering: pixelated; display: block; }
+
+/* ── dialoogvenster (nieuws) ─────────────────────────────── */
+.dlg {
+    position: absolute; left: 4%; right: 4%; bottom: 14%; top: auto; height: 34%;
+    background: linear-gradient(to bottom, #2B3568 0%, #141A36 100%);
+    border: var(--px) solid var(--cream);
+    box-shadow: inset 0 0 0 var(--px) #0D1128, 0 6px 0 rgba(0,0,0,.5);
+    padding: 3%;
+}
+#dlg-body { image-rendering: pixelated; }
+#dlg-more { position: absolute; right: 3%; bottom: 3%; animation: bob .6s steps(2) infinite; }
+@keyframes bob { 0% { transform: translateY(0) } 50% { transform: translateY(3px) } 100% { transform: translateY(0) } }
+
+/* ── wedstrijd / versus ──────────────────────────────────── */
+#vs { position: absolute; inset: 0; display: grid; grid-template-rows: 1fr auto 1fr; place-items: center; padding: 4%; }
+#vs .side { display: grid; place-items: center; gap: 8px; }
+#vs img { image-rendering: pixelated; width: 22%; min-width: 54px; }
+#vs canvas { image-rendering: pixelated; }
+
+/* ── touch d-pad ─────────────────────────────────────────── */
+#pad { position: absolute; z-index: 80; display: none; }
+@media (pointer: coarse) { #pad { display: block; } }
+#pad { left: 3%; bottom: 14.5%; width: 27%; aspect-ratio: 1; }
+.pk {
+    position: absolute; width: 33.3%; height: 33.3%;
+    background: rgba(74,87,153,.55); border: 2px solid rgba(246,241,226,.35);
+}
+.pk:active { background: var(--orange); }
+.pk.up { left: 33.3%; top: 0 } .pk.dn { left: 33.3%; bottom: 0 }
+.pk.lf { left: 0; top: 33.3% } .pk.rt { right: 0; top: 33.3% }
+#ab { position: absolute; z-index: 80; right: 3%; bottom: 15%; display: none; gap: 8px; }
+@media (pointer: coarse) { #ab { display: flex; } }
+.rk {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--orange-lit), var(--orange-dk));
+    border: 2px solid #0D1128; display: grid; place-items: center;
+}
+.rk:active { filter: brightness(1.4); }
+.rk canvas { image-rendering: pixelated; }
+
+/* ── penaltyspel ─────────────────────────────────────────── */
+#pen-wrap { position: absolute; inset: 0; display: grid; place-items: center; }
+#pen-canvas {
+    image-rendering: pixelated;
+    /* De 256x224-verhouding hard vastzetten. Met width/height:100% + contain
+       werd het beeld uitgerekt en viel de spits onder de onderrand weg. */
+    display: block;
+    height: 100%; width: auto;
+    aspect-ratio: 256 / 224;
+    max-width: 100%; max-height: 100%;
+}
+
+/* verborgen werkplaats voor de portretgenerator */
+#forge { position: absolute; left: -9999px; top: 0; }
+</style>
+</head>
+<body>
+
+<div id="cab">
+<div id="screen">
+
+    <!-- ══ TITEL ══ -->
+    <div class="view on" id="v-title">
+        <canvas id="stars"></canvas>
+        <img id="title-crest" src="rbc.png" alt="RBC" width="120">
+        <canvas id="title-wordmark"></canvas>
+        <canvas id="title-sub"></canvas>
+        <canvas id="title-press"></canvas>
+        <canvas id="title-foot"></canvas>
+    </div>
+
+    <!-- ══ MENU ══ -->
+    <div class="view" id="v-menu">
+        <div class="hud"><canvas id="hud-menu"></canvas><span class="hud-spacer"></span><canvas id="hud-season"></canvas></div>
+        <div id="menu-list"></div>
+        <div class="footbar" id="foot-menu"></div>
+    </div>
+
+    <!-- ══ SELECTIE ══ -->
+    <div class="view" id="v-squad">
+        <div class="hud"><canvas id="hud-squad"></canvas><span class="hud-spacer"></span><canvas id="hud-count"></canvas></div>
+        <div class="pane" style="padding:0">
+            <div id="roster">
+                <div id="port-col">
+                    <canvas id="portrait" width="64" height="80"></canvas>
+                    <canvas id="port-name"></canvas>
+                    <div id="port-stats"></div>
+                </div>
+                <div id="list-col"><div id="list-scroll"></div></div>
+            </div>
+        </div>
+        <div class="footbar" id="foot-squad"></div>
+    </div>
+
+    <!-- ══ STAND ══ -->
+    <div class="view" id="v-stand">
+        <div class="hud"><canvas id="hud-stand"></canvas><span class="hud-spacer"></span><canvas id="hud-div"></canvas></div>
+        <div class="pane"><div class="pane-scroll" id="stand-body"></div></div>
+        <div class="footbar" id="foot-stand"></div>
+    </div>
+
+    <!-- ══ WEDSTRIJD ══ -->
+    <div class="view" id="v-match">
+        <div class="hud"><canvas id="hud-match"></canvas></div>
+        <div class="pane"><div id="vs"></div></div>
+        <div class="footbar" id="foot-match"></div>
+    </div>
+
+    <!-- ══ NIEUWS ══ -->
+    <div class="view" id="v-news">
+        <div class="hud"><canvas id="hud-news"></canvas><span class="hud-spacer"></span><canvas id="hud-newsn"></canvas></div>
+        <div class="pane" style="bottom:50%"><div class="pane-scroll" id="news-list"></div></div>
+        <div class="dlg"><canvas id="dlg-body"></canvas><canvas id="dlg-more"></canvas></div>
+        <div class="footbar" id="foot-news"></div>
+    </div>
+
+    <!-- ══ CLUB ══ -->
+    <div class="view" id="v-club">
+        <div class="hud"><canvas id="hud-club"></canvas></div>
+        <div class="pane"><div class="pane-scroll" id="club-body"></div></div>
+        <div class="footbar" id="foot-club"></div>
+    </div>
+
+    <!-- ══ PENALTY'S ══ -->
+    <div class="view" id="v-pen">
+        <div class="hud"><canvas id="hud-pen"></canvas><span class="hud-spacer"></span><canvas id="hud-penscore"></canvas></div>
+        <div class="pane" style="padding:0">
+            <div id="pen-wrap"><canvas id="pen-canvas" width="256" height="224"></canvas></div>
+        </div>
+        <div class="footbar" id="foot-pen"></div>
+    </div>
+
+    <!-- besturing -->
+    <div id="pad">
+        <div class="pk up" data-k="ArrowUp"></div><div class="pk dn" data-k="ArrowDown"></div>
+        <div class="pk lf" data-k="ArrowLeft"></div><div class="pk rt" data-k="ArrowRight"></div>
+    </div>
+    <div id="ab">
+        <div class="rk" data-k="Escape"><canvas class="rkl" data-t="B"></canvas></div>
+        <div class="rk" data-k="Enter"><canvas class="rkl" data-t="A"></canvas></div>
+    </div>
+
+    <div id="crt"></div>
+</div>
+</div>
+<div id="forge"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   1. PIXELFONT
+   In plaats van een fontbestand rasteren we bij het opstarten
+   elk teken één keer op 7px en gooien we alles onder de
+   drempel weg. Resultaat: een echt 1-bit font dat automatisch
+   ook é/á/ï dekt, zonder handmatige glyphdata.
+   ════════════════════════════════════════════════════════════ */
+const FONT = (() => {
+    const H = 7;                       // hoogte in "echte" pixels
+    const cache = new Map();
+    const c = document.createElement('canvas');
+    const x = c.getContext('2d', { willReadFrequently: true });
+
+    function glyph(ch) {
+        if (cache.has(ch)) return cache.get(ch);
+        c.width = 12; c.height = H + 3;
+        x.clearRect(0, 0, c.width, c.height);
+        x.imageSmoothingEnabled = false;
+        x.font = `700 ${H + 2}px ui-monospace, Menlo, Consolas, monospace`;
+        x.textBaseline = 'alphabetic';
+        x.fillStyle = '#fff';
+        x.fillText(ch, 0, H + 1);
+        const d = x.getImageData(0, 0, c.width, c.height).data;
+        // 1-bit drempel + bounding box zodat letters netjes aansluiten
+        const rows = [];
+        let minX = 99, maxX = -1;
+        for (let yy = 0; yy < c.height; yy++) {
+            let row = [];
+            for (let xx = 0; xx < c.width; xx++) {
+                const on = d[(yy * c.width + xx) * 4 + 3] > 110 ? 1 : 0;
+                row.push(on);
+                if (on) { if (xx < minX) minX = xx; if (xx > maxX) maxX = xx; }
+            }
+            rows.push(row);
+        }
+        if (maxX < 0) { minX = 0; maxX = 1; }           // spatie
+        const g = { w: maxX - minX + 1, h: c.height, rows, minX };
+        cache.set(ch, g);
+        return g;
+    }
+
+    /** Rendert tekst als pixelbitmap op een canvas.
+     *  s=schaal (1 pixel = s css-px), col=kleur, sh=schaduwkleur of null */
+    function draw(canvas, text, s, col, sh) {
+        text = String(text == null ? '' : text);
+        const gs = [...text].map(glyph);
+        const gap = 1;
+        const w = gs.reduce((a, g) => a + g.w + gap, 0) - gap;
+        const h = H + 3;
+        canvas.width = Math.max(1, (w + (sh ? 1 : 0)) * s);
+        canvas.height = (h + (sh ? 1 : 0)) * s;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const put = (dx, dy, color) => {
+            ctx.fillStyle = color;
+            let ox = 0;
+            gs.forEach(g => {
+                for (let yy = 0; yy < g.h; yy++)
+                    for (let xx = 0; xx < g.w; xx++)
+                        if (g.rows[yy][xx + g.minX])
+                            ctx.fillRect((ox + xx + dx) * s, (yy + dy) * s, s, s);
+                ox += g.w + gap;
+            });
+        };
+        if (sh) put(1, 1, sh);
+        put(0, 0, col);
+        canvas.style.width = canvas.width + 'px';
+        canvas.style.height = canvas.height + 'px';
+        return canvas;
+    }
+    function make(text, s, col, sh) { return draw(document.createElement('canvas'), text, s, col, sh); }
+    return { draw, make, H };
+})();
+
+const C = {
+    cream: '#F6F1E2', white: '#FFFFFF', orange: '#F1942D', orangeLit: '#FFC873',
+    grey: '#8A94BE', red: '#D9483C', green: '#4FC06B', ink: '#080A16', dk: '#0D1128'
+};
+
+/* Schaal: 1 logische pixel = PX css-pixels, meeschalend met het scherm. */
+let PX = 3;
+function rescale() {
+    const w = document.getElementById('screen').clientWidth;
+    PX = Math.max(2, Math.round(w / 300));
+    document.documentElement.style.setProperty('--px', Math.max(2, Math.round(w / 340)) + 'px');
+}
+
+/* diacritics eruit voor de smalle glyphs, net als een echte 16-bit rom */
+function flat(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+function txt(el, text, mult, col, sh) {
+    return FONT.draw(el, flat(text).toUpperCase(), PX * (mult || 1), col || C.cream, sh === undefined ? C.dk : sh);
+}
+function mk(text, mult, col, sh) {
+    return FONT.make(flat(text).toUpperCase(), PX * (mult || 1), col || C.cream, sh === undefined ? C.dk : sh);
+}
+/* gemengde kast toegestaan voor lopende tekst */
+function mkRaw(text, mult, col, sh) {
+    return FONT.make(flat(text), PX * (mult || 1), col || C.cream, sh === undefined ? null : sh);
+}
+
+/* ════════════════════════════════════════════════════════════
+   2. GELUID — kleine blips, geen bestanden
+   ════════════════════════════════════════════════════════════ */
+const SFX = (() => {
+    let ac = null, on = true;
+    function ctx() { return ac || (ac = new (window.AudioContext || window.webkitAudioContext)()); }
+    function blip(freq, dur, type) {
+        if (!on) return;
+        try {
+            const a = ctx(), o = a.createOscillator(), g = a.createGain();
+            o.type = type || 'square'; o.frequency.value = freq;
+            g.gain.value = .05;
+            g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + dur);
+            o.connect(g).connect(a.destination);
+            o.start(); o.stop(a.currentTime + dur);
+        } catch (e) {}
+    }
+    return {
+        move: () => blip(420, .05),
+        ok:   () => { blip(660, .06); setTimeout(() => blip(990, .09), 55); },
+        back: () => blip(240, .08),
+        start:() => { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => blip(f, .12, 'square'), i * 90)); },
+        toggle: () => { on = !on; return on; },
+        get enabled() { return on; }
+    };
+})();
+
+/* ════════════════════════════════════════════════════════════
+   3. PORTRETGENERATOR
+   64x80, 16 kleuren via median-cut, achtergrond platgeslagen.
+   Getest op het contactblad: 64x80/16c is het enige formaat dat
+   herkenbaar blijft; 8 kleuren geeft witte vlekken op voorhoofden.
+   ════════════════════════════════════════════════════════════ */
+const PORTRAIT = (() => {
+    const W = 64, H = 80, COLORS = 16;
+    const cache = new Map();
+    const forge = document.getElementById('forge');
+
+    function medianCut(px, depth) {
+        if (depth === 0 || !px.length) {
+            if (!px.length) return [[0, 0, 0]];
+            let r = 0, g = 0, b = 0;
+            px.forEach(p => { r += p[0]; g += p[1]; b += p[2]; });
+            const n = px.length;
+            return [[Math.round(r / n), Math.round(g / n), Math.round(b / n)]];
+        }
+        let ch = 0, best = -1;
+        for (let c = 0; c < 3; c++) {
+            let mn = 255, mx = 0;
+            px.forEach(p => { if (p[c] < mn) mn = p[c]; if (p[c] > mx) mx = p[c]; });
+            if (mx - mn > best) { best = mx - mn; ch = c; }
+        }
+        px.sort((a, b) => a[ch] - b[ch]);
+        const mid = px.length >> 1;
+        return medianCut(px.slice(0, mid), depth - 1).concat(medianCut(px.slice(mid), depth - 1));
+    }
+    function nearest(pal, p) {
+        let bi = 0, bd = 1e9;
+        for (let i = 0; i < pal.length; i++) {
+            const d = (pal[i][0] - p[0]) ** 2 + (pal[i][1] - p[1]) ** 2 + (pal[i][2] - p[2]) ** 2;
+            if (d < bd) { bd = d; bi = i; }
+        }
+        return pal[bi];
+    }
+
+    function build(img) {
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const g = cv.getContext('2d', { willReadFrequently: true });
+        g.imageSmoothingEnabled = true;
+        // hoofd + schouders: bovenste ~72% van een 3:4 bron
+        const sh = img.naturalHeight * 0.72, sw = sh * (W / H);
+        g.drawImage(img, (img.naturalWidth - sw) / 2, img.naturalHeight * 0.02, sw, sh, 0, 0, W, H);
+
+        const d = g.getImageData(0, 0, W, H);
+        const px = [];
+        for (let i = 0; i < d.data.length; i += 4) px.push([d.data[i], d.data[i + 1], d.data[i + 2]]);
+
+        // Achtergrond platslaan: bemonster de vier bovenhoeken. Bij een
+        // studio-achtergrond haalt dit de ruis weg; bij een actiefoto
+        // (Troost, Ubbink) scheelt het in ieder geval de reclameborden.
+        const corner = [];
+        [[0,0],[W-1,0],[0,1],[W-1,1],[1,0],[W-2,0]].forEach(([cx,cy]) => corner.push(px[cy*W+cx]));
+        const avg = corner.reduce((a,p) => [a[0]+p[0],a[1]+p[1],a[2]+p[2]], [0,0,0]).map(v => v/corner.length);
+        const FLAT = [35, 42, 87];                       // --panel, plat vlak
+        const TOL = 58 * 58;
+        for (let j = 0; j < px.length; j++) {
+            const p = px[j];
+            const dist = (p[0]-avg[0])**2 + (p[1]-avg[1])**2 + (p[2]-avg[2])**2;
+            // alleen in de bovenste 60%: daaronder zit het shirt
+            if (dist < TOL && j < W * H * 0.6) px[j] = FLAT;
+        }
+
+        const pal = medianCut(px.map(p => p.slice()), Math.log2(COLORS));
+        for (let i = 0, j = 0; i < d.data.length; i += 4, j++) {
+            const c = nearest(pal, px[j]);
+            d.data[i] = c[0]; d.data[i+1] = c[1]; d.data[i+2] = c[2];
+        }
+        g.putImageData(d, 0, 0);
+        return cv;
+    }
+
+    /* Fallback-sprite voor spelers zonder (bruikbare) foto:
+       silhouet + rugnummer, in clubkleuren. */
+    function unknown(number) {
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const g = cv.getContext('2d');
+        g.imageSmoothingEnabled = false;
+        g.fillStyle = '#232C57'; g.fillRect(0, 0, W, H);
+        g.fillStyle = '#1A2145';
+        for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
+        // silhouet
+        g.fillStyle = '#151B38';
+        g.fillRect(24, 14, 16, 18);                 // hoofd
+        g.fillRect(14, 34, 36, 30);                 // torso
+        g.fillRect(20, 30, 24, 6);                  // schouderlijn
+        // shirt-wig in oranje
+        g.fillStyle = '#F1942D';
+        for (let i = 0; i < 12; i++) g.fillRect(32 - i, 40 + i, 2 + i * 2, 2);
+        const n = FONT.make(String(number == null ? '?' : number), 2, '#FFC873', '#080A16');
+        g.drawImage(n, Math.round((W - n.width / 1) / 2), 64);
+        return cv;
+    }
+
+    function get(player) {
+        const key = player.photo || ('#' + player.number);
+        if (cache.has(key)) return cache.get(key);
+        const p = new Promise(resolve => {
+            if (!player.photo) { resolve(unknown(player.number)); return; }
+            const img = new Image();
+            img.onload = () => { try { resolve(build(img)); } catch (e) { resolve(unknown(player.number)); } };
+            img.onerror = () => resolve(unknown(player.number));
+            img.src = player.photo;
+            forge.appendChild(img);
+        });
+        cache.set(key, p);
+        return p;
+    }
+    return { get, W, H };
+})();
+
+/* ════════════════════════════════════════════════════════════
+   4. DATA — zelfde bronnen als index.html
+   ════════════════════════════════════════════════════════════ */
+const SEASON = '2026-2027', SEASON_LABEL = '2026/2027';
+const PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.cors.lol/?url='
+];
+const STAND_URL = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/`;
+const SOFASCORE_TEAM = 'https://www.sofascore.com/nl/football/team/rbc-roosendaal/2969';
+const NIEUWS_HOME = 'https://rbcvoetbal.nl/';
+
+const POSNAME = { G: 'KEEPER', D: 'VERDEDIGER', M: 'MIDDENVELDER', F: 'AANVALLER', '?': 'ONBEKEND' };
+const GROUPS = [['G','KEEPERS'],['D','VERDEDIGERS'],['M','MIDDENVELDERS'],['F','AANVALLERS'],['?','RESERVES']];
+
+const DB = { squad: [], stand: null, news: [], match: null, photos: {}, notes: [] };
+
+async function fetchWithFallback(url) {
+    for (const p of PROXIES) {
+        try {
+            const r = await fetch(p + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+            if (r.ok) return await r.text();
+        } catch (e) {}
+    }
+    throw new Error('proxies down');
+}
+function nameSlug(n) {
+    return flat(n).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+const TOO_SMALL = ['oussama-bouyaghlafen'];   // 97x130, te klein om te vergroten
+
+async function loadLocal() {
+    const m = await (await fetch('data.json?v=' + Date.now())).json();
+    DB.photos = m.photos || {};
+    Object.keys(DB.photos).forEach(k => { DB.photos[nameSlug(k)] = DB.photos[k]; });
+    DB.match = m.match || null;
+    DB.squad = (m.squad || []).map((p, i) => ({
+        id: i, number: p.number, name: p.name, position: '?',
+        nat: p.nationality || '', photo: usable(p.name, p.photo)
+    })).sort((a, b) => a.number - b.number);
+}
+function usable(name, photo) {
+    const slug = nameSlug(name);
+    if (TOO_SMALL.includes(slug)) return null;
+    return photo || DB.photos[name] || DB.photos[slug] || null;
+}
+
+async function loadSquadLive() {
+    const html = await fetchWithFallback(SOFASCORE_TEAM);
+    const m = html.match(/id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/);
+    const pp = JSON.parse(m ? m[1] : html.slice(html.indexOf('{"props"'))).props.pageProps;
+    const list = ((pp.players || {}).players || []).map(e => e.player).filter(p => p && p.jerseyNumber);
+    if (!list.length) throw new Error('leeg');
+    DB.squad = list.map((p, i) => ({
+        id: i, number: parseInt(p.jerseyNumber, 10), name: p.name,
+        position: p.position || '?', nat: (p.country || {}).alpha2 || '',
+        photo: usable(p.name, null)
+    })).sort((a, b) => a.number - b.number);
+    DB.notes.push('SELECTIE: LIVE');
+}
+
+async function loadStand() {
+    const html = await fetchWithFallback(STAND_URL);
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    let tbl = null;
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Stand')) continue;
+        let el = h2.nextElementSibling;
+        while (el) {
+            const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
+            if (t) { tbl = t; break; }
+            if (el.matches('h2,h3')) break;
+            el = el.nextElementSibling;
+        }
+        if (!tbl) {
+            let p = h2.parentElement;
+            while (p) { const t = p.querySelector('table'); if (t) { tbl = t; break; } p = p.parentElement; if (!p || p.tagName === 'BODY') break; }
+        }
+        break;
+    }
+    if (!tbl) throw new Error('geen tabel');
+    const rows = [...tbl.querySelectorAll('tbody tr')];
+    DB.stand = rows.map(r => {
+        const c = [...r.querySelectorAll('th,td')].map(e => e.textContent.trim().replace(/\s+/g, ' '));
+        if (c.length < 5) return null;
+        // twee kolomindelingen in het wild, net als in index.html
+        let wed = c[2] || '', pnt, ds;
+        if (c.length >= 9) { pnt = c[4] || ''; ds = c[7] || ''; }
+        else { pnt = c[9] || ''; ds = c[8] || ''; }
+        return { pos: c[0], club: c[1], wed, pnt, ds };
+    }).filter(Boolean);
+}
+
+async function loadNews() {
+    const html = await fetchWithFallback(NIEUWS_HOME);
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const seen = new Set(), out = [];
+    doc.querySelectorAll('a[href*="/nieuws"], article a[href]').forEach(a => {
+        const t = (a.textContent || '').trim().replace(/\s+/g, ' ');
+        if (t.length < 18 || t.length > 130 || seen.has(t)) return;
+        seen.add(t); out.push({ title: t });
+    });
+    DB.news = out.slice(0, 10);
+}
+
+/* ════════════════════════════════════════════════════════════
+   5. SCHERMEN
+   ════════════════════════════════════════════════════════════ */
+let SCREEN = 'title';
+const MENU = [
+    ['pen',      'PENALTYS',  'NEEM 5 STRAFSCHOPPEN'],
+    ['squad',  'SELECTIE',  'DE SPELERSGROEP, MAN VOOR MAN'],
+    ['stand',  'STAND',     'DERDE DIVISIE B'],
+    ['match',  'WEDSTRIJD', 'DE VOLGENDE POT'],
+    ['news',     'NIEUWS',    'BERICHTEN VAN DE CLUB'],
+    ['club',     'CLUB',      'OVER RBC ROOSENDAAL'],
+    ['klassiek', 'NORMALE SITE', 'TERUG NAAR RBCROOSENDAAL.COM']
+];
+let menuIdx = 0, squadIdx = 0, newsIdx = 0;
+
+function show(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+    document.getElementById('v-' + id).classList.add('on');
+    SCREEN = id;
+}
+
+function footer(el, keys) {
+    el.innerHTML = '';
+    keys.forEach(([k, label]) => {
+        const b = document.createElement('div');
+        b.className = 'btn';
+        b.appendChild(mk(k, 1, C.orangeLit));
+        b.appendChild(mk(label, 1, C.cream));
+        b.addEventListener('click', () => press(k === 'A' ? 'Enter' : k === 'B' ? 'Escape' : k));
+        el.appendChild(b);
+    });
+}
+
+/* ── titel ── */
+function drawTitle() {
+    txt(document.getElementById('title-wordmark'), 'RBC ROOSENDAAL', 4, C.orangeLit, C.orange);
+    txt(document.getElementById('title-sub'), 'ORANJE - WIT - VOOR ALTIJD', 1.5, C.cream);
+    txt(document.getElementById('title-press'), 'DRUK OP START', 2, C.white);
+    txt(document.getElementById('title-foot'), '(C) 2026 ATIK STADION', 1, C.grey);
+    const cv = document.getElementById('stars');
+    const s = document.getElementById('screen');
+    cv.width = s.clientWidth; cv.height = s.clientHeight;
+    const g = cv.getContext('2d');
+    for (let i = 0; i < 90; i++) {
+        g.fillStyle = ['#F6F1E2', '#FFC873', '#8A94BE'][i % 3];
+        const sz = (i % 7 === 0) ? PX : Math.max(1, PX - 1);
+        g.fillRect(Math.random() * cv.width | 0, Math.random() * cv.height * .8 | 0, sz, sz);
+    }
+    document.getElementById('title-crest').width = Math.round(cv.width * .17);
+}
+
+/* ── menu ── */
+function drawMenu() {
+    txt(document.getElementById('hud-menu'), 'HOOFDMENU', 2, C.cream);
+    txt(document.getElementById('hud-season'), SEASON_LABEL, 1.5, C.orangeLit);
+    const box = document.getElementById('menu-list');
+    box.innerHTML = '';
+    MENU.forEach(([id, label, sub], i) => {
+        const d = document.createElement('div');
+        d.className = 'mi' + (i === menuIdx ? ' sel' : '');
+        const cur = document.createElement('span'); cur.className = 'cursor';
+        cur.appendChild(mk('>', 1.7, C.white));
+        d.appendChild(cur);
+        d.appendChild(mk(label, 1.7, i === menuIdx ? C.ink : C.cream, i === menuIdx ? null : C.dk));
+        const sp = document.createElement('span'); sp.style.flex = '1 1 auto'; d.appendChild(sp);
+        d.appendChild(mk(sub, 1, i === menuIdx ? C.ink : C.grey, null));
+        d.addEventListener('click', () => { menuIdx = i; SFX.ok(); enter(); });
+        box.appendChild(d);
+    });
+    footer(document.getElementById('foot-menu'), [['A', 'KIES'], ['SFX', SFX.enabled ? 'GELUID AAN' : 'GELUID UIT'], ['CRT', 'BEELD']]);
+}
+
+/* ── selectie ── */
+async function drawSquad() {
+    txt(document.getElementById('hud-squad'), 'SELECTIE', 2, C.cream);
+    txt(document.getElementById('hud-count'), DB.squad.length + ' SPELERS', 1.5, C.orangeLit);
+    const list = document.getElementById('list-scroll');
+    list.innerHTML = '';
+    const byG = new Map(GROUPS.map(g => [g[0], []]));
+    DB.squad.forEach(p => byG.get(byG.has(p.position) ? p.position : '?').push(p));
+    GROUPS.forEach(([k, label]) => {
+        const arr = byG.get(k);
+        if (!arr.length) return;
+        const h = document.createElement('div'); h.className = 'grouphdr';
+        h.appendChild(mk(label, 1.2, C.orange));
+        list.appendChild(h);
+        arr.forEach(p => {
+            const d = document.createElement('div');
+            d.className = 'pl' + (p.id === squadIdx ? ' sel' : '');
+            d.dataset.id = p.id;
+            const cur = document.createElement('span'); cur.className = 'cursor';
+            cur.appendChild(mk('>', 1.4, C.orangeLit)); d.appendChild(cur);
+            const n = document.createElement('span'); n.style.minWidth = (PX * 8) + 'px';
+            n.appendChild(mk(String(p.number), 1.4, C.orangeLit)); d.appendChild(n);
+            d.appendChild(mk(p.name, 1.4, p.id === squadIdx ? C.white : C.cream));
+            d.addEventListener('click', () => { squadIdx = p.id; SFX.ok(); drawSquad(); });
+            list.appendChild(d);
+        });
+    });
+    const sel = list.querySelector('.pl.sel');
+    if (sel) sel.scrollIntoView({ block: 'nearest' });
+    footer(document.getElementById('foot-squad'), [['A', 'BEKIJK'], ['B', 'TERUG']]);
+    await drawPortrait();
+}
+
+async function drawPortrait() {
+    const p = DB.squad.find(x => x.id === squadIdx) || DB.squad[0];
+    if (!p) return;
+    const cv = document.getElementById('portrait');
+    const sprite = await PORTRAIT.get(p);
+    // Schaal op de HOOGTE van de portretkolom, niet op schermbreedte: anders
+    // duwt het portret de statregels (LAND, FOTO) uit het paneel.
+    const col = document.getElementById('port-col');
+    const budget = Math.min(col.clientWidth * 0.82, col.clientHeight * 0.58);
+    const scale = Math.max(2, Math.floor(budget / PORTRAIT.H));
+    cv.width = PORTRAIT.W; cv.height = PORTRAIT.H;
+    cv.style.width = (PORTRAIT.W * scale) + 'px';
+    cv.style.height = (PORTRAIT.H * scale) + 'px';
+    const g = cv.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.clearRect(0, 0, cv.width, cv.height);
+    g.drawImage(sprite, 0, 0);
+
+    txt(document.getElementById('port-name'), p.name, 1.4, C.white);
+    const st = document.getElementById('port-stats');
+    st.innerHTML = '';
+    const rows = [
+        ['RUG', '#' + p.number, null],
+        ['POS', POSNAME[p.position] || 'ONBEKEND', null],
+        ['LAND', p.nat || '--', null],
+        ['FOTO', p.photo ? 'JA' : 'NEE', p.photo ? 1 : 0]
+    ];
+    rows.forEach(([k, v, bar]) => {
+        const l = document.createElement('div'); l.className = 'statline';
+        const kk = document.createElement('span'); kk.style.minWidth = (PX * 22) + 'px';
+        kk.appendChild(mk(k, 1, C.grey)); l.appendChild(kk);
+        l.appendChild(mk(v, 1.2, C.orangeLit));
+        st.appendChild(l);
+    });
+}
+
+/* ── stand ── */
+function drawStand() {
+    txt(document.getElementById('hud-stand'), 'STAND', 2, C.cream);
+    txt(document.getElementById('hud-div'), 'DERDE DIVISIE B', 1.2, C.orangeLit);
+    const body = document.getElementById('stand-body');
+    body.innerHTML = '';
+    if (!DB.stand || !DB.stand.length) {
+        body.appendChild(mk('GEEN VERBINDING MET DE COMPETITIE', 1.4, C.red));
+        const p = document.createElement('div'); p.style.marginTop = '10px';
+        p.appendChild(mk('DE PROXY IS ONBEREIKBAAR. PROBEER LATER.', 1, C.grey));
+        body.appendChild(p);
+        footer(document.getElementById('foot-stand'), [['B', 'TERUG']]);
+        return;
+    }
+    const t = document.createElement('table'); t.className = 'px';
+    DB.stand.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        const isRBC = /^rbc$/i.test(r.club);
+        tr.className = isRBC ? 'rbc' : (i % 2 ? 'alt' : '');
+        const cells = [
+            [r.pos, 1.2, C.grey, 26],
+            [r.club, 1.2, isRBC ? C.orangeLit : C.cream, 0],
+            [r.wed, 1.2, C.grey, 26],
+            [r.pnt, 1.4, isRBC ? C.white : C.orangeLit, 30],
+            [r.ds, 1.2, (+r.ds > 0 ? C.green : +r.ds < 0 ? C.red : C.grey), 30]
+        ];
+        cells.forEach(([v, m, col, w]) => {
+            const td = document.createElement('td');
+            if (w) td.style.width = (PX * w) + 'px';
+            td.style.padding = (PX) + 'px ' + (PX * 2) + 'px';
+            td.appendChild(mk(v, m, col));
+            tr.appendChild(td);
+        });
+        t.appendChild(tr);
+    });
+    body.appendChild(t);
+    footer(document.getElementById('foot-stand'), [['B', 'TERUG']]);
+}
+
+/* ── wedstrijd ── */
+function drawMatch() {
+    txt(document.getElementById('hud-match'), 'VOLGENDE WEDSTRIJD', 2, C.cream);
+    const box = document.getElementById('vs');
+    box.innerHTML = '';
+    const m = DB.match;
+    if (!m) { box.appendChild(mk('GEEN WEDSTRIJD BEKEND', 1.6, C.red)); return; }
+    const side = (team, logo) => {
+        const d = document.createElement('div'); d.className = 'side';
+        if (logo) { const i = document.createElement('img'); i.src = logo; i.alt = team; d.appendChild(i); }
+        d.appendChild(mk(team, 2, /rbc/i.test(team) ? C.orangeLit : C.cream));
+        return d;
+    };
+    box.appendChild(side(m.home_team, m.home_logo));
+    const mid = document.createElement('div'); mid.style.display = 'grid'; mid.style.placeItems = 'center'; mid.style.gap = '6px';
+    mid.appendChild(mk('- VS -', 2.4, C.orange));
+    mid.appendChild(mk(m.status || '', 1.4, C.white));
+    mid.appendChild(mk(m.competition || '', 1, C.grey));
+    box.appendChild(mid);
+    box.appendChild(side(m.away_team, m.away_logo));
+    footer(document.getElementById('foot-match'), [['B', 'TERUG']]);
+}
+
+/* ── nieuws ── */
+function drawNews() {
+    txt(document.getElementById('hud-news'), 'NIEUWS', 2, C.cream);
+    txt(document.getElementById('hud-newsn'), DB.news.length + ' BERICHTEN', 1.2, C.orangeLit);
+    const list = document.getElementById('news-list');
+    list.innerHTML = '';
+    if (!DB.news.length) {
+        list.appendChild(mk('GEEN BERICHTEN GELADEN', 1.4, C.red));
+    } else {
+        DB.news.forEach((n, i) => {
+            const d = document.createElement('div');
+            d.className = 'pl' + (i === newsIdx ? ' sel' : '');
+            const cur = document.createElement('span'); cur.className = 'cursor';
+            cur.appendChild(mk('>', 1.2, C.orangeLit)); d.appendChild(cur);
+            d.appendChild(mk(n.title.slice(0, 46), 1.1, i === newsIdx ? C.white : C.cream));
+            d.addEventListener('click', () => { newsIdx = i; SFX.ok(); drawNews(); });
+            list.appendChild(d);
+        });
+        const sel = list.querySelector('.pl.sel');
+        if (sel) sel.scrollIntoView({ block: 'nearest' });
+    }
+    typeOut(DB.news.length ? DB.news[newsIdx].title : 'De koerier is nog niet terug van de club.');
+    footer(document.getElementById('foot-news'), [['B', 'TERUG']]);
+}
+
+/* typemachine-effect in het dialoogvenster */
+let typeTimer = null;
+function typeOut(text) {
+    clearInterval(typeTimer);
+    const cv = document.getElementById('dlg-body');
+    const more = document.getElementById('dlg-more');
+    more.style.visibility = 'hidden';
+    // handmatig afbreken op regels die in het venster passen
+    const perLine = Math.max(18, Math.floor(document.getElementById('screen').clientWidth * 0.86 / (PX * 1.2 * 6)));
+    const words = String(text).split(/\s+/);
+    const lines = []; let cur = '';
+    words.forEach(w => {
+        if ((cur + ' ' + w).trim().length > perLine) { lines.push(cur.trim()); cur = w; }
+        else cur += ' ' + w;
+    });
+    if (cur.trim()) lines.push(cur.trim());
+    let n = 0;
+    const full = lines.join('\n');
+    const render = () => {
+        const shown = full.slice(0, n);
+        const ls = shown.split('\n');
+        const cvs = ls.map(l => mkRaw(l, 1.2, C.cream));
+        const w = Math.max(1, ...cvs.map(c => c.width));
+        const lh = (FONT.H + 4) * PX * 1.2;
+        cv.width = w; cv.height = Math.max(1, Math.round(lh * lines.length));
+        cv.style.width = w + 'px'; cv.style.height = cv.height + 'px';
+        const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
+        g.clearRect(0, 0, cv.width, cv.height);
+        cvs.forEach((c, i) => g.drawImage(c, 0, Math.round(i * lh)));
+    };
+    typeTimer = setInterval(() => {
+        n += 2;
+        render();
+        if (n >= full.length) {
+            clearInterval(typeTimer);
+            txt(more, 'V', 1.4, C.orangeLit);
+            more.style.visibility = 'visible';
+        }
+    }, 18);
+}
+
+/* ── club ── */
+function drawClub() {
+    txt(document.getElementById('hud-club'), 'CLUB', 2, C.cream);
+    const b = document.getElementById('club-body');
+    b.innerHTML = '';
+    const lines = [
+        ['RBC ROOSENDAAL', 2, C.orangeLit],
+        ['', 1, C.grey],
+        ['STADION', 1, C.grey], ['ATIK STADION, ROOSENDAAL', 1.4, C.cream],
+        ['', 1, C.grey],
+        ['COMPETITIE', 1, C.grey], ['DERDE DIVISIE B - ' + SEASON_LABEL, 1.4, C.cream],
+        ['', 1, C.grey],
+        ['CLUBKLEUREN', 1, C.grey], ['ORANJE EN WIT', 1.4, C.cream],
+        ['', 1, C.grey],
+        ['DEZE EDITIE', 1, C.grey],
+        ['16-BIT SCHIL OVER DE ECHTE SITE.', 1.1, C.cream],
+        ['PORTRETTEN WORDEN LIVE UIT DE', 1.1, C.cream],
+        ['CLUBFOTOS GEGENEREERD: 64X80, 16', 1.1, C.cream],
+        ['KLEUREN, GEEN GETEKENDE SPRITES.', 1.1, C.cream]
+    ];
+    lines.forEach(([t, m, c]) => {
+        const d = document.createElement('div');
+        d.style.marginBottom = (PX) + 'px';
+        if (t) d.appendChild(mk(t, m, c)); else d.style.height = (PX * 3) + 'px';
+        b.appendChild(d);
+    });
+    if (DB.notes.length) {
+        const d = document.createElement('div'); d.style.marginTop = (PX * 4) + 'px';
+        d.appendChild(mk(DB.notes.join('  |  '), 1, C.green));
+        b.appendChild(d);
+    }
+    footer(document.getElementById('foot-club'), [['B', 'TERUG']]);
+}
+
+/* ════════════════════════════════════════════════════════════
+   5b. PENALTYSPEL — 5 strafschoppen
+   Alles met fillRect op een 256x224 canvas, net als een echte
+   16-bit console. Twee keer op A: eerst richting, dan hoogte.
+   ════════════════════════════════════════════════════════════ */
+const PEN = (() => {
+    const W = 256, H = 224;
+    const cv = document.getElementById('pen-canvas');
+    const g = cv.getContext('2d');
+
+    // doel in canvascoordinaten
+    const GX = 40, GY = 46, GW = 176, GH = 76;   // linkerpost, bovenkant, breedte, hoogte
+    const SPOT = { x: 128, y: 186 };
+
+    const P = {
+        grass1: '#2E6B34', grass2: '#356F3A', grassLine: '#5E9A62',
+        sky1: '#1A2145', sky2: '#33407A',
+        post: '#F6F1E2', net: '#8A94BE',
+        shirt: '#F1942D', shirtAlt: '#F6F1E2', skin: '#D8A278', shorts: '#F6F1E2',
+        keeper: '#4FC06B', keeperDk: '#2C7A40',
+        ball1: '#FFFFFF', ball2: '#1A2145',
+        aim: '#FFC873', bad: '#D9483C', good: '#4FC06B'
+    };
+
+    let st = 'aim';           // aim | power | fly | result | done
+    let shot = 0, goals = 0;
+    let aimX = .5, aimDir = 1;
+    let powY = .5, powDir = 1;
+    let target = { x: .5, y: .5 };
+    let keeper = { x: .5, hi: false, t: 0 };
+    let ball = { t: 0 };
+    let verdict = '';
+    let raf = null, last = 0;
+    const marks = [];         // 'G' | 'M' per genomen penalty
+
+    function reset(full) {
+        if (full) { shot = 0; goals = 0; marks.length = 0; }
+        st = 'aim'; aimX = .5; aimDir = 1; powY = .5; powDir = 1;
+        ball.t = 0; keeper.t = 0; verdict = '';
+    }
+
+    /* ── invoer ── */
+    function tap() {
+        if (st === 'aim') { st = 'power'; SFX.move(); return; }
+        if (st === 'power') {
+            target = { x: aimX, y: powY };
+            // keeper kiest een hoek; hij dekt ~18% van de breedte en kan de
+            // bovenhoeken niet halen. Mikken op hoog-in-de-hoek loont dus.
+            const zones = [.13, .3, .5, .7, .87];
+            keeper.x = zones[Math.floor(Math.random() * zones.length)];
+            keeper.hi = Math.random() < .45;
+            st = 'fly'; ball.t = 0; SFX.ok();
+            return;
+        }
+        if (st === 'result') {
+            if (shot >= 5) { st = 'done'; return; }
+            reset(false); return;
+        }
+        if (st === 'done') { reset(true); return; }
+    }
+
+    function judge() {
+        const over = target.y > .93;
+        const wide = target.x < .04 || target.x > .96;
+        const reach = .18;
+        const sameHeight = keeper.hi ? target.y > .45 : target.y <= .62;
+        const saved = Math.abs(target.x - keeper.x) < reach && sameHeight && target.y < .8;
+        if (over || wide) { verdict = 'OVER'; marks.push('M'); }
+        else if (saved)   { verdict = 'GESTOPT'; marks.push('M'); }
+        else              { verdict = 'GOAL'; goals++; marks.push('G'); }
+        shot++;
+        st = 'result';
+        if (verdict === 'GOAL') SFX.ok(); else SFX.back();
+        hud();
+    }
+
+    /* ── tekenhulpjes ── */
+    function px(x, y, w, h, c) { g.fillStyle = c; g.fillRect(x | 0, y | 0, w | 0, h | 0); }
+
+    function drawPitch() {
+        // lucht
+        const sky = g.createLinearGradient(0, 0, 0, GY + GH);
+        sky.addColorStop(0, P.sky1); sky.addColorStop(1, P.sky2);
+        g.fillStyle = sky; g.fillRect(0, 0, W, 130);
+        // gras in banen
+        for (let y = 110; y < H; y += 8) px(0, y, W, 8, ((y / 8) | 0) % 2 ? P.grass1 : P.grass2);
+        // zestien-meter lijnen in perspectief
+        px(0, 128, W, 1, P.grassLine);
+        px(26, 128, 1, 30, P.grassLine); px(229, 128, 1, 30, P.grassLine);
+        px(26, 158, 204, 1, P.grassLine);
+        // strafschopstip
+        px(SPOT.x - 2, SPOT.y + 6, 5, 2, P.grassLine);
+    }
+
+    function drawGoal() {
+        // net
+        for (let x = GX; x <= GX + GW; x += 8) px(x, GY, 1, GH, P.net);
+        for (let y = GY; y <= GY + GH; y += 8) px(GX, y, GW, 1, P.net);
+        // palen + lat
+        px(GX - 4, GY - 4, 4, GH + 8, P.post);
+        px(GX + GW, GY - 4, 4, GH + 8, P.post);
+        px(GX - 4, GY - 4, GW + 8, 4, P.post);
+    }
+
+    function keeperXY() {
+        return { x: GX + keeper.x * GW, y: GY + GH - 26 };
+    }
+
+    function drawKeeper(dive) {
+        const k = keeperXY();
+        let ox = 0, oy = 0;
+        if (dive > 0) {
+            const dir = keeper.x < .5 ? -1 : 1;
+            ox = dir * dive * 22;
+            oy = keeper.hi ? -dive * 14 : dive * 6;
+        }
+        const x = k.x + ox - 6, y = k.y + oy;
+        px(x + 1, y - 8, 10, 8, P.skin);            // hoofd
+        px(x, y, 12, 16, P.keeper);                  // torso
+        px(x - 7, y + 2, 7, 4, P.keeperDk);          // armen
+        px(x + 12, y + 2, 7, 4, P.keeperDk);
+        px(x + 1, y + 16, 4, 10, P.keeperDk);        // benen
+        px(x + 7, y + 16, 4, 10, P.keeperDk);
+    }
+
+    function drawTaker() {
+        // Van achteren gezien, groot en linksonder in de voorgrond: daar zit
+        // hij niet in de weg van de melding in het midden.
+        const x = 40, y = 164;
+        px(x + 5, y - 14, 14, 13, P.skin);           // hoofd
+        px(x + 7, y - 16, 10, 3, '#3B2A18');         // haar
+        px(x, y, 24, 26, P.shirt);                   // shirt
+        px(x + 9, y, 6, 26, P.shirtAlt);             // witte baan
+        px(x + 2, y + 6, 20, 3, P.shirtAlt);         // schouderstreep
+        px(x - 5, y + 3, 5, 12, P.shirt);            // armen
+        px(x + 24, y + 3, 5, 12, P.shirt);
+        px(x - 5, y + 15, 5, 5, P.skin);
+        px(x + 24, y + 15, 5, 5, P.skin);
+        px(x, y + 26, 10, 12, P.shorts);             // broek
+        px(x + 14, y + 26, 10, 12, P.shorts);
+        px(x + 2, y + 38, 7, 12, '#1B2349');         // sokken
+        px(x + 15, y + 38, 7, 12, '#1B2349');
+        px(x + 1, y + 50, 9, 4, '#0D1128');          // schoenen
+        px(x + 14, y + 50, 9, 4, '#0D1128');
+    }
+
+    function drawBall(x, y, size) {
+        const s = Math.max(3, size | 0);
+        px(x - s / 2, y - s / 2, s, s, P.ball1);
+        px(x - s / 2 + 1, y - s / 2 + 1, Math.max(1, s / 3), Math.max(1, s / 3), P.ball2);
+        px(x + s / 2 - 2, y + s / 2 - 2, Math.max(1, s / 3), Math.max(1, s / 3), P.ball2);
+    }
+
+    function drawAim() {
+        const x = GX + aimX * GW;
+        const y = st === 'aim' ? GY + GH * .5 : GY + (1 - powY) * GH;
+        const c = st === 'aim' ? P.aim : (powY > .93 ? P.bad : P.good);
+        px(x - 6, y, 13, 1, c); px(x, y - 6, 1, 13, c);
+        px(x - 1, y - 1, 3, 3, c);
+        // hoogtemeter naast het doel
+        if (st === 'power') {
+            px(GX + GW + 10, GY, 5, GH, '#0D1128');
+            px(GX + GW + 10, GY + (1 - powY) * GH, 5, 3, c);
+        }
+        // richtingmeter onder het doel
+        if (st === 'aim') {
+            px(GX, GY + GH + 8, GW, 3, '#0D1128');
+            px(GX + aimX * GW - 3, GY + GH + 7, 6, 5, c);
+        }
+    }
+
+    function label(text, y, mult, col) {
+        // Rechtstreeks op canvasschaal renderen (s = mult), NIET via mk() op
+        // PX-schaal en dan verkleinen — dat resamplet en maakt de tekst wazig.
+        const c = FONT.make(flat(text).toUpperCase(), mult, col, P.sky1);
+        g.imageSmoothingEnabled = false;
+        g.drawImage(c, Math.round((W - c.width) / 2), y);
+    }
+
+    function drawScoreRow() {
+        const cx = W / 2 - (5 * 12) / 2;
+        for (let i = 0; i < 5; i++) {
+            const m = marks[i];
+            const x = cx + i * 12;
+            px(x, 8, 9, 9, '#0D1128');
+            if (m === 'G') px(x + 1, 9, 7, 7, P.good);
+            else if (m === 'M') { px(x + 1, 9, 7, 7, P.bad); }
+        }
+    }
+
+    /* ── hoofdlus ── */
+    function frame(ts) {
+        const dt = Math.min(50, ts - last) / 1000; last = ts;
+        if (st === 'aim') {
+            aimX += aimDir * dt * .85;
+            if (aimX > 1) { aimX = 1; aimDir = -1; }
+            if (aimX < 0) { aimX = 0; aimDir = 1; }
+        } else if (st === 'power') {
+            powY += powDir * dt * .9;
+            if (powY > 1) { powY = 1; powDir = -1; }
+            if (powY < 0) { powY = 0; powDir = 1; }
+        } else if (st === 'fly') {
+            ball.t += dt * 1.9;
+            keeper.t = Math.min(1, Math.max(0, (ball.t - .18) / .5));
+            if (ball.t >= 1) { ball.t = 1; judge(); }
+        }
+
+        g.clearRect(0, 0, W, H);
+        drawPitch();
+        drawGoal();
+        drawKeeper(st === 'fly' || st === 'result' ? keeper.t : 0);
+        drawTaker();
+        drawScoreRow();
+
+        if (st === 'aim' || st === 'power') {
+            drawBall(SPOT.x, SPOT.y, 7);
+            drawAim();
+            label(st === 'aim' ? 'RICHTING - DRUK A' : 'HOOGTE - DRUK A', 196, 1, P.aim);
+        } else if (st === 'fly') {
+            const t = ball.t;
+            const bx = SPOT.x + (GX + target.x * GW - SPOT.x) * t;
+            const by = SPOT.y + (GY + (1 - target.y) * GH - SPOT.y) * t;
+            drawBall(bx, by, 7 - t * 3);
+        } else if (st === 'result') {
+            const bx = GX + target.x * GW, by = GY + (1 - target.y) * GH;
+            drawBall(bx, by, 4);
+            label(verdict, 24, 2, verdict === 'GOAL' ? P.good : P.bad);
+            label(shot >= 5 ? 'DRUK A VOOR DE UITSLAG' : 'DRUK A VOOR DE VOLGENDE', 204, 1, P.post);
+        } else if (st === 'done') {
+            px(28, 96, W - 56, 62, '#0D1128');
+            label(goals + ' VAN 5', 104, 2, P.aim);
+            const msg = goals === 5 ? 'FEILLOOS - LEGENDE VAN HET ATIK'
+                      : goals >= 3 ? 'KOELE KIKKER'
+                      : goals >= 1 ? 'DE KEEPER STOND GOED'
+                                   : 'VOLGENDE KEER BETER';
+            label(msg, 128, 1, P.post);
+            label('DRUK A VOOR NOG 5', 144, 1, P.aim);
+        }
+        raf = requestAnimationFrame(frame);
+    }
+
+    function hud() {
+        txt(document.getElementById('hud-pen'), 'PENALTYS', 2, C.cream);
+        const nr = Math.min(shot + 1, 5);
+        txt(document.getElementById('hud-penscore'),
+            'SCHOT ' + nr + '/5   DOEL ' + goals, 1.5, C.orangeLit);
+    }
+
+    function start() {
+        hud();
+        footer(document.getElementById('foot-pen'), [['A', 'SCHIET'], ['B', 'TERUG']]);
+        reset(true);
+        if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+    }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+
+    return { start, stop, tap };
+})();
+
+/* ════════════════════════════════════════════════════════════
+   6. BESTURING
+   ════════════════════════════════════════════════════════════ */
+function enter() {
+    if (SCREEN === 'title') { SFX.start(); show('menu'); drawMenu(); return; }
+    if (SCREEN === 'menu') {
+        const id = MENU[menuIdx][0];
+        if (id === 'klassiek') { SFX.ok(); location.href = '/'; return; }
+        show(id);
+        ({ pen: PEN.start, squad: drawSquad, stand: drawStand, match: drawMatch,
+           news: drawNews, club: drawClub })[id]();
+        return;
+    }
+    if (SCREEN === 'pen') { PEN.tap(); return; }
+}
+function back() {
+    if (SCREEN === 'pen') PEN.stop();          // lus stoppen, anders draait hij door
+    if (SCREEN === 'menu') { SFX.back(); show('title'); return; }
+    if (SCREEN !== 'title') { SFX.back(); show('menu'); drawMenu(); }
+}
+function move(dir) {
+    if (SCREEN === 'menu') {
+        menuIdx = (menuIdx + dir + MENU.length) % MENU.length; SFX.move(); drawMenu();
+    } else if (SCREEN === 'squad') {
+        const ids = DB.squad.map(p => p.id);
+        if (!ids.length) return;
+        let i = ids.indexOf(squadIdx); if (i < 0) i = 0;
+        squadIdx = ids[(i + dir + ids.length) % ids.length];
+        SFX.move(); drawSquad();
+    } else if (SCREEN === 'news') {
+        if (!DB.news.length) return;
+        newsIdx = (newsIdx + dir + DB.news.length) % DB.news.length; SFX.move(); drawNews();
+    } else if (SCREEN === 'stand') {
+        document.getElementById('stand-body').scrollBy({ top: dir * 40 });
+    } else if (SCREEN === 'club') {
+        document.querySelector('#v-club .pane-scroll').scrollBy({ top: dir * 40 });
+    }
+    // 'pen' negeert de pijltjes: richten gaat met de sweep + A
+}
+function press(k) {
+    if (k === 'ArrowDown' || k === 'ArrowRight') return move(1);
+    if (k === 'ArrowUp' || k === 'ArrowLeft') return move(-1);
+    if (k === 'Enter' || k === ' ') return enter();
+    if (k === 'Escape') return back();
+    if (k === 'SFX') { SFX.toggle(); drawMenu(); return; }
+    if (k === 'CRT') { document.getElementById('crt').classList.toggle('off'); return; }
+}
+addEventListener('keydown', e => {
+    if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','Enter','Escape'].includes(e.key)) {
+        e.preventDefault(); press(e.key);
+    }
+});
+document.querySelectorAll('.pk, .rk').forEach(el => {
+    el.addEventListener('pointerdown', e => { e.preventDefault(); press(el.dataset.k); });
+});
+document.getElementById('v-title').addEventListener('click', () => { if (SCREEN === 'title') enter(); });
+
+/* ════════════════════════════════════════════════════════════
+   7. START
+   ════════════════════════════════════════════════════════════ */
+function redrawCurrent() {
+    rescale();
+    drawTitle();
+    document.querySelectorAll('.rkl').forEach(c => txt(c, c.dataset.t, 1.4, C.ink, null));
+    ({ title: () => {}, menu: drawMenu, pen: PEN.start, squad: drawSquad, stand: drawStand,
+       match: drawMatch, news: drawNews, club: drawClub })[SCREEN]();
+}
+
+(async function boot() {
+    rescale();
+    drawTitle();
+    document.querySelectorAll('.rkl').forEach(c => txt(c, c.dataset.t, 1.4, C.ink, null));
+
+    try { await loadLocal(); } catch (e) { DB.notes.push('DATA.JSON: FOUT'); }
+    // live bronnen op de achtergrond; het spel start meteen
+    loadSquadLive().catch(() => DB.notes.push('SELECTIE: LOKAAL'))
+        .then(() => { if (SCREEN === 'squad') drawSquad(); });
+    loadStand().then(() => { if (SCREEN === 'stand') drawStand(); })
+        .catch(() => DB.notes.push('STAND: OFFLINE'));
+    loadNews().then(() => { if (SCREEN === 'news') drawNews(); })
+        .catch(() => DB.notes.push('NIEUWS: OFFLINE'));
+})();
+
+let rt = null;
+addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(redrawCurrent, 160); });
+
+/* PWA: zelfde service worker als de klassieke site. */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

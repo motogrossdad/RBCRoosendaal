@@ -1,5 +1,5 @@
-const CACHE = 'rbc-v3-16bit-2026-2027';
-const ASSETS = ['/', '/index.html', '/klassiek.html', '/rbc.png', '/data.json'];
+const CACHE = 'rbc-v4-2026-2027';
+const ASSETS = ['/', '/index.html', '/snes.html', '/rbc.png', '/data.json'];
 self.addEventListener('install', e => {
     e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
     self.skipWaiting();
