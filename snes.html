@@ -249,9 +249,9 @@ table.px canvas { image-rendering: pixelated; display: block; }
 .rk:active { filter: brightness(1.4); }
 .rk canvas { image-rendering: pixelated; }
 
-/* ── iconische goal ──────────────────────────────────────── */
-#goal-wrap { position: absolute; inset: 0; display: grid; place-items: center; }
-#goal-canvas {
+/* ── topscorer ───────────────────────────────────────────── */
+#game-wrap { position: absolute; inset: 0; display: grid; place-items: center; }
+#game-canvas {
     image-rendering: pixelated;
     display: block;
     height: 100%; width: auto;
@@ -330,13 +330,13 @@ table.px canvas { image-rendering: pixelated; display: block; }
         <div class="footbar" id="foot-club"></div>
     </div>
 
-    <!-- ══ ICONISCHE GOAL ══ -->
-    <div class="view" id="v-goal">
-        <div class="hud"><canvas id="hud-goal"></canvas><span class="hud-spacer"></span><canvas id="hud-goalscore"></canvas></div>
+    <!-- ══ TOPSCORER ══ -->
+    <div class="view" id="v-game">
+        <div class="hud"><canvas id="hud-game"></canvas><span class="hud-spacer"></span><canvas id="hud-gamescore"></canvas></div>
         <div class="pane" style="padding:0">
-            <div id="goal-wrap"><canvas id="goal-canvas" width="320" height="240"></canvas></div>
+            <div id="game-wrap"><canvas id="game-canvas" width="320" height="240"></canvas></div>
         </div>
-        <div class="footbar" id="foot-goal"></div>
+        <div class="footbar" id="foot-game"></div>
     </div>
 
     <!-- besturing -->
@@ -741,7 +741,7 @@ async function loadNews() {
    ════════════════════════════════════════════════════════════ */
 let SCREEN = 'title';
 const MENU = [
-    ['goal',     'ICONISCHE GOAL', 'BLINKER 2001 - SPEEL HEM NA'],
+    ['game',     'TOPSCORER', '10 SCHOTEN OP EEN BEWEGENDE KEEPER'],
     ['squad',  'SELECTIE',  'DE SPELERSGROEP, MAN VOOR MAN'],
     ['stand',  'STAND',     'DERDE DIVISIE B'],
     ['match',  'WEDSTRIJD', 'DE VOLGENDE POT'],
@@ -1040,47 +1040,30 @@ function drawClub() {
 }
 
 /* ════════════════════════════════════════════════════════════
-   5b. ICONISCHE GOAL — pseudo-3D reconstructie
-   Mode 7-achtige projectie: per beeldlijn wordt teruggerekend
-   welke diepte daar ligt, sprites schalen mee met afstand.
-   Geen 3D-library, alles fillRect op een 320x240 canvas.
+   5b. TOPSCORER — 10 schoten op een bewegende keeper
+   Je richt zelf, de hele tijd zichtbaar, en schiet wanneer je
+   wilt. Geen verborgen moment: het spel zit hem in het gat
+   vinden dat de keeper achterlaat.
+   Zelfde Mode 7-achtige projectie als de rest: per beeldlijn
+   wordt de diepte teruggerekend, sprites schalen mee.
    ════════════════════════════════════════════════════════════ */
-const GOAL = (() => {
+const GAME = (() => {
     const W = 320, H = 240;
-    const cv = document.getElementById('goal-canvas');
+    const cv = document.getElementById('game-canvas');
     const g = cv.getContext('2d');
-
-    /* ── DE SCENE ─────────────────────────────────────────────
-       Alles wat over de goal wordt beweerd staat hier, op één
-       plek, zodat het in één regel te corrigeren is.
-
-       NAGETROKKEN : Regi Blinker maakte het eerste Eredivisie-
-       doelpunt in het nieuwe stadion (2001).
-       RECONSTRUCTIE: tegenstander en de opzet (voorzet van
-       rechts, kopbal tweede paal) zijn ingevuld, niet bevestigd.
-       Daarom staat er "reconstructie" op de titelkaart.        */
-    const SCENE = {
-        speler:  'REGI BLINKER',
-        jaar:    '2001',
-        tegen:   'NAC',
-        context: 'EERSTE EREDIVISIE-DOELPUNT',
-        plek:    'IN HET NIEUWE STADION',
-        opzet:   'VOORZET VAN RECHTS, KOPBAL TWEEDE PAAL'
-    };
+    const HISCORE_KEY = 'rbc-topscorer';
 
     const P = {
-        grass1: '#2E6B34', grass2: '#357A3C', grassDk: '#245628',
-        line: '#D8E4D7',
-        post: '#F6F1E2', net: '#93A4CE',
+        sky1: '#1B2A5C', sky2: '#465EA0',
+        grass1: '#2E6B34', grass2: '#357A3C',
+        line: '#D8E4D7', post: '#F6F1E2', net: '#93A4CE',
         shirt: '#F1942D', shirtW: '#F6F1E2', skin: '#D8A278',
         short: '#F6F1E2', sock: '#1B2349', boot: '#0D1128',
-        opp: '#E8D93F', oppDk: '#7A7016',
-        keeper: '#4FC06B', keeperDk: '#2C7A40',
+        keeper: '#4FC06B', keeperDk: '#2C7A40', keeperGlove: '#E8D93F',
         ball: '#FFFFFF', ballDk: '#1A2145',
         good: '#4FC06B', bad: '#D9483C', aim: '#FFC873',
-        stand: '#1B2349', standLit: '#2A3566'
+        stand: '#1B2349'
     };
-    P.sky1 = '#1B2A5C'; P.sky2 = '#465EA0';   // lucht: avondblauw onder de lichtmasten
 
     /* ── projectie ─────────────────────────────────────────── */
     const HOR = 70, CAMY = 40, FOV = 235;
@@ -1089,70 +1072,89 @@ const GOAL = (() => {
         return { x: W / 2 + x * s, y: HOR + (CAMY - y) * s, s };
     }
 
-    /* ── vaste punten in de scene ──────────────────────────── */
-    const GZ = 164, GHW = 60, GHH = 34;          // doel: diepte, halve breedte, hoogte
-    const HIT = { x: -42, z: 152 };              // kopbalpunt, tweede paal
-    const T_CROSS = 1.9, T_HIT = 3.15, WIN = 0.20;   // iets ruimer: clubsite, geen arcadehal
+    /* ── afmetingen ────────────────────────────────────────── */
+    const GZ = 164, GHW = 60, GHH = 34;      // doel
+    const SPOT = { x: 0, z: 96 };            // vanaf hier schiet je
+    const AIMX = 74, AIMY_LO = 3, AIMY_HI = 40;
 
-    let st = 'kaart';        // kaart | speel | goal | mis
-    let t = 0, raf = null, last = 0;
-    let pressed = null, verdict = '', shots = 0, scored = 0;
-    let ballAfter = 0;
+    const SHOTS = 10;
 
-    function reset(full) {
-        st = 'kaart'; t = 0; pressed = null; verdict = ''; ballAfter = 0;
-        if (full) { shots = 0; scored = 0; }
-    }
+    let st = 'richten';          // richten | schot | uitslag | einde
+    let aim = { x: 0, y: 14 };
+    let kx = 0, kdir = 1, kspeed = 34;
+    let dive = null, diveT = 0;
+    let shot = 0, scored = 0, verdict = '', hiscore = 0;
+    let ball = null, bt = 0;
+    let shake = 0;
+    let raf = null, last = 0;
+    const held = { l: false, r: false, u: false, d: false };
+    const marks = [];
 
-    /* ── baan van de bal ───────────────────────────────────── */
-    function lerp(a, b, k) { return a + (b - a) * k; }
-    function ease(k) { return k < 0 ? 0 : k > 1 ? 1 : k * k * (3 - 2 * k); }
+    try { hiscore = parseInt(localStorage.getItem(HISCORE_KEY) || '0', 10) || 0; } catch (e) {}
 
-    function ballAt(tt) {
-        // 0.0-0.9  inspelen naar rechts
-        // 0.9-1.9  vleugelspeler naar de achterlijn
-        // 1.9-3.15 de voorzet, met boog
-        if (tt < 0.9) {
-            const k = ease(tt / 0.9);
-            return { x: lerp(-34, 92, k), y: 1.5, z: lerp(96, 120, k) };
+    function resetRound(full) {
+        st = 'richten';
+        aim = { x: 0, y: 14 };
+        dive = null; diveT = 0; ball = null; bt = 0; verdict = '';
+        if (full) {
+            shot = 0; scored = 0; marks.length = 0;
+            kx = 0; kdir = 1; kspeed = 34;
+        } else {
+            kspeed = 34 + shot * 5;           // elke beurt sneller
         }
-        if (tt < T_CROSS) {
-            const k = ease((tt - 0.9) / (T_CROSS - 0.9));
-            return { x: lerp(92, 100, k), y: 1.5, z: lerp(120, 146, k) };
+    }
+
+    /* ── schieten ──────────────────────────────────────────── */
+    function shoot() {
+        if (st !== 'richten') return;
+        ball = { x: SPOT.x, y: 2, z: SPOT.z };
+        bt = 0;
+        // De keeper gokt: hij duikt vanaf waar hij nu staat, met een
+        // scheut ruis. Staat hij links en schiet jij rechts, dan haalt
+        // hij het bijna nooit.
+        dive = Math.max(-56, Math.min(56, kx + (Math.random() * 2 - 1) * 26));
+        diveT = 0;
+        st = 'schot';
+        SFX.move();
+    }
+
+    function judge() {
+        const ax = aim.x, ay = aim.y;
+        const inGoal = Math.abs(ax) <= 57 && ay <= 32;
+        const onPost = !inGoal && Math.abs(ax) <= 63 && ay <= 37;
+
+        if (!inGoal && !onPost) { verdict = ay > 32 ? 'OVER' : 'NAAST'; marks.push('M'); }
+        else if (onPost) { verdict = 'PAAL'; marks.push('M'); }
+        else {
+            // Hoog schieten is moeilijker te pakken, maar de lat ligt dichtbij.
+            const reach = ay > 26 ? 0 : (ay > 19 ? 17 : 25);
+            const saved = reach > 0 && Math.abs(ax - dive) < reach;
+            if (saved) { verdict = 'GEPAKT'; marks.push('M'); shake = 0.18; }
+            else { verdict = 'GOAL'; scored++; marks.push('G'); }
         }
-        const k = Math.min(1, (tt - T_CROSS) / (T_HIT - T_CROSS));
-        return {
-            x: lerp(100, HIT.x, k),
-            y: Math.sin(k * Math.PI) * 30 + 2,
-            z: lerp(146, HIT.z, k)
-        };
+        shot++;
+        if (verdict === 'GOAL') SFX.ok(); else SFX.back();
+        st = (shot >= SHOTS) ? 'einde' : 'uitslag';
+        if (st === 'einde' && scored > hiscore) {
+            hiscore = scored;
+            try { localStorage.setItem(HISCORE_KEY, String(hiscore)); } catch (e) {}
+        }
+        hud();
     }
 
-    // na de kopbal: van het kopbalpunt het doel in
-    function ballGoalAt(k) {
-        return { x: lerp(HIT.x, -24, k), y: lerp(15, 6, k), z: lerp(HIT.z, GZ + 6, k) };
+    /* ── invoer ────────────────────────────────────────────── */
+    function tap() {
+        if (st === 'richten') { shoot(); return; }
+        if (st === 'uitslag') { resetRound(false); SFX.move(); return; }
+        if (st === 'einde') { resetRound(true); hud(); SFX.ok(); return; }
     }
-    function ballMissAt(k) {
-        return { x: lerp(HIT.x, -76, k), y: lerp(15, 40, k), z: lerp(HIT.z, GZ + 26, k) };
+    function setHeld(k, on) {
+        if (k === 'ArrowLeft') held.l = on;
+        else if (k === 'ArrowRight') held.r = on;
+        else if (k === 'ArrowUp') held.u = on;
+        else if (k === 'ArrowDown') held.d = on;
     }
-
-    /* ── posities van de spelers ───────────────────────────── */
-    function blinkerAt(tt) {
-        const k = ease(Math.min(1, (tt - 1.2) / (T_HIT - 1.2)));
-        return { x: lerp(24, HIT.x, k), z: lerp(126, HIT.z, k) };
-    }
-    function wingerAt(tt) {
-        const k = ease(Math.min(1, tt / T_CROSS));
-        return { x: lerp(56, 100, k), z: lerp(102, 146, k) };
-    }
-    function markerAt(tt) {                        // verdediger in de rug
-        const b = blinkerAt(tt - 0.16);
-        return { x: b.x + 11, z: b.z - 5 };
-    }
-    function keeperAt(tt) {
-        const k = ease(Math.min(1, (tt - T_CROSS) / (T_HIT - T_CROSS)));
-        return { x: lerp(4, -20, k), z: GZ - 5 };
-    }
+    function clearHeld() { held.l = held.r = held.u = held.d = false; }
 
     /* ── tekenen ───────────────────────────────────────────── */
     function px(x, y, w, h, c) { g.fillStyle = c; g.fillRect(x | 0, y | 0, Math.max(1, w | 0), Math.max(1, h | 0)); }
@@ -1161,7 +1163,6 @@ const GOAL = (() => {
         const sky = g.createLinearGradient(0, 0, 0, HOR);
         sky.addColorStop(0, P.sky1); sky.addColorStop(1, P.sky2);
         g.fillStyle = sky; g.fillRect(0, 0, W, HOR);
-        // tribune achter het doel
         px(0, HOR - 26, W, 26, P.stand);
         for (let x = 0; x < W; x += 3)
             px(x, HOR - 24 + ((x * 7) % 5), 2, 2,
@@ -1170,86 +1171,105 @@ const GOAL = (() => {
     }
 
     function drawPitch() {
-        // Per beeldlijn de diepte terugrekenen: z = FOV*CAMY/(sy-HOR).
         for (let sy = HOR; sy < H; sy++) {
             const z = FOV * CAMY / Math.max(0.6, sy - HOR);
-            const band = Math.floor(z / 16) % 2;
-            px(0, sy, W, 1, band ? P.grass1 : P.grass2);
+            px(0, sy, W, 1, (Math.floor(z / 16) % 2) ? P.grass1 : P.grass2);
         }
-        // lijnen: constante z = horizontale schermlijn
         const zline = z => HOR + CAMY * (FOV / z);
-        const drawZ = (z, x0, x1, c) => {
+        const drawZ = (z, x0, x1) => {
             const a = proj(x0, 0, z), b = proj(x1, 0, z);
-            px(Math.min(a.x, b.x), zline(z), Math.abs(b.x - a.x), 1, c || P.line);
+            px(Math.min(a.x, b.x), zline(z), Math.abs(b.x - a.x), 1, P.line);
         };
-        const drawX = (x, z0, z1, c) => {
+        const drawX = (x, z0, z1) => {
             for (let z = z0; z <= z1; z += 1.5) {
                 const p = proj(x, 0, z);
-                px(p.x, p.y, Math.max(1, p.s * 0.9), 1, c || P.line);
+                px(p.x, p.y, Math.max(1, p.s * 0.9), 1, P.line);
             }
         };
-        drawZ(GZ, -150, 150);                      // achterlijn
-        drawZ(GZ - 68, -104, 104);                 // 16 meter
+        drawZ(GZ, -150, 150);
+        drawZ(GZ - 68, -104, 104);
         drawX(-104, GZ - 68, GZ); drawX(104, GZ - 68, GZ);
-        drawZ(GZ - 26, -44, 44);                   // 5 meter
+        drawZ(GZ - 26, -44, 44);
         drawX(-44, GZ - 26, GZ); drawX(44, GZ - 26, GZ);
-        drawX(-150, 80, GZ); drawX(150, 80, GZ);   // zijlijnen
+        // strafschopstip
+        const sp = proj(0, 0, SPOT.z + 14);
+        px(sp.x - 2, sp.y, 4, 2, P.line);
     }
 
     function drawGoal() {
-        const l = proj(-GHW, 0, GZ), r = proj(GHW, 0, GZ);
-        const lt = proj(-GHW, GHH, GZ), rt = proj(GHW, GHH, GZ);
-        // net
+        const l = proj(-GHW, 0, GZ), r = proj(GHW, 0, GZ), lt = proj(-GHW, GHH, GZ);
         const nw = r.x - l.x, nh = l.y - lt.y;
         for (let i = 0; i <= 12; i++) px(l.x + (nw / 12) * i, lt.y, 1, nh, P.net);
         for (let j = 0; j <= 6; j++)  px(l.x, lt.y + (nh / 6) * j, nw, 1, P.net);
-        // palen en lat
         const pw = Math.max(2, l.s * 1.6);
         px(l.x - pw, lt.y, pw, nh + 1, P.post);
-        px(r.x, rt.y, pw, nh + 1, P.post);
+        px(r.x, lt.y, pw, nh + 1, P.post);
         px(l.x - pw, lt.y - pw, nw + pw * 2, pw, P.post);
     }
 
-    /* speler-sprite, geschaald op afstand */
-    function drawMan(wx, wz, kit, opts) {
-        opts = opts || {};
-        const p = proj(wx, 0, wz);
-        const u = Math.max(1, p.s * 0.9);            // "pixel" op deze afstand
+    function drawKeeper(x, jumpY) {
+        const p = proj(x, 0, GZ - 6);
+        const u = Math.max(1, p.s * 1.0);
+        const bx = p.x - u * 3, by = p.y - u * 17 - (jumpY || 0) * u;
+        px(bx + u * 2, by, u * 3, u * 3, P.skin);
+        px(bx + u * 2, by - u, u * 3, u, '#3B2A18');
+        px(bx, by + u * 3, u * 6, u * 6, P.keeper);
+        // armen: bij een duik gestrekt opzij
+        const arm = dive !== null && st === 'schot' ? u * 4 : u * 2;
+        px(bx - arm, by + u * 3.2, arm, u * 1.6, P.keeperDk);
+        px(bx + u * 6, by + u * 3.2, arm, u * 1.6, P.keeperDk);
+        px(bx - arm - u, by + u * 3.2, u, u * 1.6, P.keeperGlove);
+        px(bx + u * 6 + arm, by + u * 3.2, u, u * 1.6, P.keeperGlove);
+        px(bx + u * 0.4, by + u * 9, u * 2.2, u * 4, P.keeperDk);
+        px(bx + u * 3.4, by + u * 9, u * 2.2, u * 4, P.keeperDk);
+        px(bx + u * 0.8, by + u * 13, u * 1.6, u * 3, P.sock);
+        px(bx + u * 3.6, by + u * 13, u * 1.6, u * 3, P.sock);
+        if (!jumpY) px(p.x - u * 3, p.y, u * 6, Math.max(1, u), 'rgba(0,0,0,.25)');
+    }
+
+    function drawStriker() {
+        const p = proj(-40, 0, SPOT.z - 22);
+        const u = Math.max(1, p.s * 1.0);
         const x = p.x - u * 3, y = p.y - u * 17;
-        const jump = opts.jump ? u * 5 : 0;
-        const yy = y - jump;
-        px(x + u * 2, yy, u * 3, u * 3, P.skin);                       // hoofd
-        px(x + u * 2, yy - u, u * 3, u, opts.hair || '#3B2A18');
-        if (kit === 'rbc') {
-            px(x, yy + u * 3, u * 6, u * 6, P.shirt);
-            px(x + u * 2.2, yy + u * 3, u * 1.6, u * 6, P.shirtW);
-        } else if (kit === 'opp') {
-            px(x, yy + u * 3, u * 6, u * 6, P.opp);
-            px(x, yy + u * 5, u * 6, u, P.oppDk);
-        } else {
-            px(x, yy + u * 3, u * 6, u * 6, P.keeper);
-            px(x - u * 2, yy + u * 3.4, u * 2, u * 1.4, P.keeperDk);
-            px(x + u * 6, yy + u * 3.4, u * 2, u * 1.4, P.keeperDk);
-        }
-        px(x + u * 0.4, yy + u * 9, u * 2.2, u * 4, P.short);          // broek
-        px(x + u * 3.4, yy + u * 9, u * 2.2, u * 4, P.short);
-        px(x + u * 0.8, yy + u * 13, u * 1.6, u * 3, P.sock);          // sokken
-        px(x + u * 3.6, yy + u * 13, u * 1.6, u * 3, P.sock);
-        px(x + u * 0.6, yy + u * 16, u * 2, u, P.boot);
-        px(x + u * 3.4, yy + u * 16, u * 2, u, P.boot);
-        // schaduw
-        if (!opts.jump) px(p.x - u * 3, p.y, u * 6, Math.max(1, u), 'rgba(0,0,0,.25)');
+        px(x + u * 2, y, u * 3, u * 3, P.skin);
+        px(x + u * 2, y - u, u * 3, u, '#3B2A18');
+        px(x, y + u * 3, u * 6, u * 6, P.shirt);
+        px(x + u * 2.2, y + u * 3, u * 1.6, u * 6, P.shirtW);
+        px(x + u * 0.4, y + u * 9, u * 2.2, u * 4, P.short);
+        px(x + u * 3.4, y + u * 9, u * 2.2, u * 4, P.short);
+        px(x + u * 0.8, y + u * 13, u * 1.6, u * 3, P.sock);
+        px(x + u * 3.6, y + u * 13, u * 1.6, u * 3, P.sock);
+        px(x + u * 0.6, y + u * 16, u * 2, u, P.boot);
+        px(x + u * 3.4, y + u * 16, u * 2, u, P.boot);
+        px(p.x - u * 3, p.y, u * 6, Math.max(1, u), 'rgba(0,0,0,.25)');
     }
 
     function drawBall(b) {
         const p = proj(b.x, b.y, b.z);
         const r = Math.max(3, p.s * 2.0);
-        // schaduw op de grond
         const sh = proj(b.x, 0, b.z);
         px(sh.x - r * 0.8, sh.y - 1, r * 1.6, Math.max(1, r * 0.5), 'rgba(0,0,0,.28)');
         px(p.x - r / 2, p.y - r / 2, r, r, P.ball);
         px(p.x - r / 2, p.y - r / 2, Math.max(1, r / 3), Math.max(1, r / 3), P.ballDk);
-        px(p.x + r / 2 - r / 3, p.y + r / 2 - r / 3, Math.max(1, r / 3), Math.max(1, r / 3), P.ballDk);
+        px(p.x + r / 6, p.y + r / 6, Math.max(1, r / 3), Math.max(1, r / 3), P.ballDk);
+    }
+
+    /* het vizier ligt in het doelvlak, dus het schaalt mee */
+    function drawAim() {
+        const p = proj(aim.x, aim.y, GZ);
+        const inGoal = Math.abs(aim.x) <= 57 && aim.y <= 32;
+        const hoog = aim.y > 26 && inGoal;
+        const c = !inGoal ? P.bad : (hoog ? P.good : P.aim);
+        const s = Math.max(5, p.s * 6);
+        px(p.x - s, p.y, s * 2 + 1, 1, c);
+        px(p.x, p.y - s, 1, s * 2 + 1, c);
+        px(p.x - 2, p.y - 2, 5, 5, 'rgba(0,0,0,0)');
+        px(p.x - 1, p.y - 1, 3, 3, c);
+        // hoekjes
+        px(p.x - s, p.y - s, 3, 1, c); px(p.x - s, p.y - s, 1, 3, c);
+        px(p.x + s - 2, p.y - s, 3, 1, c); px(p.x + s, p.y - s, 1, 3, c);
+        px(p.x - s, p.y + s - 2, 1, 3, c); px(p.x - s, p.y + s, 3, 1, c);
+        px(p.x + s - 2, p.y + s, 3, 1, c); px(p.x + s, p.y + s - 2, 1, 3, c);
     }
 
     function label(text, y, mult, col, shadow) {
@@ -1258,120 +1278,122 @@ const GOAL = (() => {
         g.drawImage(c, Math.round((W - c.width) / 2), y);
     }
 
-    /* timingbalk: laat zien wanneer de kopbal moet */
-    function drawTiming() {
-        const bw = 150, bx = (W - bw) / 2, by = H - 22;
-        px(bx - 2, by - 2, bw + 4, 12, '#0D1128');
-        px(bx, by, bw, 8, '#2A3566');
-        // groene zone = het trefmoment
-        const z0 = ((T_HIT - WIN) - T_CROSS) / (T_HIT + 0.5 - T_CROSS);
-        const z1 = ((T_HIT + WIN) - T_CROSS) / (T_HIT + 0.5 - T_CROSS);
-        px(bx + bw * z0, by, bw * (z1 - z0), 8, P.good);
-        const k = Math.min(1, Math.max(0, (t - T_CROSS) / (T_HIT + 0.5 - T_CROSS)));
-        px(bx + bw * k - 1, by - 3, 3, 14, P.aim);
-    }
-
-    /* ── invoer ────────────────────────────────────────────── */
-    function tap() {
-        if (st === 'kaart') { st = 'speel'; t = 0; SFX.ok(); return; }
-        if (st === 'speel') {
-            if (pressed !== null) return;
-            pressed = t;
-            const off = Math.abs(t - T_HIT);
-            shots++;
-            if (off <= WIN) { st = 'goal'; scored++; verdict = 'GOAL'; SFX.start(); }
-            else { st = 'mis'; verdict = t < T_HIT ? 'TE VROEG' : 'TE LAAT'; SFX.back(); }
-            ballAfter = 0;
-            hud();
-            return;
+    function drawMarks() {
+        const n = SHOTS, cw = 11, x0 = (W - n * cw) / 2;
+        for (let i = 0; i < n; i++) {
+            const m = marks[i], x = x0 + i * cw;
+            px(x, 6, 8, 8, '#0D1128');
+            if (m === 'G') px(x + 1, 7, 6, 6, P.good);
+            else if (m === 'M') px(x + 1, 7, 6, 6, P.bad);
         }
-        if (st === 'goal' || st === 'mis') { reset(false); SFX.move(); }
     }
 
     /* ── hoofdlus ──────────────────────────────────────────── */
     function frame(ts) {
         const dt = Math.min(50, ts - last) / 1000; last = ts;
+        shake = Math.max(0, shake - dt);
 
-        if (st === 'speel') {
-            t += dt;
-            // niet gedrukt en het moment voorbij: gemist
-            if (pressed === null && t > T_HIT + WIN + 0.05) {
-                pressed = t; shots++; st = 'mis'; verdict = 'GEEN CONTACT'; SFX.back(); ballAfter = 0; hud();
-            }
-        } else if (st === 'goal' || st === 'mis') {
-            ballAfter = Math.min(1, ballAfter + dt * 1.5);
+        // keeper loopt heen en weer, ook terwijl je richt
+        if (st === 'richten' || st === 'uitslag') {
+            kx += kdir * kspeed * dt;
+            if (kx > 44) { kx = 44; kdir = -1; }
+            if (kx < -44) { kx = -44; kdir = 1; }
         }
 
-        g.clearRect(0, 0, W, H);
+        if (st === 'richten') {
+            const sp = 62 * dt;
+            if (held.l) aim.x = Math.max(-AIMX, aim.x - sp);
+            if (held.r) aim.x = Math.min(AIMX, aim.x + sp);
+            if (held.u) aim.y = Math.min(AIMY_HI, aim.y + sp * 0.7);
+            if (held.d) aim.y = Math.max(AIMY_LO, aim.y - sp * 0.7);
+        } else if (st === 'schot') {
+            bt += dt * 1.8;
+            diveT = Math.min(1, diveT + dt * 3.4);
+            const k = Math.min(1, bt);
+            ball = {
+                x: SPOT.x + (aim.x - SPOT.x) * k,
+                y: 2 + (aim.y - 2) * k + Math.sin(k * Math.PI) * 3,
+                z: SPOT.z + (GZ - SPOT.z) * k
+            };
+            if (bt >= 1) judge();
+        }
+
+        g.save();
+        if (shake > 0) g.translate((Math.random() * 2 - 1) * 2, (Math.random() * 2 - 1) * 2);
+        g.clearRect(-4, -4, W + 8, H + 8);
         drawSky();
         drawPitch();
         drawGoal();
 
-        if (st === 'kaart') {
-            px(20, 52, W - 40, 132, 'rgba(8,10,22,.86)');
-            px(20, 52, W - 40, 2, P.shirt); px(20, 182, W - 40, 2, P.shirt);
-            label(SCENE.speler, 66, 2, P.aim);
-            label(SCENE.context, 92, 1, P.post);
-            label(SCENE.plek, 106, 1, P.post);
-            label('RBC - ' + SCENE.tegen + '   ' + SCENE.jaar, 124, 1, P.shirt);
-            label(SCENE.opzet, 146, 1, '#93A4CE');
-            label('VRIJE RECONSTRUCTIE', 160, 1, '#6B7885');
-            label('DRUK A OM TE SPELEN', 200, 1, P.aim);
-        } else {
-            const tt = (st === 'speel') ? t : Math.min(t, T_HIT);
-            const bl = blinkerAt(tt), mk = markerAt(tt), wg = wingerAt(tt), kp = keeperAt(tt);
-            const springt = (st === 'goal') || (st === 'speel' && Math.abs(t - T_HIT) < 0.22);
+        const kpos = (st === 'schot' || st === 'uitslag' || st === 'einde') && dive !== null
+            ? kx + (dive - kx) * diveT : kx;
+        const kjump = (st === 'schot' && diveT > 0.15) ? 3 : 0;
+        drawKeeper(kpos, kjump);
+        drawStriker();
 
-            // ver naar dichtbij tekenen
-            const cast = [
-                { z: kp.z, f: () => drawMan(kp.x, kp.z, 'kee') },
-                { z: mk.z, f: () => drawMan(mk.x, mk.z, 'opp') },
-                { z: bl.z, f: () => drawMan(bl.x, bl.z, 'rbc', { jump: springt }) },
-                { z: wg.z, f: () => drawMan(wg.x, wg.z, 'rbc') }
-            ].sort((a, b) => b.z - a.z);
-            cast.forEach(c => c.f());
-
-            let b;
-            if (st === 'goal') b = ballGoalAt(ballAfter);
-            else if (st === 'mis') b = ballMissAt(ballAfter);
-            else b = ballAt(t);
-            drawBall(b);
-
-            if (st === 'speel') {
-                if (t < T_CROSS) label('KIJK MEE...', 190, 1, '#93A4CE');
-                else {
-                    drawTiming();
-                    if (t > T_CROSS + 0.35) label('DRUK A OP HET JUISTE MOMENT', 190, 1, P.aim);
-                }
-            } else {
-                // Onderin, niet over het doel heen: anders zie je de bal
-                // het net niet in gaan, en dat is juist de beloning.
-                px(26, 162, W - 52, 54, 'rgba(8,10,22,.88)');
-                px(26, 162, W - 52, 1, st === 'goal' ? P.good : P.bad);
-                label(verdict, 168, 2, st === 'goal' ? P.good : P.bad);
-                label(st === 'goal' ? SCENE.speler + ' KOPT BINNEN' : 'DE KANS IS VOORBIJ',
-                      192, 1, P.post);
-                label('DRUK A VOOR NOG EEN POGING', 204, 1, P.aim);
-            }
+        if (st === 'richten') {
+            drawBall({ x: SPOT.x, y: 2, z: SPOT.z });
+            drawAim();
+        } else if (ball) {
+            drawBall(ball);
         }
+        drawMarks();
+
+        if (st === 'richten') {
+            label('PIJLTJES RICHTEN   A SCHIETEN', 214, 1, P.aim);
+            if (aim.y > 26 && aim.y <= 32 && Math.abs(aim.x) <= 57)
+                label('BOVENHOEK - ONHOUDBAAR', 202, 1, P.good);
+            else if (aim.y > 32 || Math.abs(aim.x) > 57)
+                label('JE MIKT NAAST HET DOEL', 202, 1, P.bad);
+        } else if (st === 'uitslag') {
+            px(60, 186, W - 120, 34, 'rgba(8,10,22,.88)');
+            px(60, 186, W - 120, 1, verdict === 'GOAL' ? P.good : P.bad);
+            label(verdict, 192, 2, verdict === 'GOAL' ? P.good : P.bad);
+            label('DRUK A', 212, 1, P.aim);
+        } else if (st === 'einde') {
+            px(34, 74, W - 68, 96, 'rgba(8,10,22,.9)');
+            px(34, 74, W - 68, 1, P.shirt); px(34, 169, W - 68, 1, P.shirt);
+            label(scored + ' VAN ' + SHOTS, 86, 2, P.aim);
+            const msg = scored >= 9 ? 'CLUBTOPSCORER'
+                      : scored >= 7 ? 'STERKE SPITS'
+                      : scored >= 4 ? 'AARDIG GEDAAN'
+                      : scored >= 1 ? 'DE KEEPER STOND GOED'
+                                    : 'GEEN ENKELE ERIN';
+            label(msg, 112, 1, P.post);
+            label('BESTE OOIT: ' + hiscore, 130, 1, P.shirt);
+            label('DRUK A VOOR NOG 10', 150, 1, P.aim);
+        }
+        g.restore();
         raf = requestAnimationFrame(frame);
     }
 
     function hud() {
-        txt(document.getElementById('hud-goal'), 'ICONISCHE GOAL', 2, C.cream);
-        txt(document.getElementById('hud-goalscore'),
-            shots ? ('RAAK ' + scored + ' / ' + shots) : SCENE.jaar, 1.5, C.orangeLit);
+        txt(document.getElementById('hud-game'), 'TOPSCORER', 2, C.cream);
+        txt(document.getElementById('hud-gamescore'),
+            'SCHOT ' + Math.min(shot + 1, SHOTS) + '/' + SHOTS + '   RAAK ' + scored, 1.5, C.orangeLit);
     }
+
+    /* eigen toetsafhandeling: richten moet vloeiend zijn, dus
+       ingedrukt houden telt, niet de OS-herhaling van keydown */
+    addEventListener('keydown', e => {
+        if (SCREEN !== 'game') return;
+        if (e.key.startsWith('Arrow')) { setHeld(e.key, true); e.preventDefault(); }
+    });
+    addEventListener('keyup', e => {
+        if (e.key.startsWith('Arrow')) setHeld(e.key, false);
+    });
+    addEventListener('blur', clearHeld);
 
     function start() {
         hud();
-        footer(document.getElementById('foot-goal'), [['A', 'KOP'], ['B', 'TERUG']]);
-        reset(true);
+        footer(document.getElementById('foot-game'), [['A', 'SCHIET'], ['B', 'TERUG']]);
+        clearHeld();
+        resetRound(true);
         if (!raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
     }
-    function stop() { if (raf) { cancelAnimationFrame(raf); raf = null; } }
+    function stop() { clearHeld(); if (raf) { cancelAnimationFrame(raf); raf = null; } }
 
-    return { start, stop, tap };
+    return { start, stop, tap, setHeld, clearHeld };
 })();
 
 /* ════════════════════════════════════════════════════════════
@@ -1383,14 +1405,14 @@ function enter() {
         const id = MENU[menuIdx][0];
         if (id === 'klassiek') { SFX.ok(); location.href = '/'; return; }
         show(id);
-        ({ goal: GOAL.start, squad: drawSquad, stand: drawStand, match: drawMatch,
+        ({ game: GAME.start, squad: drawSquad, stand: drawStand, match: drawMatch,
            news: drawNews, club: drawClub })[id]();
         return;
     }
-    if (SCREEN === 'goal') { GOAL.tap(); return; }
+    if (SCREEN === 'game') { GAME.tap(); return; }
 }
 function back() {
-    if (SCREEN === 'goal') GOAL.stop();        // lus stoppen, anders draait hij door
+    if (SCREEN === 'game') GAME.stop();        // lus stoppen, anders draait hij door
     if (SCREEN === 'menu') { SFX.back(); show('title'); return; }
     if (SCREEN !== 'title') { SFX.back(); show('menu'); drawMenu(); }
 }
@@ -1411,7 +1433,7 @@ function move(dir) {
     } else if (SCREEN === 'club') {
         document.querySelector('#v-club .pane-scroll').scrollBy({ top: dir * 40 });
     }
-    // 'goal' negeert de pijltjes: het spel draait op timing met A
+    // 'game' regelt de pijltjes zelf (vloeiend richten), dus hier niets
 }
 function press(k) {
     if (k === 'ArrowDown' || k === 'ArrowRight') return move(1);
@@ -1427,7 +1449,16 @@ addEventListener('keydown', e => {
     }
 });
 document.querySelectorAll('.pk, .rk').forEach(el => {
-    el.addEventListener('pointerdown', e => { e.preventDefault(); press(el.dataset.k); });
+    el.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        // In TOPSCORER moet je kunnen blijven drukken om te richten.
+        if (SCREEN === 'game' && el.dataset.k.startsWith('Arrow')) { GAME.setHeld(el.dataset.k, true); return; }
+        press(el.dataset.k);
+    });
+    ['pointerup','pointercancel','pointerleave'].forEach(ev =>
+        el.addEventListener(ev, () => {
+            if (el.dataset.k.startsWith('Arrow')) GAME.setHeld(el.dataset.k, false);
+        }));
 });
 document.getElementById('v-title').addEventListener('click', () => { if (SCREEN === 'title') enter(); });
 
@@ -1438,7 +1469,7 @@ function redrawCurrent() {
     rescale();
     drawTitle();
     document.querySelectorAll('.rkl').forEach(c => txt(c, c.dataset.t, 1.4, C.ink, null));
-    ({ title: () => {}, menu: drawMenu, goal: GOAL.start, squad: drawSquad, stand: drawStand,
+    ({ title: () => {}, menu: drawMenu, game: GAME.start, squad: drawSquad, stand: drawStand,
        match: drawMatch, news: drawNews, club: drawClub })[SCREEN]();
 }
 
