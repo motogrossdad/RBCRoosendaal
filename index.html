@@ -2,29 +2,37 @@
 <html lang="nl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
 <title>RBC Roosendaal</title>
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="RBC Roosendaal — welke speler heeft welk rugnummer, de stand, de uitslagen en het programma. Derde Divisie B.">
+<meta name="description" content="RBC Roosendaal — de app voor op de tribune. Wie is welk rugnummer, houd de stand zelf bij en stuur hem door. Werkt zonder bereik.">
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/rbc.png">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="RBC">
 <style>
 /* ════════════════════════════════════════════════════════════
-   RBC Roosendaal — voor op de tribune
-   Gemaakt voor oudere supporters met een telefoon in de hand:
-   grote letters, veel contrast, ruime knoppen, één kolom.
-   Zwart op wit; oranje alleen om RBC aan te wijzen.
+   RBC Roosendaal — tribune-app
+   Uitgangspunten, uit wat er in het stadion te zien was:
+   · het publiek is ouder en kijkt op de telefoon → grote letters,
+     veel contrast, ruime knoppen, duim onderaan
+   · bereik in het stadion is slecht en een club in de Derde
+     Divisie heeft geen live-datavoorziening → alles werkt offline
+     en de supporter houdt de stand zélf bij
+   · de selectie wisselt sterk → rugnummer opzoeken staat voorop
    ════════════════════════════════════════════════════════════ */
 :root {
-    --oranje: #C25E00;      /* donker genoeg voor contrast op wit */
-    --grijs:  #5A5A5A;
-    --lijn:   #D6D6D6;
+    --oranje:     #C25E00;
+    --oranje-licht:#FFF3E3;
+    --grijs:      #5A5A5A;
+    --lijn:       #DCDCDC;
+    --tab-h:      4.6rem;
     color-scheme: light;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 html { font-size: 20px; -webkit-text-size-adjust: 100%; }
 
@@ -33,354 +41,457 @@ body {
     color: #000;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.5;
-    max-width: 34rem;
-    margin: 0 auto;
-    padding: 0 1rem 4rem;
+    padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom));
+    overflow-x: hidden;
 }
-
-/* ── taalkeuze ─────────────────────────────────────────── */
-.talen {
-    display: flex; justify-content: flex-end; gap: 0.4rem;
-    padding-top: 0.7rem;
-}
-.talen button {
-    font: inherit; font-size: 0.95rem; font-weight: 700;
-    padding: 0.5rem 0.7rem;
-    min-height: 2.8rem;
-    background: #fff; color: #000;
-    border: 2px solid var(--lijn);
-    border-radius: 0.35rem;
-    cursor: pointer;
-    line-height: 1;
-}
-.talen button[aria-pressed="true"] { border-color: #000; }
-.talen .vlag { font-size: 1.15rem; margin-right: 0.3rem; }
+.wrap { max-width: 34rem; margin: 0 auto; padding: 0 1rem; }
 
 /* ── kop ───────────────────────────────────────────────── */
 header {
-    display: flex; align-items: center; gap: 0.9rem;
-    padding: 0.6rem 0 0.9rem;
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: calc(0.8rem + env(safe-area-inset-top)) 0 0.8rem;
 }
-/* Aparte kleine versie van het logo: het origineel is 267 kB en de
-   hele pagina weegt minder dan een tiende daarvan. */
-header img { width: 3.1rem; height: auto; flex-shrink: 0; }
-h1 { font-size: 1.6rem; line-height: 1.2; }
-header p { color: var(--grijs); font-size: 0.9rem; }
-
-/* ── snelmenu ───────────────────────────────────────────
-   Twee rijen van twee: op een telefoon paste "Programma"
-   niet in een rij van vier, en zo worden de knoppen meteen
-   een stuk groter om aan te tikken. */
-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    padding-bottom: 1.1rem;
-    margin-bottom: 1.4rem;
-    border-bottom: 2px solid #000;
-}
-nav a {
-    text-align: center;
-    padding: 0.8rem 0.3rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #000;
-    text-decoration: none;
-    border: 2px solid #000;
-    border-radius: 0.35rem;
-    min-height: 3.2rem;
+header img { width: 2.5rem; height: auto; flex-shrink: 0; }
+header .naam { min-width: 0; }
+header h1 { font-size: 1.15rem; line-height: 1.15; white-space: nowrap; }
+header .sub { color: var(--grijs); font-size: 0.78rem; white-space: nowrap; }
+/* Alleen de vlag: met "NL"/"EN" erbij werd de clubnaam over twee
+   regels geduwd op een telefoon. */
+.talen { margin-left: auto; display: flex; gap: 0.3rem; flex-shrink: 0; }
+.talen button {
+    font: inherit; font-size: 1.15rem;
+    padding: 0; width: 2.5rem; height: 2.5rem;
+    background: #fff; border: 2px solid var(--lijn); border-radius: 0.35rem;
+    cursor: pointer; line-height: 1;
     display: flex; align-items: center; justify-content: center;
 }
-@media (min-width: 560px) { nav { grid-template-columns: repeat(4, 1fr); } }
+.talen button[aria-pressed="true"] { border-color: #000; border-width: 3px; }
 
+/* ── schermen ──────────────────────────────────────────── */
+.scherm { display: none; padding-bottom: 2rem; }
+.scherm.aan { display: block; }
 h2 {
-    font-size: 1.3rem;
-    margin: 2.2rem 0 0.8rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 2px solid #000;
+    font-size: 1.15rem; margin: 1.6rem 0 0.7rem;
+    padding-bottom: 0.3rem; border-bottom: 2px solid #000;
 }
-section:first-of-type h2 { margin-top: 0; }
+.scherm > .wrap > h2:first-child { margin-top: 0.6rem; }
 
-/* ── wedstrijd ─────────────────────────────────────────── */
-.wedstrijd { font-size: 1.15rem; }
-.wedstrijd strong { font-size: 1.25rem; }
-.score {
-    font-size: 3.2rem; font-weight: 700; line-height: 1.1;
-    letter-spacing: -0.02em;
+/* ── scorebord: de supporter houdt zelf bij ────────────── */
+.bord {
+    border: 3px solid #000; border-radius: 0.6rem;
+    padding: 0.9rem; margin-top: 0.4rem;
 }
-.live {
-    display: inline-block;
-    background: #000; color: #fff;
-    font-size: 0.8rem; font-weight: 700;
-    padding: 0.15rem 0.5rem; border-radius: 0.25rem;
-    margin-bottom: 0.4rem;
+.bord-namen {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem; align-items: center; text-align: center;
+}
+.bord-namen .club {
+    font-size: 0.9rem; font-weight: 700; line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+.bord-namen .club.eigen { color: var(--oranje); }
+.bord-cijfers {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    gap: 0.5rem; align-items: center; text-align: center;
+    margin: 0.1rem 0 0.5rem;
+}
+.bord-cijfers .n { font-size: 4.2rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.bord-cijfers .streep { font-size: 2rem; font-weight: 700; color: var(--grijs); }
+.bord-knoppen { display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem; }
+.klok {
+    text-align: center; font-size: 1.05rem; font-weight: 700;
+    font-variant-numeric: tabular-nums; margin-bottom: 0.5rem;
+    color: var(--grijs);
+}
+.klok button {
+    font: inherit; font-size: 0.85rem; font-weight: 700;
+    background: none; border: 2px solid var(--lijn); border-radius: 0.3rem;
+    padding: 0.2rem 0.55rem; margin-left: 0.4rem; cursor: pointer; color: #000;
 }
 
-/* ── rugnummer opzoeken: het belangrijkste op deze site ── */
-.zoek { margin-bottom: 1.2rem; }
-label.zoek-label {
-    display: block;
-    font-size: 1rem; font-weight: 700;
-    margin-bottom: 0.45rem;
-}
-#nummer {
+button.groot {
+    font: inherit; font-size: 1rem; font-weight: 700;
+    min-height: 3.4rem; padding: 0.7rem 0.5rem;
+    border: 2px solid #000; border-radius: 0.45rem;
+    background: #fff; color: #000; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
     width: 100%;
-    font: inherit;
-    font-size: 2.6rem;
-    font-weight: 700;
-    text-align: center;
-    padding: 0.55rem;
-    border: 3px solid #000;
-    border-radius: 0.4rem;
-    background: #fff; color: #000;
+}
+button.groot.zwart { background: #000; color: #fff; }
+button.groot.oranje { background: var(--oranje); border-color: var(--oranje); color: #fff; }
+button.groot:active { filter: brightness(0.85); }
+button.groot[disabled] { opacity: 0.4; }
+button.klein {
+    font: inherit; font-size: 0.85rem; font-weight: 700;
+    min-height: 2.6rem; padding: 0.4rem 0.7rem;
+    border: 2px solid var(--lijn); border-radius: 0.35rem;
+    background: #fff; color: #000; cursor: pointer;
+}
+
+/* ── verloop van de wedstrijd ──────────────────────────── */
+ul.verloop { list-style: none; margin-top: 1rem; }
+ul.verloop li {
+    display: flex; align-items: baseline; gap: 0.7rem;
+    padding: 0.6rem 0; border-bottom: 1px solid var(--lijn);
+}
+ul.verloop .min {
+    flex: 0 0 3.1rem; font-weight: 700; font-variant-numeric: tabular-nums;
+    color: var(--grijs); font-size: 0.95rem;
+}
+ul.verloop .wie { flex: 1 1 auto; font-size: 1.05rem; }
+ul.verloop li.eigen .wie { font-weight: 700; color: var(--oranje); }
+ul.verloop .weg {
+    flex: 0 0 auto; background: none; border: 0; cursor: pointer;
+    font: inherit; font-size: 1.4rem; line-height: 1; color: var(--grijs);
+    padding: 0.15rem 0.4rem;
+}
+.leegmelding { color: var(--grijs); padding: 0.8rem 0; }
+
+/* ── keuzevenster (wie scoorde) ────────────────────────── */
+.venster {
+    position: fixed; inset: 0; z-index: 50;
+    background: rgba(0,0,0,.45);
+    display: none; align-items: flex-end;
+}
+.venster.aan { display: flex; }
+.venster-blad {
+    background: #fff; width: 100%; max-height: 86vh;
+    border-radius: 0.9rem 0.9rem 0 0;
+    padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    max-width: 34rem; margin: 0 auto;
+}
+.venster-kop {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; margin-bottom: 0.7rem;
+}
+.venster-kop h3 { font-size: 1.1rem; }
+.minuutrij {
+    display: flex; align-items: center; gap: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+.minuutrij label { font-size: 0.9rem; font-weight: 700; }
+.minuutrij input {
+    width: 5rem; font: inherit; font-size: 1.4rem; font-weight: 700;
+    text-align: center; padding: 0.35rem;
+    border: 2px solid #000; border-radius: 0.4rem;
+}
+ul.kieslijst { list-style: none; }
+ul.kieslijst li {
+    display: flex; align-items: baseline; gap: 0.8rem;
+    padding: 0.75rem 0.2rem; border-bottom: 1px solid var(--lijn);
+    cursor: pointer; font-size: 1.1rem;
+}
+ul.kieslijst .rug {
+    flex: 0 0 2.2rem; text-align: right; font-weight: 700;
+    font-size: 1.3rem; font-variant-numeric: tabular-nums;
+}
+ul.kieslijst li:active { background: var(--oranje-licht); }
+
+/* ── rugnummer opzoeken ────────────────────────────────── */
+label.zoek-label { display: block; font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+#nummer {
+    width: 100%; font: inherit; font-size: 2.6rem; font-weight: 700;
+    text-align: center; padding: 0.5rem;
+    border: 3px solid #000; border-radius: 0.45rem; background: #fff; color: #000;
 }
 #nummer:focus { outline: 4px solid var(--oranje); outline-offset: 2px; }
-#gevonden {
-    margin-top: 0.7rem;
-    min-height: 3.4rem;
-    font-size: 1.9rem;
-    font-weight: 700;
-    line-height: 1.25;
-}
-#gevonden .leeg { font-size: 1rem; font-weight: 400; color: var(--grijs); }
+#gevonden { margin-top: 0.6rem; min-height: 3.2rem; font-size: 1.8rem; font-weight: 700; line-height: 1.2; }
+#gevonden .leeg { font-size: 0.95rem; font-weight: 400; color: var(--grijs); }
 #gevonden .details {
-    display: block;
-    font-size: 0.95rem; font-weight: 400; line-height: 1.45;
-    color: var(--grijs); margin-top: 0.3rem;
+    display: block; font-size: 0.9rem; font-weight: 400;
+    line-height: 1.45; color: var(--grijs); margin-top: 0.25rem;
 }
 #gevonden .details .van { color: #000; }
-/* rijen in de lijst zijn aan te tikken: niet iedereen typt */
-ul.spelers li { cursor: pointer; }
 
-/* ── spelerslijst ──────────────────────────────────────── */
 ul.spelers { list-style: none; }
 ul.spelers li {
-    display: flex; align-items: baseline; gap: 0.9rem;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--lijn);
-    font-size: 1.15rem;
+    display: flex; align-items: baseline; gap: 0.85rem;
+    padding: 0.6rem 0; border-bottom: 1px solid var(--lijn);
+    font-size: 1.1rem; cursor: pointer;
 }
 ul.spelers .rug {
-    flex: 0 0 2.4rem;
-    text-align: right;
-    font-size: 1.5rem; font-weight: 700;
-    font-variant-numeric: tabular-nums;
+    flex: 0 0 2.3rem; text-align: right;
+    font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums;
 }
-ul.spelers li.raak { background: #FFF3E3; }
+ul.spelers .pos { font-size: 0.8rem; color: var(--grijs); }
+ul.spelers li.raak { background: var(--oranje-licht); }
 ul.spelers li.raak .rug { color: var(--oranje); }
 
-/* ── tabellen ──────────────────────────────────────────── */
-table { border-collapse: collapse; width: 100%; font-size: 1.05rem; }
-th, td { text-align: left; padding: 0.5rem 0.3rem; border-bottom: 1px solid var(--lijn); }
-th { font-size: 0.8rem; color: var(--grijs); font-weight: 400; border-bottom: 2px solid #000; }
-td.pos, th.pos { width: 2.2rem; text-align: right; padding-right: 0.6rem; font-variant-numeric: tabular-nums; }
+/* ── tabellen en lijsten ───────────────────────────────── */
+table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+th, td { text-align: left; padding: 0.5rem 0.25rem; border-bottom: 1px solid var(--lijn); }
+th { font-size: 0.75rem; color: var(--grijs); font-weight: 400; border-bottom: 2px solid #000; }
+td.pos, th.pos { width: 2rem; text-align: right; padding-right: 0.5rem; font-variant-numeric: tabular-nums; }
 td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 tr.rbc td { font-weight: 700; color: var(--oranje); }
 
-/* ── uitslagen ─────────────────────────────────────────── */
-ul.uitslagen { list-style: none; }
-ul.uitslagen li {
-    display: flex; justify-content: space-between; gap: 0.8rem;
-    padding: 0.55rem 0; border-bottom: 1px solid var(--lijn);
-    font-size: 1.05rem;
-}
-ul.uitslagen .uitslag { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
-ul.uitslagen li.rbc { color: var(--oranje); font-weight: 700; }
-
-/* ── programma ─────────────────────────────────────────── */
 ul.programma { list-style: none; }
 ul.programma li { padding: 0.6rem 0; border-bottom: 1px solid var(--lijn); }
-ul.programma .datum { display: block; font-size: 0.85rem; color: var(--grijs); }
-ul.programma .duel { font-size: 1.1rem; }
+ul.programma .datum { display: block; font-size: 0.8rem; color: var(--grijs); }
+ul.programma .duel { font-size: 1.05rem; }
 ul.programma li.rbc .duel { font-weight: 700; }
 
-/* ── doorsturen naar wie niet mee kon ──────────────────── */
-.deel { margin-top: 1.2rem; }
-.deel .uitleg { font-size: 0.9rem; color: var(--grijs); margin-bottom: 0.6rem; }
-.deel-score {
-    display: grid; grid-template-columns: 1fr auto 1fr;
-    align-items: end; gap: 0.6rem;
-    margin-bottom: 0.7rem;
-}
-.deel-score .team {
-    display: block; font-size: 0.85rem; font-weight: 700;
-    margin-bottom: 0.25rem;
-    overflow-wrap: anywhere;
-}
-.deel-score input {
-    width: 100%; font: inherit; font-size: 1.9rem; font-weight: 700;
-    text-align: center; padding: 0.35rem;
-    border: 2px solid #000; border-radius: 0.4rem;
-    background: #fff; color: #000;
-}
-.deel-score .streep { font-size: 1.5rem; font-weight: 700; padding-bottom: 0.5rem; }
-.deel select, .deel button {
-    width: 100%; font: inherit; font-size: 1.05rem;
-    padding: 0.7rem; border: 2px solid #000; border-radius: 0.4rem;
-    background: #fff; color: #000; min-height: 3.2rem;
-}
-.deel select { margin-bottom: 0.6rem; }
-.deel button { font-weight: 700; background: #000; color: #fff; cursor: pointer; }
-.deel button:active { background: #444; }
-
 .wacht { color: var(--grijs); }
-.bron { font-size: 0.8rem; color: var(--grijs); margin-top: 0.6rem; }
-
-footer {
-    margin-top: 3rem; padding-top: 1.2rem;
-    border-top: 1px solid var(--lijn);
-    font-size: 0.9rem;
-    /* Wikkelen met gap: met margin-right liep de laatste link
-       op een smal scherm buiten beeld. */
-    display: flex; flex-wrap: wrap; gap: 0.3rem 1.2rem;
+.bron { font-size: 0.78rem; color: var(--grijs); margin-top: 0.6rem; }
+.kaart {
+    border: 2px solid var(--lijn); border-radius: 0.5rem;
+    padding: 0.8rem; margin-top: 0.8rem;
 }
-footer a { color: #000; padding: 0.4rem 0; }
+.kaart p + p { margin-top: 0.4rem; }
+.rij-knoppen { display: grid; gap: 0.55rem; margin-top: 0.8rem; }
 
-/* Iets ruimer op grote schermen, maar mobiel blijft leidend. */
+/* ── melding offline / bijgewerkt ──────────────────────── */
+#melding {
+    display: none;
+    background: #000; color: #fff;
+    font-size: 0.85rem; text-align: center;
+    padding: 0.45rem 1rem;
+}
+#melding.aan { display: block; }
+
+/* ── tabbalk onderaan: bereikbaar met de duim ──────────── */
+#tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    background: #fff; border-top: 2px solid #000;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+#tabs button {
+    font: inherit; font-size: 0.72rem; font-weight: 700;
+    background: none; border: 0; cursor: pointer; color: var(--grijs);
+    min-height: var(--tab-h);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.15rem;
+    padding: 0.3rem 0.1rem;
+}
+#tabs button .ic { font-size: 1.45rem; line-height: 1; }
+#tabs button[aria-current="true"] { color: #000; }
+#tabs button[aria-current="true"] .ic { transform: scale(1.06); }
+
+footer { padding: 1.5rem 0 0; border-top: 1px solid var(--lijn); margin-top: 2rem;
+         display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; font-size: 0.85rem; }
+footer a { color: #000; padding: 0.35rem 0; }
+
 @media (min-width: 700px) { html { font-size: 21px; } }
+@media (prefers-reduced-motion: no-preference) {
+    .scherm.aan { animation: op .16s ease-out; }
+    @keyframes op { from { opacity: .4 } to { opacity: 1 } }
+}
 </style>
 </head>
 <body>
 
-<div class="talen">
-    <button type="button" id="taal-nl" aria-pressed="true"><span class="vlag">🇳🇱</span>NL</button>
-    <button type="button" id="taal-en" aria-pressed="false"><span class="vlag">🇬🇧</span>EN</button>
+<div id="melding" role="status"></div>
+
+<div class="wrap">
+    <header>
+        <img src="/icons/icon-192.png" alt="RBC Roosendaal" width="192" height="192">
+        <div class="naam">
+            <h1>RBC Roosendaal</h1>
+            <div class="sub" data-t="ondertitel"></div>
+        </div>
+        <div class="talen">
+            <button type="button" id="taal-nl" aria-pressed="true" aria-label="Nederlands" title="Nederlands">🇳🇱</button>
+            <button type="button" id="taal-en" aria-pressed="false" aria-label="English" title="English">🇬🇧</button>
+        </div>
+    </header>
 </div>
 
-<header>
-    <img src="/rbc-klein.png" alt="RBC Roosendaal" width="143" height="192">
-    <div>
-        <h1>RBC Roosendaal</h1>
-        <p data-t="ondertitel"></p>
+<!-- ══ WEDSTRIJD ══ -->
+<section class="scherm aan" id="s-wedstrijd">
+    <div class="wrap">
+        <h2 data-t="kop_wedstrijd"></h2>
+        <div id="tegenstander-kaart"></div>
+
+        <div class="bord">
+            <div class="klok" id="klok"></div>
+            <div class="bord-namen">
+                <div class="club eigen">RBC</div>
+                <div></div>
+                <div class="club" id="naam-tegen">—</div>
+            </div>
+            <div class="bord-cijfers">
+                <div class="n" id="score-rbc">0</div>
+                <div class="streep">–</div>
+                <div class="n" id="score-tegen">0</div>
+            </div>
+            <div class="bord-knoppen">
+                <button class="groot oranje" id="goal-rbc" data-t="goal_rbc"></button>
+                <button class="groot" id="goal-tegen" data-t="goal_tegen"></button>
+            </div>
+        </div>
+
+        <ul class="verloop" id="verloop"></ul>
+
+        <div class="rij-knoppen">
+            <button class="groot zwart" id="deelknop" data-t="deel_knop"></button>
+            <button class="klein" id="nieuwe-wedstrijd" data-t="nieuwe_wedstrijd"></button>
+        </div>
+        <p class="bron" data-t="bord_uitleg"></p>
     </div>
-</header>
-
-<nav>
-    <a href="#spelers" data-t="nav_spelers"></a>
-    <a href="#stand" data-t="nav_stand"></a>
-    <a href="#uitslagen" data-t="nav_uitslagen"></a>
-    <a href="#programma" data-t="nav_programma"></a>
-</nav>
-
-<section id="wedstrijd">
-    <h2 data-t="kop_wedstrijd"></h2>
-    <div id="wedstrijd-inhoud"><p class="wacht" data-t="laden"></p></div>
-    <div class="deel" id="deel"></div>
 </section>
 
-<section id="spelers">
-    <h2 data-t="kop_spelers"></h2>
-    <div class="zoek">
+<!-- ══ SPELERS ══ -->
+<section class="scherm" id="s-spelers">
+    <div class="wrap">
+        <h2 data-t="kop_spelers"></h2>
         <label class="zoek-label" for="nummer" data-t="tik_nummer"></label>
         <input id="nummer" type="text" inputmode="numeric" pattern="[0-9]*"
-               maxlength="2" autocomplete="off" placeholder="14"
-               aria-describedby="gevonden">
+               maxlength="2" autocomplete="off" placeholder="14" aria-describedby="gevonden">
         <div id="gevonden" role="status" aria-live="polite"></div>
+        <ul class="spelers" id="spelerslijst"></ul>
+        <p class="bron" id="selectie-datum"></p>
     </div>
-    <ul class="spelers" id="spelerslijst"><li class="wacht" data-t="laden"></li></ul>
-    <p class="bron" id="selectie-datum"></p>
 </section>
 
-<section id="stand">
-    <h2 data-t="kop_stand"></h2>
-    <div id="stand-inhoud"><p class="wacht" data-t="laden"></p></div>
+<!-- ══ STAND ══ -->
+<section class="scherm" id="s-stand">
+    <div class="wrap">
+        <h2 data-t="kop_stand"></h2>
+        <div id="stand-inhoud"><p class="wacht" data-t="laden"></p></div>
+    </div>
 </section>
 
-<section id="uitslagen">
-    <h2 data-t="kop_uitslagen"></h2>
-    <div id="uitslagen-inhoud"><p class="wacht" data-t="laden"></p></div>
+<!-- ══ MEER ══ -->
+<section class="scherm" id="s-meer">
+    <div class="wrap">
+        <h2 data-t="kop_programma"></h2>
+        <div id="programma-inhoud"><p class="wacht" data-t="laden"></p></div>
+
+        <h2 data-t="kop_club"></h2>
+        <div class="kaart">
+            <p><strong>Atik Stadion</strong><br>Roosendaal</p>
+            <p data-t="club_tekst"></p>
+        </div>
+
+        <h2 data-t="kop_app"></h2>
+        <div class="kaart">
+            <p data-t="app_tekst"></p>
+            <div class="rij-knoppen">
+                <button class="groot" id="installeer" data-t="installeer" hidden></button>
+                <button class="klein" id="ververs" data-t="ververs"></button>
+            </div>
+            <p class="bron" id="cache-info"></p>
+        </div>
+
+        <footer>
+            <a href="/klassiek.html" data-t="voet_uitgebreid"></a>
+            <a href="/teletekst.html">Teletekst</a>
+            <a href="/snes.html">16-bit</a>
+        </footer>
+    </div>
 </section>
 
-<section id="programma">
-    <h2 data-t="kop_programma"></h2>
-    <div id="programma-inhoud"><p class="wacht" data-t="laden"></p></div>
-</section>
+<!-- ══ keuzevenster: wie scoorde ══ -->
+<div class="venster" id="venster" role="dialog" aria-modal="true" aria-labelledby="venster-titel">
+    <div class="venster-blad">
+        <div class="venster-kop">
+            <h3 id="venster-titel" data-t="wie_scoorde_kop"></h3>
+            <button class="klein" id="venster-dicht" data-t="sluiten"></button>
+        </div>
+        <div class="minuutrij">
+            <label for="minuut" data-t="minuut"></label>
+            <input id="minuut" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3">
+            <button class="klein" id="onbekend" data-t="niet_bekend"></button>
+        </div>
+        <ul class="kieslijst" id="kieslijst"></ul>
+    </div>
+</div>
 
-<footer>
-    <a href="/klassiek.html" data-t="voet_uitgebreid"></a>
-    <a href="/teletekst.html">Teletekst</a>
-    <a href="/snes.html">16-bit</a>
-</footer>
+<!-- ══ tabbalk ══ -->
+<nav id="tabs">
+    <button type="button" data-scherm="wedstrijd" aria-current="true"><span class="ic">⚽</span><span data-t="tab_wedstrijd"></span></button>
+    <button type="button" data-scherm="spelers"><span class="ic">👕</span><span data-t="tab_spelers"></span></button>
+    <button type="button" data-scherm="stand"><span class="ic">📊</span><span data-t="tab_stand"></span></button>
+    <button type="button" data-scherm="meer"><span class="ic">☰</span><span data-t="tab_meer"></span></button>
+</nav>
 
 <script>
 /* ════════════════════════════════════════════════════════
-   TAAL
+   1. TAAL
    ════════════════════════════════════════════════════════ */
 const TEKST = {
     nl: {
-        ondertitel: 'Derde Divisie B · 2026/2027',
-        nav_spelers: 'Spelers', nav_stand: 'Stand',
-        nav_uitslagen: 'Uitslagen', nav_programma: 'Programma',
+        ondertitel: 'Derde Divisie B',
+        tab_wedstrijd: 'Wedstrijd', tab_spelers: 'Spelers', tab_stand: 'Stand', tab_meer: 'Meer',
         kop_wedstrijd: 'Wedstrijd', kop_spelers: 'Welke speler is dit?',
-        kop_stand: 'Stand', kop_uitslagen: 'Uitslagen', kop_programma: 'Programma',
+        kop_stand: 'Stand 2026/2027', kop_programma: 'Programma', kop_club: 'De club', kop_app: 'Deze app',
         laden: 'Laden…',
-        tik_nummer: 'Tik het rugnummer in',
-        zoek_hint: 'Of zoek het nummer op in de lijst hieronder.',
-        niet_gevonden: n => 'Nummer ' + n + ' staat niet in de selectie.',
-        nummers_bijgewerkt: d => 'Rugnummers bijgewerkt op ' + d + '.',
-        nu_bezig: 'NU BEZIG',
-        geen_wedstrijd: 'Nog geen wedstrijd bekend.',
-        deel_uitleg: 'Stuur de stand door aan wie er niet bij is.',
-        wie_scoorde: 'Wie scoorde? (niet verplicht)',
+        goal_rbc: '+ Goal RBC', goal_tegen: '+ Goal tegen',
         deel_knop: 'Stuur de stand door',
-        doelpunt: 'Doelpunt',
+        nieuwe_wedstrijd: 'Nieuwe wedstrijd beginnen',
+        bord_uitleg: 'Je houdt de stand zelf bij. Hij blijft staan als je de app sluit, en werkt zonder bereik.',
+        verloop_leeg: 'Nog geen doelpunten. Tik hierboven zodra er gescoord wordt.',
+        wie_scoorde_kop: 'Wie scoorde?', sluiten: 'Sluiten',
+        minuut: 'Minuut', niet_bekend: 'Weet ik niet',
+        onbekende_speler: 'Speler onbekend',
+        tik_nummer: 'Tik het rugnummer in',
+        zoek_hint: 'Of tik iemand aan in de lijst hieronder.',
+        niet_gevonden: n => 'Nummer ' + n + ' staat niet in de selectie.',
+        nummers_bijgewerkt: d => 'Selectie bijgewerkt op ' + d + ' · bron Transfermarkt.',
+        jaar: 'jaar', eerder_bij: 'Kwam van',
+        volgende_wedstrijd: 'Eerstvolgende wedstrijd',
+        geen_wedstrijd: 'Nog geen wedstrijd bekend.',
         th_club: 'Club', th_wed: 'Wed', th_ptn: 'Ptn',
-        bron_nos: 'Bron: NOS Teletekst 835 · ververst elke 30 seconden',
-        bron_nos_kort: 'Bron: NOS Teletekst 835',
-        geen_uitslagen: 'Nu geen uitslagen.',
         geen_duels: 'Geen wedstrijden gevonden.',
         stuk: w => w + ' is nu niet op te halen.',
         w_stand: 'De stand', w_programma: 'Het programma',
-        w_uitslagen: 'De uitslagen', w_selectie: 'De selectie',
-        w_wedstrijd: 'De wedstrijd',
+        offline: 'Geen verbinding — je ziet de laatst opgehaalde gegevens.',
+        bijgewerkt: 'Gegevens bijgewerkt.',
+        club_tekst: 'Opgericht in 1912. Oranje en wit.',
+        app_tekst: 'Deze app werkt zonder bereik. Zet hem op je beginscherm, dan heb je hem op de tribune altijd bij de hand.',
+        installeer: 'Op beginscherm zetten', ververs: 'Gegevens verversen',
+        cache: d => 'Laatst opgehaald: ' + d, cache_nooit: 'Nog niets opgehaald.',
         voet_uitgebreid: 'Uitgebreide site',
-        jaar: 'jaar', eerder_bij: 'Kwam van',
+        nieuwe_versie: 'Nieuwe versie — tik om te vernieuwen',
         posities: {
-            'Goalkeeper':'Keeper', 'Defender':'Verdediger',
-            'Centre-Back':'Centrale verdediger', 'Left-Back':'Linksback',
-            'Right-Back':'Rechtsback', 'Midfielder':'Middenvelder',
-            'Central Midfield':'Centrale middenvelder',
-            'Attacking Midfield':'Aanvallende middenvelder',
-            'Left Winger':'Linksbuiten', 'Right Winger':'Rechtsbuiten',
-            'Centre-Forward':'Spits', 'Striker':'Spits'
+            'Goalkeeper':'Keeper','Defender':'Verdediger','Centre-Back':'Centrale verdediger',
+            'Left-Back':'Linksback','Right-Back':'Rechtsback','Midfielder':'Middenvelder',
+            'Central Midfield':'Centrale middenvelder','Attacking Midfield':'Aanvallende middenvelder',
+            'Left Winger':'Linksbuiten','Right Winger':'Rechtsbuiten',
+            'Centre-Forward':'Spits','Striker':'Spits'
         },
         landen: {
-            'Netherlands':'Nederland', 'Morocco':'Marokko', 'Belgium':'België',
-            'Ghana':'Ghana', 'Curacao':'Curaçao', 'Cape Verde':'Kaapverdië'
+            'Netherlands':'Nederland','Morocco':'Marokko','Belgium':'België',
+            'Ghana':'Ghana','Curacao':'Curaçao','Cape Verde':'Kaapverdië'
         },
         maanden: ['januari','februari','maart','april','mei','juni','juli',
                   'augustus','september','oktober','november','december']
     },
     en: {
-        ondertitel: 'Dutch Third Division B · 2026/2027',
-        nav_spelers: 'Players', nav_stand: 'Table',
-        nav_uitslagen: 'Results', nav_programma: 'Fixtures',
+        ondertitel: 'Dutch Third Division B',
+        tab_wedstrijd: 'Match', tab_spelers: 'Players', tab_stand: 'Table', tab_meer: 'More',
         kop_wedstrijd: 'Match', kop_spelers: 'Which player is this?',
-        kop_stand: 'Table', kop_uitslagen: 'Results', kop_programma: 'Fixtures',
+        kop_stand: 'Table 2026/2027', kop_programma: 'Fixtures', kop_club: 'The club', kop_app: 'This app',
         laden: 'Loading…',
-        tik_nummer: 'Enter the shirt number',
-        zoek_hint: 'Or find the number in the list below.',
-        niet_gevonden: n => 'Number ' + n + ' is not in the squad.',
-        nummers_bijgewerkt: d => 'Shirt numbers updated on ' + d + '.',
-        nu_bezig: 'LIVE',
-        geen_wedstrijd: 'No match scheduled yet.',
-        deel_uitleg: 'Send the score to someone who could not make it.',
-        wie_scoorde: 'Who scored? (optional)',
+        goal_rbc: '+ RBC goal', goal_tegen: '+ Their goal',
         deel_knop: 'Send the score',
-        doelpunt: 'Goal',
+        nieuwe_wedstrijd: 'Start a new match',
+        bord_uitleg: 'You keep the score yourself. It stays when you close the app, and works with no signal.',
+        verloop_leeg: 'No goals yet. Tap above as soon as someone scores.',
+        wie_scoorde_kop: 'Who scored?', sluiten: 'Close',
+        minuut: 'Minute', niet_bekend: 'Not sure',
+        onbekende_speler: 'Player unknown',
+        tik_nummer: 'Enter the shirt number',
+        zoek_hint: 'Or tap someone in the list below.',
+        niet_gevonden: n => 'Number ' + n + ' is not in the squad.',
+        nummers_bijgewerkt: d => 'Squad updated on ' + d + ' · source Transfermarkt.',
+        jaar: 'years old', eerder_bij: 'Joined from',
+        volgende_wedstrijd: 'Next match',
+        geen_wedstrijd: 'No match scheduled yet.',
         th_club: 'Club', th_wed: 'P', th_ptn: 'Pts',
-        bron_nos: 'Source: NOS Teletekst 835 · updates every 30 seconds',
-        bron_nos_kort: 'Source: NOS Teletekst 835',
-        geen_uitslagen: 'No results right now.',
         geen_duels: 'No matches found.',
         stuk: w => w + ' could not be loaded right now.',
         w_stand: 'The table', w_programma: 'The fixtures',
-        w_uitslagen: 'The results', w_selectie: 'The squad',
-        w_wedstrijd: 'The match',
+        offline: 'No connection — showing the data last downloaded.',
+        bijgewerkt: 'Data updated.',
+        club_tekst: 'Founded in 1912. Orange and white.',
+        app_tekst: 'This app works without a signal. Add it to your home screen and it is always there in the stand.',
+        installeer: 'Add to home screen', ververs: 'Refresh data',
+        cache: d => 'Last downloaded: ' + d, cache_nooit: 'Nothing downloaded yet.',
         voet_uitgebreid: 'Full site',
-        jaar: 'years old', eerder_bij: 'Joined from',
-        posities: {},
-        landen: {},
+        nieuwe_versie: 'New version — tap to refresh',
+        posities: {}, landen: {},
         maanden: ['January','February','March','April','May','June','July',
                   'August','September','October','November','December']
     }
@@ -389,78 +500,216 @@ let TAAL = 'nl';
 try { const v = localStorage.getItem('rbc-taal'); if (v === 'en' || v === 'nl') TAAL = v; } catch (e) {}
 const t = k => TEKST[TAAL][k];
 
-function zetTaal(nieuw) {
-    TAAL = nieuw;
-    try { localStorage.setItem('rbc-taal', nieuw); } catch (e) {}
-    document.documentElement.lang = nieuw;
-    document.getElementById('taal-nl').setAttribute('aria-pressed', String(nieuw === 'nl'));
-    document.getElementById('taal-en').setAttribute('aria-pressed', String(nieuw === 'en'));
-    document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
-    tekenAlles();
-}
-document.getElementById('taal-nl').addEventListener('click', () => zetTaal('nl'));
-document.getElementById('taal-en').addEventListener('click', () => zetTaal('en'));
-
-/* ════════════════════════════════════════════════════════
-   BRONNEN
-   ════════════════════════════════════════════════════════ */
-const SEASON = '2026-2027';
-const PROXIES = [
-    'https://api.allorigins.win/raw?url=',
-    'https://api.codetabs.com/v1/proxy?quest=',
-    'https://api.cors.lol/?url='
-];
-const STAND_URL = 'https://www.hollandsevelden.nl/competities/' + SEASON + '/landelijk/derde-divisie-b/';
-const PROGRAMMA_URL = STAND_URL + 'programma/';
-const NOS_URL = 'https://nos.nl/teletekst/835';
-
-/* Alles wat binnenkomt blijft bewaard, zodat een taalwissel
-   opnieuw kan tekenen zonder de bronnen nog eens te bevragen. */
-const D = { squad: [], bijgewerkt: null, volgende: null, live: null,
-            stand: null, programma: null, uitslagen: null, fout: {} };
-
-async function haal(url) {
-    for (const p of PROXIES) {
-        try {
-            const r = await fetch(p + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
-            if (r.ok) return await r.text();
-        } catch (e) { /* volgende proxy */ }
-    }
-    throw new Error('bron onbereikbaar');
-}
-const dom = h => new DOMParser().parseFromString(h, 'text/html');
-const zet = (id, html) => { document.getElementById(id).innerHTML = html; };
+const $ = id => document.getElementById(id);
 const veilig = s => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const isRBC = n => /^rbc\b/i.test(String(n || '').trim());
 
+function zetTaal(nieuw) {
+    TAAL = nieuw;
+    try { localStorage.setItem('rbc-taal', nieuw); } catch (e) {}
+    document.documentElement.lang = nieuw;
+    $('taal-nl').setAttribute('aria-pressed', String(nieuw === 'nl'));
+    $('taal-en').setAttribute('aria-pressed', String(nieuw === 'en'));
+    document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
+    tekenAlles();
+}
+
 /* ════════════════════════════════════════════════════════
-   RUGNUMMER OPZOEKEN
-   De ploeg is flink gewijzigd, dus op de tribune is dit de
-   eerste vraag: wie is nummer zoveel?
+   2. OPSLAG
+   Alles lokaal. De app moet het doen zonder bereik.
+   ════════════════════════════════════════════════════════ */
+const OPSLAG = {
+    lees(sleutel, standaard) {
+        try { const v = localStorage.getItem(sleutel); return v ? JSON.parse(v) : standaard; }
+        catch (e) { return standaard; }
+    },
+    schrijf(sleutel, waarde) {
+        try { localStorage.setItem(sleutel, JSON.stringify(waarde)); } catch (e) {}
+    }
+};
+
+const D = { squad: [], bijgewerkt: null, volgende: null,
+            stand: null, programma: null, opgehaald: null, fout: {} };
+
+/* wedstrijd die de supporter bijhoudt */
+let W = OPSLAG.lees('rbc-wedstrijd', null);
+function nieuweWedstrijd(tegen) {
+    W = { tegen: tegen || '', rbc: 0, hen: 0, doelpunten: [],
+          start: null, gestopt: 0, begonnen: Date.now() };
+    OPSLAG.schrijf('rbc-wedstrijd', W);
+}
+function bewaar() { OPSLAG.schrijf('rbc-wedstrijd', W); }
+
+/* ════════════════════════════════════════════════════════
+   3. SCORE BIJHOUDEN
+   Geen live feed: in de Derde Divisie is die er niet. De
+   supporter op de tribune is de bron, en dat is meteen wat
+   hij toch al deed — de stand doorappen naar het thuisfront.
+   ════════════════════════════════════════════════════════ */
+/* Voetbal telt vanaf de 1e minuut: de eerste zestig seconden zijn
+   minuut 1, niet minuut 0. */
+function klokTekst() {
+    if (!W || (!W.start && !W.gestopt)) return '—';
+    return verstrekenMinuut() + "'";
+}
+function verstrekenMinuut() {
+    if (!W) return 1;
+    const ms = W.gestopt + (W.start ? Date.now() - W.start : 0);
+    return Math.floor(ms / 60000) + 1;
+}
+function huidigeMinuut() {
+    if (!W || (!W.start && !W.gestopt)) return '';
+    return String(verstrekenMinuut());
+}
+
+function tekenKlok() {
+    const el = $('klok');
+    if (!W) { el.textContent = ''; return; }
+    const loopt = !!W.start;
+    el.innerHTML = veilig(klokTekst()) +
+        '<button type="button" id="klok-knop">' + (loopt ? '❚❚' : '▶') + '</button>' +
+        (W.start || W.gestopt ? '<button type="button" id="klok-nul">↺</button>' : '');
+    const k = $('klok-knop');
+    if (k) k.addEventListener('click', () => {
+        if (W.start) { W.gestopt += Date.now() - W.start; W.start = null; }
+        else { W.start = Date.now(); }
+        bewaar(); tekenKlok();
+    });
+    const n = $('klok-nul');
+    if (n) n.addEventListener('click', () => { W.start = null; W.gestopt = 0; bewaar(); tekenKlok(); });
+}
+setInterval(() => { if (W && W.start && $('s-wedstrijd').classList.contains('aan')) tekenKlok(); }, 15000);
+
+function tekenBord() {
+    if (!W) nieuweWedstrijd(D.volgende ? tegenstanderVan(D.volgende) : '');
+    $('score-rbc').textContent = W.rbc;
+    $('score-tegen').textContent = W.hen;
+    $('naam-tegen').textContent = W.tegen || '—';
+    tekenKlok();
+
+    // eerstvolgende wedstrijd erboven, zolang die bekend is
+    const kaart = $('tegenstander-kaart');
+    if (D.volgende && D.volgende.home_team) {
+        kaart.innerHTML = '<div class="kaart"><p><strong>' + veilig(t('volgende_wedstrijd')) + '</strong></p>' +
+            '<p>' + veilig(D.volgende.home_team) + ' – ' + veilig(D.volgende.away_team) + '<br>' +
+            veilig(D.volgende.status || '') + '</p></div>';
+    } else { kaart.innerHTML = ''; }
+
+    const lijst = $('verloop');
+    if (!W.doelpunten.length) {
+        lijst.innerHTML = '<li class="leegmelding">' + veilig(t('verloop_leeg')) + '</li>';
+    } else {
+        lijst.innerHTML = W.doelpunten.map(function (d, i) {
+            const wie = d.eigen ? (d.naam || t('onbekende_speler')) : (W.tegen || t('goal_tegen'));
+            return '<li' + (d.eigen ? ' class="eigen"' : '') + '>' +
+                   '<span class="min">' + (d.minuut ? veilig(d.minuut) + "'" : '—') + '</span>' +
+                   '<span class="wie">' + veilig(wie) + '</span>' +
+                   '<button class="weg" data-i="' + i + '" aria-label="verwijderen">×</button></li>';
+        }).join('');
+        lijst.querySelectorAll('.weg').forEach(function (b) {
+            b.addEventListener('click', function () {
+                const d = W.doelpunten[+b.dataset.i];
+                if (d.eigen) W.rbc = Math.max(0, W.rbc - 1); else W.hen = Math.max(0, W.hen - 1);
+                W.doelpunten.splice(+b.dataset.i, 1);
+                bewaar(); tekenBord();
+            });
+        });
+    }
+}
+
+function tegenstanderVan(m) {
+    if (!m || !m.home_team) return '';
+    return isRBC(m.home_team) ? m.away_team : m.home_team;
+}
+
+/* keuzevenster voor de doelpuntenmaker */
+let wachtOpKeuze = false;
+function openVenster() {
+    wachtOpKeuze = true;
+    $('minuut').value = huidigeMinuut();
+    $('kieslijst').innerHTML = D.squad.map(function (p) {
+        return '<li data-naam="' + veilig(p.name) + '">' +
+               '<span class="rug">' + veilig(p.number) + '</span>' +
+               '<span>' + veilig(p.name) + '</span></li>';
+    }).join('');
+    $('kieslijst').querySelectorAll('li').forEach(function (li) {
+        li.addEventListener('click', function () { legVast(li.dataset.naam); });
+    });
+    $('venster').classList.add('aan');
+}
+function sluitVenster() { $('venster').classList.remove('aan'); wachtOpKeuze = false; }
+function legVast(naam) {
+    const m = $('minuut').value.replace(/\D/g, '');
+    W.rbc += 1;
+    W.doelpunten.push({ eigen: true, naam: naam || '', minuut: m });
+    bewaar(); sluitVenster(); tekenBord();
+}
+
+$('goal-rbc').addEventListener('click', function () {
+    if (!D.squad.length) { W.rbc += 1; W.doelpunten.push({ eigen: true, naam: '', minuut: huidigeMinuut() }); bewaar(); tekenBord(); return; }
+    openVenster();
+});
+$('goal-tegen').addEventListener('click', function () {
+    W.hen += 1;
+    W.doelpunten.push({ eigen: false, naam: '', minuut: huidigeMinuut() });
+    bewaar(); tekenBord();
+});
+$('venster-dicht').addEventListener('click', sluitVenster);
+$('onbekend').addEventListener('click', function () { legVast(''); });
+$('venster').addEventListener('click', function (e) { if (e.target === $('venster')) sluitVenster(); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wachtOpKeuze) sluitVenster(); });
+
+$('nieuwe-wedstrijd').addEventListener('click', function () {
+    nieuweWedstrijd(D.volgende ? tegenstanderVan(D.volgende) : '');
+    tekenBord();
+});
+
+/* ── doorsturen ── */
+function deelTekst() {
+    const tegen = W.tegen || '';
+    const regels = ['RBC ' + W.rbc + ' - ' + W.hen + (tegen ? ' ' + tegen : '')];
+    if (W.doelpunten.length) {
+        regels.push('');
+        W.doelpunten.forEach(function (d) {
+            const wie = d.eigen ? (d.naam || 'RBC') : (tegen || '—');
+            regels.push((d.minuut ? d.minuut + "'" : '') + '  ' + wie);
+        });
+    }
+    regels.push('', 'rbcroosendaal.com');
+    return regels.join('\n');
+}
+$('deelknop').addEventListener('click', async function () {
+    const tekst = deelTekst();
+    if (navigator.share) {
+        try { await navigator.share({ text: tekst }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
+});
+
+/* ════════════════════════════════════════════════════════
+   4. SPELERS
    ════════════════════════════════════════════════════════ */
 function tekenSpelers() {
-    const datumEl = document.getElementById('selectie-datum');
-    if (D.fout.squad) {
-        zet('spelerslijst', '<li class="wacht">' + veilig(t('stuk')(t('w_selectie'))) + '</li>');
-        datumEl.textContent = '';
-        return;
-    }
+    const datumEl = $('selectie-datum');
     if (!D.squad.length) {
-        zet('spelerslijst', '<li class="wacht">' + t('laden') + '</li>');
+        $('spelerslijst').innerHTML = '<li class="wacht">' + t('laden') + '</li>';
         return;
     }
-    zet('spelerslijst', D.squad.map(function (p) {
+    const posities = t('posities');
+    $('spelerslijst').innerHTML = D.squad.map(function (p) {
+        const pos = p.positie ? (posities[p.positie] || p.positie) : '';
         return '<li data-nr="' + veilig(p.number) + '">' +
                '<span class="rug">' + veilig(p.number) + '</span>' +
-               '<span class="naam">' + veilig(p.name) + '</span></li>';
-    }).join(''));
-
-    document.querySelectorAll('#spelerslijst li[data-nr]').forEach(function (li) {
+               '<span><span class="naam">' + veilig(p.name) + '</span>' +
+               (pos ? '<br><span class="pos">' + veilig(pos) + '</span>' : '') + '</span></li>';
+    }).join('');
+    $('spelerslijst').querySelectorAll('li[data-nr]').forEach(function (li) {
         li.addEventListener('click', function () {
-            document.getElementById('nummer').value = li.dataset.nr;
+            $('nummer').value = li.dataset.nr;
             zoek();
-            document.getElementById('gevonden').scrollIntoView({ block: 'center' });
+            $('gevonden').scrollIntoView({ block: 'center' });
         });
     });
 
@@ -470,25 +719,21 @@ function tekenSpelers() {
             ? d.getDate() + ' ' + t('maanden')[d.getMonth()] + ' ' + d.getFullYear()
             : t('maanden')[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
         datumEl.textContent = t('nummers_bijgewerkt')(datum);
-    } else { datumEl.textContent = ''; }
+    }
     zoek();
 }
 
 function zoek() {
-    const veld = document.getElementById('nummer');
+    const veld = $('nummer');
     const nr = veld.value.replace(/\D/g, '');
     veld.value = nr;
-    const uit = document.getElementById('gevonden');
-
+    const uit = $('gevonden');
     document.querySelectorAll('#spelerslijst li').forEach(function (li) { li.classList.remove('raak'); });
 
     if (!nr) { uit.innerHTML = '<span class="leeg">' + veilig(t('zoek_hint')) + '</span>'; return; }
     const speler = D.squad.find(function (p) { return String(p.number) === String(+nr); });
-    if (!speler) {
-        uit.innerHTML = '<span class="leeg">' + veilig(t('niet_gevonden')(nr)) + '</span>';
-        return;
-    }
-    // naam groot, daaronder wat we van deze speler weten
+    if (!speler) { uit.innerHTML = '<span class="leeg">' + veilig(t('niet_gevonden')(nr)) + '</span>'; return; }
+
     const posities = t('posities'), landen = t('landen');
     const regel = [];
     if (speler.positie) regel.push(posities[speler.positie] || speler.positie);
@@ -498,176 +743,69 @@ function zoek() {
     }
     let details = regel.length ? veilig(regel.join(' · ')) : '';
     if (speler.vorige_club) {
-        details += (details ? '<br>' : '') +
-                   veilig(t('eerder_bij')) + ' <span class="van">' + veilig(speler.vorige_club) + '</span>';
+        details += (details ? '<br>' : '') + veilig(t('eerder_bij')) +
+                   ' <span class="van">' + veilig(speler.vorige_club) + '</span>';
     }
     uit.innerHTML = veilig(speler.name) + (details ? '<span class="details">' + details + '</span>' : '');
-
     const li = document.querySelector('#spelerslijst li[data-nr="' + speler.number + '"]');
     if (li) li.classList.add('raak');
 }
-document.getElementById('nummer').addEventListener('input', zoek);
+$('nummer').addEventListener('input', zoek);
 
 /* ════════════════════════════════════════════════════════
-   WEDSTRIJD
+   5. STAND EN PROGRAMMA
+   Opgehaald zolang er bereik is, daarna uit de opslag.
    ════════════════════════════════════════════════════════ */
-function tekenWedstrijd() {
-    if (D.live) {
-        zet('wedstrijd-inhoud',
-            '<span class="live">' + veilig(t('nu_bezig')) + '</span>' +
-            '<div class="wedstrijd"><strong>' + veilig(D.live.home) + '</strong> &ndash; <strong>' +
-            veilig(D.live.away) + '</strong></div>' +
-            '<div class="score">' + D.live.homeScore + ' &ndash; ' + D.live.awayScore + '</div>' +
-            '<p class="bron">' + veilig(t('bron_nos_kort')) + '</p>');
-    } else if (D.volgende && D.volgende.home_team) {
-        zet('wedstrijd-inhoud',
-            '<div class="wedstrijd"><strong>' + veilig(D.volgende.home_team) + '</strong> &ndash; <strong>' +
-            veilig(D.volgende.away_team) + '</strong></div>' +
-            '<p>' + veilig(D.volgende.status || '') + '</p>');
-    } else if (D.fout.lokaal) {
-        zet('wedstrijd-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_wedstrijd'))) + '</p>');
-    } else {
-        zet('wedstrijd-inhoud', '<p class="wacht">' + veilig(t('geen_wedstrijd')) + '</p>');
+const SEASON = '2026-2027';
+const PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.cors.lol/?url='
+];
+const STAND_URL = 'https://www.hollandsevelden.nl/competities/' + SEASON + '/landelijk/derde-divisie-b/';
+const PROGRAMMA_URL = STAND_URL + 'programma/';
+
+async function haal(url) {
+    for (const p of PROXIES) {
+        try {
+            const r = await fetch(p + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+            if (r.ok) return await r.text();
+        } catch (e) {}
     }
-    tekenDelen();
+    throw new Error('bron onbereikbaar');
 }
+const dom = h => new DOMParser().parseFromString(h, 'text/html');
 
-/* ════════════════════════════════════════════════════════
-   DOORSTUREN
-   Supporters appen de stand naar wie niet mee kon en zetten
-   de doelpuntenmaker erbij. Dat moet op elk moment kunnen,
-   ook zonder live wedstrijd: de stand is met de hand in te
-   vullen en de selectie staat altijd als keuzelijst klaar.
-   ════════════════════════════════════════════════════════ */
-function tekenDelen() {
-    const el = document.getElementById('deel');
-    const thuis = D.live ? D.live.home : (D.volgende && D.volgende.home_team) || 'RBC';
-    const uitTeam = D.live ? D.live.away : (D.volgende && D.volgende.away_team) || '';
-
-    // Wat de supporter al had ingevuld blijft staan bij hertekenen
-    // (taalwissel, nieuwe uitslag binnen).
-    const oudT = document.getElementById('score-thuis');
-    const oudU = document.getElementById('score-uit');
-    const oudS = document.getElementById('scorer');
-    const vT = oudT ? oudT.value : (D.live ? String(D.live.homeScore) : '0');
-    const vU = oudU ? oudU.value : (D.live ? String(D.live.awayScore) : '0');
-    const vS = oudS ? oudS.value : '';
-
-    const opties = D.squad.map(function (p) {
-        return '<option value="' + veilig(p.name) + '"' + (p.name === vS ? ' selected' : '') + '>' +
-               veilig(p.number) + ' &ndash; ' + veilig(p.name) + '</option>';
-    }).join('');
-
-    el.innerHTML =
-        '<p class="uitleg">' + veilig(t('deel_uitleg')) + '</p>' +
-        '<div class="deel-score">' +
-            '<div><span class="team">' + veilig(thuis) + '</span>' +
-            '<input id="score-thuis" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="' +
-            veilig(vT) + '" aria-label="' + veilig(thuis) + '"></div>' +
-            '<span class="streep">&ndash;</span>' +
-            '<div><span class="team">' + veilig(uitTeam) + '</span>' +
-            '<input id="score-uit" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="' +
-            veilig(vU) + '" aria-label="' + veilig(uitTeam) + '"></div>' +
-        '</div>' +
-        (D.squad.length
-            ? '<select id="scorer" aria-label="' + veilig(t('wie_scoorde')) + '">' +
-              '<option value="">' + veilig(t('wie_scoorde')) + '</option>' + opties + '</select>'
-            : '') +
-        '<button type="button" id="deelknop">' + veilig(t('deel_knop')) + '</button>';
-
-    ['score-thuis', 'score-uit'].forEach(function (id) {
-        const i = document.getElementById(id);
-        i.addEventListener('input', function () { i.value = i.value.replace(/\D/g, ''); });
-    });
-    document.getElementById('deelknop').addEventListener('click', deel);
-}
-
-function deelTekst() {
-    const thuis = D.live ? D.live.home : (D.volgende && D.volgende.home_team) || 'RBC';
-    const uitTeam = D.live ? D.live.away : (D.volgende && D.volgende.away_team) || '';
-    const a = (document.getElementById('score-thuis') || {}).value || '0';
-    const b = (document.getElementById('score-uit') || {}).value || '0';
-    const sel = document.getElementById('scorer');
-    const naam = sel ? sel.value : '';
-    let tekst = (thuis + ' ' + a + '-' + b + ' ' + uitTeam).trim();
-    if (naam) tekst += '\n' + t('doelpunt') + ': ' + naam;
-    return tekst + '\nrbcroosendaal.com';
-}
-
-async function deel() {
-    const tekst = deelTekst();
-    // Het deelvenster van de telefoon zelf: dan kan het naar
-    // WhatsApp, sms of wat de supporter ook gebruikt.
-    if (navigator.share) {
-        try { await navigator.share({ text: tekst }); return; }
-        catch (e) { if (e && e.name === 'AbortError') return; }
-    }
-    window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
-}
-
-/* ════════════════════════════════════════════════════════
-   UITSLAGEN — NOS Teletekst 835
-   ════════════════════════════════════════════════════════ */
-function leesNOS(html) {
-    const eindTag = '<' + '/script>';
-    const m = html.match(new RegExp('__NEXT_DATA__[^{]*(\\{[\\s\\S]*?\\})\\s*' + eindTag));
-    if (!m) return null;
-    let data;
-    try { data = JSON.parse(m[1]); } catch (e) { return null; }
-    const inhoud = data && data.props && data.props.pageProps && data.props.pageProps.content;
-    if (!inhoud) return null;
-
-    const uit = [];
-    inhoud.split('\n').forEach(function (regel) {
-        const delen = [];
-        const re = /<span class="(yellow|green)\s*">\s*(.*?)<\/span>/g;
-        let s;
-        while ((s = re.exec(regel)) !== null) {
-            delen.push({ k: s[1], t: s[2].replace(/&nbsp;/g, ' ').replace(/<[^>]*>/g, '').trim() });
-        }
-        for (let i = 0; i <= delen.length - 4; i++) {
-            if (delen[i].k === 'yellow' && delen[i+1].k === 'green' &&
-                delen[i+2].k === 'yellow' && delen[i+3].k === 'green') {
-                const h = delen[i].t, hs = delen[i+1].t, a = delen[i+2].t, as = delen[i+3].t;
-                if (h && a && /^\d+$/.test(hs) && /^\d+$/.test(as)) {
-                    uit.push({ home: h, away: a, homeScore: +hs, awayScore: +as });
-                }
-            }
-        }
-    });
-    return uit.length ? uit : null;
-}
-
-function tekenUitslagen() {
-    if (D.fout.uitslagen) {
-        zet('uitslagen-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_uitslagen'))) + '</p>');
+function tekenStand() {
+    const el = $('stand-inhoud');
+    if (!D.stand) {
+        el.innerHTML = '<p class="wacht">' + veilig(D.fout.stand ? t('stuk')(t('w_stand')) : t('laden')) + '</p>';
         return;
     }
-    if (!D.uitslagen) {
-        zet('uitslagen-inhoud', '<p class="wacht">' + veilig(t('geen_uitslagen')) + '</p>');
+    el.innerHTML = '<table><thead><tr><th class="pos">#</th><th>' + veilig(t('th_club')) + '</th>' +
+        '<th class="n">' + veilig(t('th_wed')) + '</th><th class="n">' + veilig(t('th_ptn')) +
+        '</th></tr></thead><tbody>' +
+        D.stand.map(function (r) {
+            return '<tr' + (isRBC(r.club) ? ' class="rbc"' : '') + '>' +
+                   '<td class="pos">' + veilig(r.pos) + '</td><td>' + veilig(r.club) + '</td>' +
+                   '<td class="n">' + veilig(r.wed) + '</td><td class="n">' + veilig(r.pnt) + '</td></tr>';
+        }).join('') + '</tbody></table>';
+}
+
+function tekenProgramma() {
+    const el = $('programma-inhoud');
+    if (!D.programma) {
+        el.innerHTML = '<p class="wacht">' + veilig(D.fout.programma ? t('stuk')(t('w_programma')) : t('laden')) + '</p>';
         return;
     }
-    zet('uitslagen-inhoud',
-        '<ul class="uitslagen">' + D.uitslagen.map(function (w) {
-            const mij = isRBC(w.home) || isRBC(w.away);
-            return '<li' + (mij ? ' class="rbc"' : '') + '>' +
-                   '<span>' + veilig(w.home) + ' &ndash; ' + veilig(w.away) + '</span>' +
-                   '<span class="uitslag">' + w.homeScore + '&ndash;' + w.awayScore + '</span></li>';
-        }).join('') + '</ul>' +
-        '<p class="bron">' + veilig(t('bron_nos')) + '</p>');
+    if (!D.programma.length) { el.innerHTML = '<p class="wacht">' + veilig(t('geen_duels')) + '</p>'; return; }
+    el.innerHTML = '<ul class="programma">' + D.programma.map(function (w) {
+        return '<li' + (isRBC(w.thuis) || isRBC(w.uit) ? ' class="rbc"' : '') + '>' +
+               '<span class="datum">' + veilig(w.datum) + ' · ' + veilig(w.tijd) + '</span>' +
+               '<span class="duel">' + veilig(w.thuis) + ' – ' + veilig(w.uit) + '</span></li>';
+    }).join('') + '</ul>';
 }
 
-async function uitslagen() {
-    const lijst = leesNOS(await haal(NOS_URL));
-    D.uitslagen = lijst;
-    D.live = lijst ? (lijst.find(function (w) { return isRBC(w.home) || isRBC(w.away); }) || null) : null;
-    tekenUitslagen();
-    tekenWedstrijd();
-}
-
-/* ════════════════════════════════════════════════════════
-   STAND
-   ════════════════════════════════════════════════════════ */
 function standTabel(doc) {
     const koppen = doc.querySelectorAll('h2');
     for (let i = 0; i < koppen.length; i++) {
@@ -681,121 +819,174 @@ function standTabel(doc) {
             el = el.nextElementSibling;
         }
         let p = h2.parentElement;
-        while (p) {
-            const tb = p.querySelector('table');
-            if (tb) return tb;
-            p = p.parentElement;
-            if (!p || p.tagName === 'BODY') break;
-        }
+        while (p) { const tb = p.querySelector('table'); if (tb) return tb; p = p.parentElement; if (!p || p.tagName === 'BODY') break; }
         break;
     }
     return null;
 }
-function tekenStand() {
-    if (D.fout.stand) {
-        zet('stand-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_stand'))) + '</p>'); return;
-    }
-    if (!D.stand) { zet('stand-inhoud', '<p class="wacht">' + t('laden') + '</p>'); return; }
-    zet('stand-inhoud',
-        '<table><thead><tr><th class="pos">#</th><th>' + veilig(t('th_club')) + '</th>' +
-        '<th class="n">' + veilig(t('th_wed')) + '</th><th class="n">' + veilig(t('th_ptn')) +
-        '</th></tr></thead><tbody>' +
-        D.stand.map(function (r) {
-            return '<tr' + (isRBC(r.club) ? ' class="rbc"' : '') + '>' +
-                   '<td class="pos">' + veilig(r.pos) + '</td>' +
-                   '<td>' + veilig(r.club) + '</td>' +
-                   '<td class="n">' + veilig(r.wed) + '</td>' +
-                   '<td class="n">' + veilig(r.pnt) + '</td></tr>';
-        }).join('') + '</tbody></table>');
-}
-async function stand() {
+
+async function haalStand() {
     const tb = standTabel(dom(await haal(STAND_URL)));
     if (!tb) throw new Error('geen tabel');
     const rijen = [];
     tb.querySelectorAll('tbody tr').forEach(function (r) {
         const c = [];
-        r.querySelectorAll('th,td').forEach(function (e) {
-            c.push(e.textContent.trim().replace(/\s+/g, ' '));
-        });
+        r.querySelectorAll('th,td').forEach(function (e) { c.push(e.textContent.trim().replace(/\s+/g, ' ')); });
         if (c.length < 5) return;
-        // er komen twee kolomindelingen voor
         rijen.push(c.length >= 9
             ? { pos: c[0], club: c[1], wed: c[2], pnt: c[4] }
             : { pos: c[0], club: c[1], wed: c[2], pnt: c[9] || '' });
     });
     if (!rijen.length) throw new Error('leeg');
     D.stand = rijen;
+    OPSLAG.schrijf('rbc-stand', rijen);
     tekenStand();
 }
 
-/* ════════════════════════════════════════════════════════
-   PROGRAMMA
-   ════════════════════════════════════════════════════════ */
-function tekenProgramma() {
-    if (D.fout.programma) {
-        zet('programma-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_programma'))) + '</p>'); return;
-    }
-    if (!D.programma) { zet('programma-inhoud', '<p class="wacht">' + t('laden') + '</p>'); return; }
-    if (!D.programma.length) {
-        zet('programma-inhoud', '<p class="wacht">' + veilig(t('geen_duels')) + '</p>'); return;
-    }
-    zet('programma-inhoud', '<ul class="programma">' + D.programma.map(function (w) {
-        return '<li' + (isRBC(w.thuis) || isRBC(w.uit) ? ' class="rbc"' : '') + '>' +
-               '<span class="datum">' + veilig(w.datum) + ' &middot; ' + veilig(w.tijd) + '</span>' +
-               '<span class="duel">' + veilig(w.thuis) + ' &ndash; ' + veilig(w.uit) + '</span></li>';
-    }).join('') + '</ul>');
-}
-async function programma() {
+async function haalProgramma() {
     const doc = dom(await haal(PROGRAMMA_URL));
     const uit = [];
     doc.querySelectorAll('table.match,table[class*="match"]').forEach(function (tb) {
         const cap = tb.querySelector('caption time,caption');
-        // "Wedstrijden op zondag 16 augustus 2026" -> "zondag 16 augustus"
-        const datum = cap
-            ? cap.textContent.trim().replace(/\s+/g, ' ')
-                 .replace(/^wedstrijden op\s*/i, '')
-                 .replace(/\s*20\d\d$/, '')
-            : '';
+        const datum = cap ? cap.textContent.trim().replace(/\s+/g, ' ')
+            .replace(/^wedstrijden op\s*/i, '').replace(/\s*20\d\d$/, '') : '';
         tb.querySelectorAll('tbody tr').forEach(function (row) {
             const c = row.querySelectorAll('td');
             if (c.length < 4) return;
-            uit.push({
-                datum: datum,
+            uit.push({ datum: datum,
                 thuis: c[0].textContent.trim().replace(/\s+/g, ' '),
                 uit: c[2].textContent.trim().replace(/\s+/g, ' '),
-                tijd: c[3].textContent.trim().replace(/\s+/g, ' ')
-            });
+                tijd: c[3].textContent.trim().replace(/\s+/g, ' ') });
         });
     });
     const eigen = uit.filter(function (w) { return isRBC(w.thuis) || isRBC(w.uit); });
-    D.programma = (eigen.length ? eigen : uit).slice(0, 8);
+    D.programma = (eigen.length ? eigen : uit).slice(0, 10);
+    OPSLAG.schrijf('rbc-programma', D.programma);
     tekenProgramma();
 }
 
 /* ════════════════════════════════════════════════════════
-   START
+   6. SCHERMEN
    ════════════════════════════════════════════════════════ */
-function tekenAlles() {
-    tekenSpelers(); tekenWedstrijd(); tekenStand();
-    tekenUitslagen(); tekenProgramma();
+function toon(naam) {
+    document.querySelectorAll('.scherm').forEach(function (s) { s.classList.remove('aan'); });
+    $('s-' + naam).classList.add('aan');
+    document.querySelectorAll('#tabs button').forEach(function (b) {
+        b.setAttribute('aria-current', String(b.dataset.scherm === naam));
+    });
+    window.scrollTo(0, 0);
+    try { localStorage.setItem('rbc-scherm', naam); } catch (e) {}
+    if (naam === 'spelers') setTimeout(function () { $('nummer').focus({ preventScroll: true }); }, 60);
+}
+document.querySelectorAll('#tabs button').forEach(function (b) {
+    b.addEventListener('click', function () { toon(b.dataset.scherm); });
+});
+
+function tekenAlles() { tekenBord(); tekenSpelers(); tekenStand(); tekenProgramma(); tekenCacheInfo(); }
+
+/* ════════════════════════════════════════════════════════
+   7. MELDINGEN, INSTALLEREN, VERVERSEN
+   ════════════════════════════════════════════════════════ */
+let meldTimer = null;
+function meld(tekst, blijf) {
+    const el = $('melding');
+    el.textContent = tekst;
+    el.classList.add('aan');
+    clearTimeout(meldTimer);
+    if (!blijf) meldTimer = setTimeout(function () { el.classList.remove('aan'); }, 2600);
+}
+function tekenCacheInfo() {
+    const el = $('cache-info');
+    if (!el) return;
+    el.textContent = D.opgehaald
+        ? t('cache')(new Date(D.opgehaald).toLocaleString(TAAL === 'nl' ? 'nl-NL' : 'en-GB'))
+        : t('cache_nooit');
 }
 
+let installatie = null;
+window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); installatie = e; $('installeer').hidden = false;
+});
+$('installeer').addEventListener('click', async function () {
+    if (!installatie) return;
+    installatie.prompt();
+    await installatie.userChoice;
+    installatie = null; $('installeer').hidden = true;
+});
+
+async function verversAlles(metMelding) {
+    if (!navigator.onLine) { meld(t('offline')); return; }
+    D.fout = {};
+    const klaar = await Promise.allSettled([haalStand(), haalProgramma()]);
+    if (klaar[0].status === 'rejected') { D.fout.stand = true; tekenStand(); }
+    if (klaar[1].status === 'rejected') { D.fout.programma = true; tekenProgramma(); }
+    if (klaar.some(function (k) { return k.status === 'fulfilled'; })) {
+        D.opgehaald = Date.now();
+        OPSLAG.schrijf('rbc-opgehaald', D.opgehaald);
+        tekenCacheInfo();
+        if (metMelding) meld(t('bijgewerkt'));
+    }
+}
+$('ververs').addEventListener('click', function () { verversAlles(true); });
+window.addEventListener('online', function () { verversAlles(false); });
+window.addEventListener('offline', function () { meld(t('offline')); });
+
+/* ════════════════════════════════════════════════════════
+   8. START
+   Eerst uit de opslag tekenen, daarna pas het net op. Zo
+   staat er meteen iets op het scherm, ook zonder bereik.
+   ════════════════════════════════════════════════════════ */
 (async function () {
+    D.stand = OPSLAG.lees('rbc-stand', null);
+    D.programma = OPSLAG.lees('rbc-programma', null);
+    D.opgehaald = OPSLAG.lees('rbc-opgehaald', null);
+    const bewaardeSquad = OPSLAG.lees('rbc-squad', null);
+    if (bewaardeSquad) {
+        D.squad = bewaardeSquad.squad; D.bijgewerkt = bewaardeSquad.bijgewerkt;
+        D.volgende = bewaardeSquad.volgende;
+    }
+
+    let start = 'wedstrijd';
+    try { const s = localStorage.getItem('rbc-scherm'); if (s) start = s; } catch (e) {}
+    if (!$('s-' + start)) start = 'wedstrijd';
+
+    zetTaal(TAAL);
+    toon(start);
+
     try {
         const m = await (await fetch('data.json?v=' + Date.now())).json();
         D.squad = (m.squad || []).slice().sort(function (a, b) { return a.number - b.number; });
         D.bijgewerkt = m.squad_bijgewerkt || null;
         D.volgende = m.match || null;
-    } catch (e) { D.fout.squad = true; D.fout.lokaal = true; }
-    zetTaal(TAAL);        // vult de vaste teksten en tekent alles
+        OPSLAG.schrijf('rbc-squad', { squad: D.squad, bijgewerkt: D.bijgewerkt, volgende: D.volgende });
+        if (W && !W.tegen && D.volgende) { W.tegen = tegenstanderVan(D.volgende); bewaar(); }
+        tekenSpelers(); tekenBord();
+    } catch (e) { /* dan blijft wat er in de opslag stond */ }
+
+    if (!navigator.onLine) meld(t('offline'));
+    verversAlles(false);
 })();
 
-stand().catch(function () { D.fout.stand = true; tekenStand(); });
-programma().catch(function () { D.fout.programma = true; tekenProgramma(); });
-uitslagen().catch(function () { D.fout.uitslagen = true; tekenUitslagen(); });
-setInterval(function () { uitslagen().catch(function () {}); }, 30000);
-
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function () {});
+/* De app komt uit de cache, dus een nieuwe versie zou pas de
+   volgende keer verschijnen. Zodra er een klaarstaat: melden en
+   op één tik overschakelen. */
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').then(function (reg) {
+            reg.addEventListener('updatefound', function () {
+                const nieuw = reg.installing;
+                if (!nieuw) return;
+                nieuw.addEventListener('statechange', function () {
+                    if (nieuw.state === 'installed' && navigator.serviceWorker.controller) {
+                        meld(t('nieuwe_versie'), true);
+                        $('melding').style.cursor = 'pointer';
+                        $('melding').addEventListener('click', function () { location.reload(); });
+                    }
+                });
+            });
+        }).catch(function () {});
+    });
+}
 </script>
 </body>
 </html>

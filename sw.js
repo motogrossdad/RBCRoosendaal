@@ -1,20 +1,77 @@
-const CACHE = 'rbc-v8-2026-2027';
-const ASSETS = ['/', '/index.html', '/klassiek.html', '/teletekst.html', '/snes.html', '/rbc.png', '/rbc-klein.png', '/data.json'];
+/* ════════════════════════════════════════════════════════════
+   RBC Roosendaal — service worker
+   De app moet het doen op een tribune met slecht bereik. Daarom:
+   · de app zelf komt altijd uit de cache en wordt op de
+     achtergrond ververst (stale-while-revalidate)
+   · data.json net zo, zodat de selectie er meteen staat
+   · de externe bronnen en proxies gaan er nooit in: die zijn
+     traag en wisselvallig, en de app bewaart die zelf al
+   ════════════════════════════════════════════════════════════ */
+const CACHE = 'rbc-app-v9';
+
+const SCHIL = [
+    '/', '/index.html', '/data.json',
+    '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
+    '/rbc.png', '/rbc-klein.png', '/manifest.json',
+    '/klassiek.html', '/teletekst.html', '/snes.html'
+];
+
 self.addEventListener('install', e => {
-    e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-    self.skipWaiting();
+    e.waitUntil(
+        caches.open(CACHE)
+            // Losse verzoeken: één ontbrekend bestand mag de hele
+            // installatie niet laten mislukken.
+            .then(c => Promise.allSettled(SCHIL.map(u => c.add(u))))
+            .then(() => self.skipWaiting())
+    );
 });
+
 self.addEventListener('activate', e => {
-    e.waitUntil(caches.keys().then(keys =>
-        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))));
-    self.clients.claim();
+    e.waitUntil(
+        caches.keys()
+            .then(k => Promise.all(k.filter(n => n !== CACHE).map(n => caches.delete(n))))
+            .then(() => self.clients.claim())
+    );
 });
+
 self.addEventListener('fetch', e => {
-    // Never cache live data or the CORS proxies that fetch it.
-    const bypass = ['hollandsevelden', 'rbcvoetbal', 'sofascore', 'svsplus', 'nos.nl',
-                    'allorigins', 'codetabs', 'cors.lol', 'fonts.google'];
-    if (bypass.some(h => e.request.url.includes(h))) return;
+    const req = e.request;
+    if (req.method !== 'GET') return;
+
+    const url = new URL(req.url);
+
+    // Alles van buiten laten we met rust: de proxies zijn traag en
+    // wisselvallig, en de app bewaart die uitkomsten zelf al.
+    if (url.origin !== location.origin) return;
+
+    // Navigatie: eerst tonen wat we hebben, dan bijwerken.
+    if (req.mode === 'navigate') {
+        e.respondWith(
+            caches.match('/index.html').then(hit => {
+                const net = fetch(req)
+                    .then(res => {
+                        caches.open(CACHE).then(c => c.put('/index.html', res.clone()));
+                        return res;
+                    })
+                    .catch(() => hit);
+                return hit || net;
+            })
+        );
+        return;
+    }
+
     e.respondWith(
-        fetch(e.request).catch(() => caches.match(e.request))
+        caches.match(req).then(hit => {
+            const net = fetch(req)
+                .then(res => {
+                    if (res && res.status === 200 && res.type === 'basic') {
+                        const kopie = res.clone();
+                        caches.open(CACHE).then(c => c.put(req, kopie));
+                    }
+                    return res;
+                })
+                .catch(() => hit);
+            return hit || net;
+        })
     );
 });
