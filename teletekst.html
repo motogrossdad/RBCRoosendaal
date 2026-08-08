@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RBC TELETEKST — 801</title>
+<meta name="theme-color" content="#000000">
+<meta name="description" content="RBC Roosendaal als teletekst: stand, programma, selectie en clubnieuws op pagina 801.">
+<link rel="icon" href="/rbc.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<style>
+/* ════════════════════════════════════════════════════════════
+   RBC TELETEKST
+   Echt teletekstraster: 40 kolommen x 24 regels, de acht
+   klassieke kleuren, dubbele hoogte voor koppen. Geen fonts,
+   geen libraries. De tekst blijft gewone tekst, dus
+   selecteerbaar en leesbaar voor een schermlezer.
+   ════════════════════════════════════════════════════════════ */
+:root {
+    /* de acht teletekstkleuren, ongewijzigd */
+    --tt-black:   #000000;
+    --tt-red:     #FF3B30;
+    --tt-green:   #22DD44;
+    --tt-yellow:  #FFDD00;
+    --tt-blue:    #4466FF;
+    --tt-magenta: #FF44CC;
+    --tt-cyan:    #22DDDD;
+    --tt-white:   #FFFFFF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    height: 100%;
+    background: #0A0A0A;
+    color: var(--tt-white);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    overflow: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+#frame {
+    position: fixed; inset: 0;
+    display: grid; place-items: center;
+    background: radial-gradient(ellipse at 50% 45%, #141414 0%, #000 80%);
+    padding: 6px;
+}
+
+/* Het scherm: 40 tekens breed, 24 regels hoog. De fontgrootte
+   volgt uit de kleinste van breedte en hoogte, dus het raster
+   blijft altijd heel. */
+#screen {
+    position: relative;
+    /* Echte teletekst vult een 4:3 scherm. Monospace-tekens zijn smaller
+       dan de tekencel van teletekst, dus de letters krijgen ruimte mee en
+       de breedte wordt daarop teruggerekend. */
+    /* Vaste basisgrootte; het passend schalen gebeurt na het tekenen in
+       JS. Rekenen met em/vh bleek te wankel: het raster viel telkens net
+       buiten beeld en de onderste balk werd afgeknipt. */
+    font-size: 22px;
+    transform-origin: center center;
+    line-height: 1.06;
+    letter-spacing: 0.22em;
+    width: calc(40ch + 8.8em);
+    background: var(--tt-black);
+    font-weight: 700;
+    white-space: pre;
+    padding: 0.5em 0;
+    box-shadow: 0 0 0 2px #222, 0 14px 50px -12px #000;
+}
+.row { height: 1.06em; }
+#fastext { height: 1.06em; }
+/* Dubbele hoogte, zoals in teletekst: de regel beslaat twee posities en
+   de LETTERS worden verticaal uitgerekt. De rek zit op de tekst, niet op
+   de regel zelf - anders telt de regel voor vier posities en schuift de
+   rest van de pagina buiten beeld. */
+.row.dh { height: 2.12em; }
+.row.dh > span, .row.dh > a {
+    display: inline-block;
+    transform: scaleY(2);
+    transform-origin: top left;
+}
+
+.c-black   { color: var(--tt-black) }
+.c-red     { color: var(--tt-red) }
+.c-green   { color: var(--tt-green) }
+.c-yellow  { color: var(--tt-yellow) }
+.c-blue    { color: var(--tt-blue) }
+.c-magenta { color: var(--tt-magenta) }
+.c-cyan    { color: var(--tt-cyan) }
+.c-white   { color: var(--tt-white) }
+
+/* Achtergrondvlakken: de volle teletekstkleuren met zwarte letters,
+   zoals de fastextbalk onderaan een echte teletekstpagina. Eerder
+   stonden hier gedempte tinten, waardoor zwarte tekst onleesbaar was. */
+.bg-blue    { background: var(--tt-blue);    color: #000 }
+.bg-red     { background: var(--tt-red);     color: #000 }
+.bg-green   { background: var(--tt-green);   color: #000 }
+.bg-white   { background: var(--tt-white);   color: #000 }
+.bg-yellow  { background: var(--tt-yellow);  color: #000 }
+.bg-cyan    { background: var(--tt-cyan);    color: #000 }
+.bg-magenta { background: var(--tt-magenta); color: #000 }
+
+a.pg {
+    text-decoration: none;
+    border-bottom: 1px dotted currentColor;
+    cursor: pointer;
+}
+a.pg:hover, a.pg:focus { background: var(--tt-white); color: #000; outline: none; }
+
+/* invoerveld voor paginanummers, rechtsboven */
+#entry {
+    position: absolute; top: -1.9em; right: 0;
+    font: inherit; color: var(--tt-yellow);
+    letter-spacing: .2em;
+}
+#hint {
+    position: fixed; bottom: 0.5em; left: 0; right: 0;
+    font-family: inherit; font-size: 12px; font-weight: 400;
+    color: #667; text-align: center; padding: 0 1em;
+}
+@media (max-width: 560px) { #hint { font-size: .8em } }
+</style>
+</head>
+<body>
+
+<div id="frame">
+    <div id="screen" role="document" aria-label="RBC Teletekst">
+        <div id="entry" aria-hidden="true"></div>
+        <div id="page"></div>
+        <div id="fastext"></div>
+    </div>
+    <div id="hint"></div>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   1. RASTER EN RENDERING
+   ════════════════════════════════════════════════════════════ */
+const COLS = 40, ROWS = 24;
+
+/* Een segment is {c: kleur, t: tekst, p: pagina (optioneel), bg: vlak}.
+   Een regel is een array segmenten, of {dh:true, segs:[...]}.        */
+function seg(c, t, p, bg) { return { c: c, t: String(t), p: p, bg: bg }; }
+
+function padLine(segs) {
+    let len = segs.reduce((n, s) => n + s.t.length, 0);
+    if (len < COLS) segs = segs.concat([seg('white', ' '.repeat(COLS - len))]);
+    else if (len > COLS) {
+        // netjes afkappen op 40 tekens
+        const out = []; let used = 0;
+        for (const s of segs) {
+            if (used >= COLS) break;
+            const room = COLS - used;
+            out.push(s.t.length <= room ? s : seg(s.c, s.t.slice(0, room), s.p, s.bg));
+            used += Math.min(room, s.t.length);
+        }
+        segs = out;
+    }
+    return segs;
+}
+
+function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderPage(lines) {
+    const host = document.getElementById('page');
+    let html = '', row = 0;
+    for (let i = 0; i < lines.length && row < ROWS; i++) {
+        const raw = lines[i];
+        const dh = raw && raw.dh === true;
+        const segs = padLine((dh ? raw.segs : raw) || []);
+        const inner = segs.map(s => {
+            const cls = 'c-' + (s.c || 'white') + (s.bg ? ' bg-' + s.bg : '');
+            const body = esc(s.t);
+            return s.p
+                ? `<a class="pg ${cls}" href="#${s.p}" data-p="${s.p}">${body}</a>`
+                : `<span class="${cls}">${body}</span>`;
+        }).join('');
+        html += `<div class="row${dh ? ' dh' : ''}">${inner}</div>`;
+        row += dh ? 2 : 1;
+    }
+    while (row < ROWS - 1) { html += '<div class="row"> </div>'; row++; }
+    host.innerHTML = html;
+
+    const balk = document.getElementById('fastext');
+    balk.innerHTML = padLine(BALK).map(s2 => {
+        const cls = 'c-' + (s2.c || 'white') + (s2.bg ? ' bg-' + s2.bg : '');
+        return s2.p
+            ? `<a class="pg ${cls}" href="#${s2.p}" data-p="${s2.p}">${esc(s2.t)}</a>`
+            : `<span class="${cls}">${esc(s2.t)}</span>`;
+    }).join('');
+
+    [host, balk].forEach(el => el.querySelectorAll('a.pg').forEach(a =>
+        a.addEventListener('click', e => { e.preventDefault(); go(a.dataset.p); })));
+}
+
+/* ── vaste onderdelen ──────────────────────────────────────── */
+const DAGEN = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+const MAANDEN = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+function klok() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, '0');
+    return `${DAGEN[d.getDay()]} ${p(d.getDate())} ${MAANDEN[d.getMonth()]} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function kop(nr) {
+    // P801 RBC TEKST            za 08 aug 09:12
+    const left = `P${nr} RBC TEKST`;
+    const right = klok();
+    const gap = Math.max(1, COLS - left.length - right.length);
+    return [seg('white', left), seg('white', ' '.repeat(gap)), seg('cyan', right)];
+}
+function titel(txt, kleur) {
+    return { dh: true, segs: [seg(kleur || 'yellow', ' ' + txt)] };
+}
+function streep(kleur) {
+    return [seg('black', ' '.repeat(COLS), null, kleur || 'blue')];
+}
+function leeg() { return []; }
+
+/* fastext: de vier gekleurde keuzes onderaan, als gekleurde vlakken */
+function fastext(items) {
+    const vlakken = ['red', 'green', 'yellow', 'cyan'];
+    const breed = Math.floor(COLS / 4);
+    const segs = [];
+    items.slice(0, 4).forEach((it, i) => {
+        const t = (' ' + it.label).padEnd(breed).slice(0, breed);
+        segs.push(seg('black', t, it.page, vlakken[i]));
+    });
+    return segs;
+}
+
+/* Vult de pagina aan tot precies 24 regels en zet de fastextbalk op de
+   laatste. Dubbele-hoogteregels tellen voor twee: zonder die correctie
+   liep de pagina over en verdween de balk. */
+let BALK = [];
+function afronden(L, items) {
+    // De balk staat in een eigen element onder het raster. In het raster
+    // zelf raakte hij weggeknipt zodra een dubbele-hoogteregel meetelde.
+    const gebruikt = L.reduce((n, r) => n + (r && r.dh === true ? 2 : 1), 0);
+    for (let i = gebruikt; i < ROWS - 1; i++) L.push(leeg());
+    BALK = fastext(items);
+    return L;
+}
+
+/* ════════════════════════════════════════════════════════════
+   2. DATA — dezelfde bronnen als de gewone site
+   ════════════════════════════════════════════════════════════ */
+const SEASON = '2026-2027', SEASON_LABEL = '2026/2027';
+const PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.cors.lol/?url='
+];
+const STAND_URL = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/`;
+const PROGRAMMA_URL = STAND_URL + 'programma/';
+const NIEUWS_URL = 'https://rbcvoetbal.nl/';
+
+const DB = { stand: null, programma: null, nieuws: null, squad: null, match: null, fouten: [] };
+
+async function haal(url) {
+    for (const p of PROXIES) {
+        try {
+            const r = await fetch(p + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+            if (r.ok) return await r.text();
+        } catch (e) { /* volgende proxy */ }
+    }
+    throw new Error('proxy');
+}
+function dom(html) { return new DOMParser().parseFromString(html, 'text/html'); }
+
+/* ── stand ── */
+function vindStandTabel(doc) {
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Stand')) continue;
+        let el = h2.nextElementSibling;
+        while (el) {
+            const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
+            if (t) return t;
+            if (el.matches('h2,h3')) break;
+            el = el.nextElementSibling;
+        }
+        let p = h2.parentElement;
+        while (p) { const t = p.querySelector('table'); if (t) return t; p = p.parentElement; if (!p || p.tagName === 'BODY') break; }
+        break;
+    }
+    return null;
+}
+async function laadStand() {
+    const t = vindStandTabel(dom(await haal(STAND_URL)));
+    if (!t) throw new Error('geen tabel');
+    DB.stand = [...t.querySelectorAll('tbody tr')].map(r => {
+        const c = [...r.querySelectorAll('th,td')].map(e => e.textContent.trim().replace(/\s+/g, ' '));
+        if (c.length < 5) return null;
+        // twee kolomindelingen komen voor, net als op de gewone site
+        return c.length >= 9
+            ? { pos: c[0], club: c[1], wed: c[2], pnt: c[4], ds: c[7] }
+            : { pos: c[0], club: c[1], wed: c[2], pnt: c[9] || '', ds: c[8] || '' };
+    }).filter(Boolean);
+}
+
+/* ── programma ── */
+async function laadProgramma() {
+    const doc = dom(await haal(PROGRAMMA_URL));
+    const tabellen = [...doc.querySelectorAll('table.match,table[class*="match"]')];
+    const uit = [];
+    tabellen.forEach(t => {
+        const cap = t.querySelector('caption time,caption');
+        const datum = cap ? cap.textContent.trim().replace(/\s+/g, ' ') : '';
+        t.querySelectorAll('tbody tr').forEach(row => {
+            const c = row.querySelectorAll('td');
+            if (c.length < 4) return;
+            uit.push({
+                datum: datum,
+                thuis: c[0].textContent.trim().replace(/\s+/g, ' '),
+                uit: c[2].textContent.trim().replace(/\s+/g, ' '),
+                tijd: c[3].textContent.trim().replace(/\s+/g, ' ')
+            });
+        });
+    });
+    DB.programma = uit;
+}
+
+/* ── nieuws ── */
+async function laadNieuws() {
+    const doc = dom(await haal(NIEUWS_URL));
+    const gezien = new Set(), uit = [];
+    const SKIP = /^(nieuwsarchief|voetbal academie|zakelijk netwerk|maatschappelijk)$/i;
+    doc.querySelectorAll('h1.index_title, h3').forEach(h => {
+        const t = h.textContent.trim().replace(/\s+/g, ' ');
+        if (t.length < 10 || t.length > 140 || gezien.has(t) || SKIP.test(t)) return;
+        gezien.add(t); uit.push(t);
+    });
+    DB.nieuws = uit.slice(0, 12);
+}
+
+/* ── selectie + volgende wedstrijd ── */
+async function laadLokaal() {
+    const m = await (await fetch('data.json?v=' + Date.now())).json();
+    DB.match = m.match || null;
+    DB.squad = (m.squad || []).slice().sort((a, b) => a.number - b.number);
+}
+
+/* ════════════════════════════════════════════════════════════
+   3. PAGINA'S
+   ════════════════════════════════════════════════════════════ */
+const NAV = ['801', '802', '803', '804', '805', '806'];
+
+function wacht(nr, wat) {
+    return [
+        kop(nr), leeg(),
+        titel(wat, 'yellow'),
+        streep('blue'), leeg(),
+        [seg('cyan', '  Pagina wordt gezocht...')],
+        leeg(),
+        [seg('white', '  Even geduld. De gegevens komen van')],
+        [seg('white', '  buiten en gaan via een omweg.')]
+    ];
+}
+function storing(nr, wat, bron) {
+    return [
+        kop(nr), leeg(),
+        titel(wat, 'yellow'),
+        streep('blue'), leeg(),
+        [seg('red', '  Deze pagina is niet beschikbaar.')],
+        leeg(),
+        [seg('white', '  De gegevens van ' + bron)],
+        [seg('white', '  konden niet worden geladen.')],
+        leeg(),
+        [seg('cyan', '  Probeer het later nog eens.')]
+    ];
+}
+
+/* ── 801 index ── */
+function p801() {
+    const L = [];
+    L.push(kop('801'));
+    L.push(leeg());
+    L.push(titel('RBC ROOSENDAAL', 'yellow'));
+    L.push([seg('white', ' ' + '▀'.repeat(28))]);
+    L.push([seg('cyan', '  Derde Divisie B  ·  ' + SEASON_LABEL)]);
+    L.push(streep('blue'));
+    L.push(leeg());
+
+    const rij = (label, nr) => [
+        seg('white', '  '),
+        seg('white', label.padEnd(24, '.'), nr),
+        seg('yellow', nr, nr)
+    ];
+    L.push(rij('Stand', '802'));
+    L.push(rij('Programma', '803'));
+    L.push(rij('Selectie', '804'));
+    L.push(rij('Clubnieuws', '805'));
+    L.push(rij('Over de club', '806'));
+    L.push(leeg());
+    L.push(streep('blue'));
+
+    // korte kop van de stand, als teaser
+    if (DB.stand && DB.stand.length) {
+        L.push([seg('cyan', '  STAND'), seg('white', '                   W    P')]);
+        const eigen = DB.stand.findIndex(r => /^rbc$/i.test(r.club));
+        const toon = DB.stand.slice(0, 3);
+        if (eigen > 2) toon.push(DB.stand[eigen]);
+        toon.forEach(r => {
+            const isRBC = /^rbc$/i.test(r.club);
+            L.push([
+                seg(isRBC ? 'yellow' : 'white', ' ' + String(r.pos).padStart(3)),
+                seg(isRBC ? 'yellow' : 'white', ' ' + r.club.slice(0, 20).padEnd(21)),
+                seg('green', String(r.wed).padStart(2)),
+                seg('white', '  '),
+                seg(isRBC ? 'yellow' : 'cyan', String(r.pnt).padStart(3))
+            ]);
+        });
+    } else {
+        L.push([seg('cyan', '  Stand wordt geladen...')]);
+    }
+    return afronden(L, [
+        { label: 'SITE', page: 'site' },
+        { label: 'STAND', page: '802' },
+        { label: 'SELECTIE', page: '804' },
+        { label: 'NIEUWS', page: '805' }
+    ]);
+}
+
+/* ── 802 stand ── */
+function p802() {
+    if (!DB.stand) return DB.fouten.includes('stand')
+        ? storing('802', 'STAND', 'de competitiesite') : wacht('802', 'STAND');
+    const L = [kop('802'), leeg(), titel('STAND', 'yellow'),
+               [seg('cyan', '  Derde Divisie B  ·  ' + SEASON_LABEL)], streep('blue'),
+               [seg('cyan', '     CLUB                 W    P   DS')]];
+    DB.stand.slice(0, 16).forEach((r, i) => {
+        const isRBC = /^rbc$/i.test(r.club);
+        const kl = isRBC ? 'yellow' : (i % 2 ? 'white' : 'cyan');
+        const dsN = parseInt(r.ds, 10);
+        L.push([
+            seg(kl, String(r.pos).padStart(3) + ' '),
+            seg(kl, r.club.slice(0, 19).padEnd(20)),
+            seg('white', String(r.wed).padStart(2)),
+            seg('white', '  '),
+            seg(isRBC ? 'yellow' : 'green', String(r.pnt).padStart(3)),
+            seg(dsN > 0 ? 'green' : dsN < 0 ? 'red' : 'white', String(r.ds).padStart(5))
+        ]);
+    });
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'PROGRAMMA', page: '803' },
+        { label: 'SELECTIE', page: '804' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+/* ── 803 programma ── */
+function p803() {
+    if (!DB.programma) return DB.fouten.includes('programma')
+        ? storing('803', 'PROGRAMMA', 'de competitiesite') : wacht('803', 'PROGRAMMA');
+    const L = [kop('803'), leeg(), titel('PROGRAMMA', 'yellow'), streep('blue')];
+
+    if (DB.match) {
+        L.push([seg('cyan', '  EERSTVOLGENDE WEDSTRIJD')]);
+        L.push([seg('yellow', '  ' + (DB.match.home_team || '').slice(0, 17)),
+                seg('white', ' - '),
+                seg('yellow', (DB.match.away_team || '').slice(0, 15))]);
+        L.push([seg('white', '  ' + (DB.match.status || ''))]);
+        L.push(streep('blue'));
+    }
+
+    const eigen = DB.programma.filter(w => /^rbc$/i.test(w.thuis) || /^rbc$/i.test(w.uit));
+    const lijst = (eigen.length ? eigen : DB.programma).slice(0, 9);
+    if (!lijst.length) {
+        L.push([seg('cyan', '  Geen wedstrijden gevonden.')]);
+    } else {
+        L.push([seg('cyan', '  RBC IN DE KOMENDE WEKEN')]);
+        lijst.forEach(w => {
+            L.push([seg('green', '  ' + (w.datum || '').slice(0, 22))]);
+            L.push([
+                seg('white', '   ' + w.thuis.slice(0, 14).padEnd(15)),
+                seg('white', '- '),
+                seg('white', w.uit.slice(0, 13).padEnd(14)),
+                seg('yellow', (w.tijd || '').slice(0, 6))
+            ]);
+        });
+    }
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'STAND', page: '802' },
+        { label: 'SELECTIE', page: '804' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+/* ── 804 selectie ── */
+function p804() {
+    if (!DB.squad) return wacht('804', 'SELECTIE');
+    const L = [kop('804'), leeg(), titel('SELECTIE', 'yellow'),
+               [seg('cyan', '  Eerste elftal  ·  ' + SEASON_LABEL)], streep('blue')];
+    // twee kolommen, zo passen 23 namen op een pagina
+    const helft = Math.ceil(DB.squad.length / 2);
+    for (let i = 0; i < helft; i++) {
+        const a = DB.squad[i], b = DB.squad[i + helft];
+        const cel = p => p
+            ? [seg('yellow', String(p.number).padStart(2)),
+               seg('white', ' ' + p.name.slice(0, 15).padEnd(16))]
+            : [seg('white', ' '.repeat(19))];
+        L.push([seg('white', ' ')].concat(cel(a), cel(b)));
+    }
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'STAND', page: '802' },
+        { label: 'NIEUWS', page: '805' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+/* ── 805 nieuws ── */
+function p805() {
+    if (!DB.nieuws) return DB.fouten.includes('nieuws')
+        ? storing('805', 'CLUBNIEUWS', 'rbcvoetbal.nl') : wacht('805', 'CLUBNIEUWS');
+    const L = [kop('805'), leeg(), titel('CLUBNIEUWS', 'yellow'), streep('blue'), leeg()];
+    DB.nieuws.slice(0, 8).forEach((t, i) => {
+        // koppen over twee regels afbreken op woordgrens
+        const woorden = t.split(' ');
+        let r1 = '', r2 = '';
+        woorden.forEach(w => {
+            if ((r1 + ' ' + w).trim().length <= 34) r1 = (r1 + ' ' + w).trim();
+            else if ((r2 + ' ' + w).trim().length <= 34) r2 = (r2 + ' ' + w).trim();
+        });
+        L.push([seg('yellow', '  ▸ '), seg(i % 2 ? 'cyan' : 'white', r1)]);
+        if (r2) L.push([seg('white', '    '), seg(i % 2 ? 'cyan' : 'white', r2)]);
+    });
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'STAND', page: '802' },
+        { label: 'SELECTIE', page: '804' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+/* ── 806 club ── */
+function p806() {
+    const L = [kop('806'), leeg(), titel('OVER DE CLUB', 'yellow'), streep('blue'), leeg()];
+    const rij = (k, v) => L.push([seg('cyan', '  ' + k.padEnd(14)), seg('white', v)]);
+    rij('Club', 'RBC Roosendaal');
+    rij('Opgericht', '1912');
+    rij('Stadion', 'Atik Stadion');
+    rij('Plaats', 'Roosendaal');
+    rij('Kleuren', 'oranje en wit');
+    rij('Competitie', 'Derde Divisie B');
+    rij('Seizoen', SEASON_LABEL);
+    L.push(leeg());
+    L.push(streep('blue'));
+    L.push([seg('cyan', '  OVER DEZE PAGINA')]);
+    L.push([seg('white', '  Teletekst-uitvoering van de site.')]);
+    L.push([seg('white', '  40 kolommen, 24 regels, acht')]);
+    L.push([seg('white', '  kleuren. Stand, programma en')]);
+    L.push([seg('white', '  nieuws komen live binnen.')]);
+    L.push(leeg());
+    L.push([seg('magenta', '  Pagina 899: de 16-bit versie.', '899')]);
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'STAND', page: '802' },
+        { label: '16-BIT', page: '899' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+/* ── 899 easter egg ── */
+function p899() {
+    const L = [kop('899'), leeg(), titel('16-BIT VERSIE', 'magenta'), streep('magenta'), leeg(),
+        [seg('white', '  Er is ook een 16-bit uitvoering')],
+        [seg('white', '  van deze site, met de selectie in')],
+        [seg('white', '  pixelportretten en een spel:')],
+        leeg(),
+        [seg('yellow', '  TOPSCORER'), seg('white', ' - 10 schoten op een')],
+        [seg('white', '  bewegende keeper.')],
+        leeg(),
+        [seg('cyan', '  Openen: /snes.html', 'snes')],
+        leeg(),
+        [seg('white', '  Terug naar teletekst: '), seg('yellow', '801', '801')]
+    ];
+    return afronden(L, [
+        { label: 'INDEX', page: '801' },
+        { label: 'OPEN', page: 'snes' },
+        { label: 'CLUB', page: '806' },
+        { label: 'SITE', page: 'site' }
+    ]);
+}
+
+const PAGINAS = {
+    '801': p801, '802': p802, '803': p803,
+    '804': p804, '805': p805, '806': p806, '899': p899
+};
+
+/* ════════════════════════════════════════════════════════════
+   4. NAVIGATIE
+   ════════════════════════════════════════════════════════════ */
+let huidig = '801';
+let buffer = '';
+
+function go(nr) {
+    if (nr === 'site') { location.href = '/'; return; }
+    if (nr === 'snes') { location.href = '/snes.html'; return; }
+    if (!PAGINAS[nr]) {
+        // onbekend nummer: teletekst bleef simpelweg op de oude pagina staan
+        toonBuffer('?' + nr);
+        setTimeout(() => { buffer = ''; toonBuffer(''); }, 900);
+        return;
+    }
+    huidig = nr;
+    buffer = '';
+    toonBuffer('');
+    history.replaceState(null, '', '#' + nr);
+    document.title = 'RBC TELETEKST — ' + nr;
+    verf();
+}
+function verf() { renderPage(PAGINAS[huidig]()); passend(); }
+
+/* Meet het getekende scherm en schaal het zo groot mogelijk binnen het
+   venster. Werkt ongeacht hoe de browser de regelhoogtes afrondt. */
+function passend() {
+    const el = document.getElementById('screen');
+    el.style.transform = 'none';
+    const w = el.offsetWidth, h = el.offsetHeight;
+    if (!w || !h) return;
+    const marge = 26;
+    const k = Math.min((innerWidth - marge) / w, (innerHeight - marge) / h);
+    el.style.transform = 'scale(' + k.toFixed(4) + ')';
+}
+addEventListener('resize', passend);
+function toonBuffer(s) { document.getElementById('entry').textContent = s || ''; }
+
+addEventListener('keydown', e => {
+    if (e.key >= '0' && e.key <= '9') {
+        buffer = (buffer + e.key).slice(-3);
+        toonBuffer(buffer.padEnd(3, '-'));
+        if (buffer.length === 3) go(buffer);
+        return;
+    }
+    const i = NAV.indexOf(huidig);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault(); go(NAV[(i < 0 ? 0 : i + 1) % NAV.length]);
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault(); go(NAV[(i <= 0 ? NAV.length - 1 : i - 1)]);
+    } else if (e.key === 'Escape') {
+        e.preventDefault(); go('801');
+    } else if (e.key === 'Backspace') {
+        e.preventDefault(); buffer = ''; toonBuffer('');
+    }
+});
+
+/* wisselen met een veeg, voor de telefoon */
+let tx = null;
+addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+addEventListener('touchend', e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    tx = null;
+    if (Math.abs(dx) < 55) return;
+    const i = NAV.indexOf(huidig);
+    go(dx < 0 ? NAV[(i < 0 ? 0 : i + 1) % NAV.length] : NAV[(i <= 0 ? NAV.length - 1 : i - 1)]);
+}, { passive: true });
+
+/* ════════════════════════════════════════════════════════════
+   5. START
+   ════════════════════════════════════════════════════════════ */
+document.getElementById('hint').textContent =
+    'Typ een paginanummer (801-806) · pijltjes of vegen om te bladeren · klik op de gekleurde balk';
+
+const start = (location.hash || '').replace('#', '');
+huidig = PAGINAS[start] ? start : '801';
+verf();
+
+/* Elke bron apart, zodat een kapotte bron de rest niet blokkeert. */
+laadLokaal().then(verf).catch(() => { DB.fouten.push('lokaal'); verf(); });
+laadStand().then(verf).catch(() => { DB.fouten.push('stand'); verf(); });
+laadProgramma().then(verf).catch(() => { DB.fouten.push('programma'); verf(); });
+laadNieuws().then(verf).catch(() => { DB.fouten.push('nieuws'); verf(); });
+
+// de klok in de kop laten lopen
+setInterval(verf, 30000);
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>
