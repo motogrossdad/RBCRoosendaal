@@ -77,8 +77,8 @@ html, body {
     position: absolute; inset: 0; z-index: 90; pointer-events: none;
     background:
         repeating-linear-gradient(to bottom,
-            rgba(0,0,0,.22) 0 1px, rgba(0,0,0,0) 1px 3px),
-        radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.05) 0%, rgba(0,0,0,.38) 100%);
+            rgba(0,0,0,.09) 0 1px, rgba(0,0,0,0) 1px 4px),
+        radial-gradient(ellipse at 50% 45%, rgba(255,255,255,.03) 0%, rgba(0,0,0,.20) 100%);
     mix-blend-mode: multiply;
 }
 #crt.off { display: none; }
@@ -365,14 +365,17 @@ table.px canvas { image-rendering: pixelated; display: block; }
    ook é/á/ï dekt, zonder handmatige glyphdata.
    ════════════════════════════════════════════════════════════ */
 const FONT = (() => {
-    const H = 7;                       // hoogte in "echte" pixels
+    // 11px i.p.v. 7px: veel meer detail per letter, dus veel beter leesbaar.
+    // PX is met dezelfde factor verkleind, dus tekst blijft even groot op het
+    // scherm maar is fijner getekend.
+    const H = 11;                      // hoogte in "echte" pixels
     const cache = new Map();
     const c = document.createElement('canvas');
     const x = c.getContext('2d', { willReadFrequently: true });
 
     function glyph(ch) {
         if (cache.has(ch)) return cache.get(ch);
-        c.width = 12; c.height = H + 3;
+        c.width = 16; c.height = H + 4;
         x.clearRect(0, 0, c.width, c.height);
         x.imageSmoothingEnabled = false;
         x.font = `700 ${H + 2}px ui-monospace, Menlo, Consolas, monospace`;
@@ -405,7 +408,7 @@ const FONT = (() => {
         const gs = [...text].map(glyph);
         const gap = 1;
         const w = gs.reduce((a, g) => a + g.w + gap, 0) - gap;
-        const h = H + 3;
+        const h = H + 4;
         canvas.width = Math.max(1, (w + (sh ? 1 : 0)) * s);
         canvas.height = (h + (sh ? 1 : 0)) * s;
         const ctx = canvas.getContext('2d');
@@ -441,8 +444,8 @@ const C = {
 let PX = 3;
 function rescale() {
     const w = document.getElementById('screen').clientWidth;
-    PX = Math.max(2, Math.round(w / 300));
-    document.documentElement.style.setProperty('--px', Math.max(2, Math.round(w / 340)) + 'px');
+    PX = Math.max(1, Math.round(w / 470));
+    document.documentElement.style.setProperty('--px', Math.max(2, Math.round(w / 400)) + 'px');
 }
 
 /* diacritics eruit voor de smalle glyphs, net als een echte 16-bit rom */
@@ -489,12 +492,12 @@ const SFX = (() => {
 
 /* ════════════════════════════════════════════════════════════
    3. PORTRETGENERATOR
-   64x80, 16 kleuren via median-cut, achtergrond platgeslagen.
-   Getest op het contactblad: 64x80/16c is het enige formaat dat
-   herkenbaar blijft; 8 kleuren geeft witte vlekken op voorhoofden.
+   96x120, 32 kleuren via median-cut, achtergrond platgeslagen.
+   Begonnen op 64x80/16c (het minimum dat herkenbaar bleef); op verzoek
+   fijner gezet omdat 64x80 te grof-pixelig aanvoelde.
    ════════════════════════════════════════════════════════════ */
 const PORTRAIT = (() => {
-    const W = 64, H = 80, COLORS = 16;
+    const W = 96, H = 120, COLORS = 32;
     const cache = new Map();
     const forge = document.getElementById('forge');
 
@@ -545,17 +548,39 @@ const PORTRAIT = (() => {
         [[0,0],[W-1,0],[0,1],[W-1,1],[1,0],[W-2,0]].forEach(([cx,cy]) => corner.push(px[cy*W+cx]));
         const avg = corner.reduce((a,p) => [a[0]+p[0],a[1]+p[1],a[2]+p[2]], [0,0,0]).map(v => v/corner.length);
         const FLAT = [35, 42, 87];                       // --panel, plat vlak
-        const TOL = 58 * 58;
-        for (let j = 0; j < px.length; j++) {
+        const TOL = 46 * 46;
+        // Over de VOLLE hoogte platslaan. Eerst stopte dit op 60%, wat een
+        // harde horizontale naad door het portret trok.
+        // Flood fill vanaf de RAND, niet "elke grijze pixel". De schaduw onder
+        // de kin is ook grijs; die werd anders als achtergrond weggepoetst en
+        // gaf een blauwe vlek op het gezicht.
+        const like = j => {
             const p = px[j];
-            const dist = (p[0]-avg[0])**2 + (p[1]-avg[1])**2 + (p[2]-avg[2])**2;
-            // alleen in de bovenste 60%: daaronder zit het shirt
-            if (dist < TOL && j < W * H * 0.6) px[j] = FLAT;
+            return (p[0]-avg[0])**2 + (p[1]-avg[1])**2 + (p[2]-avg[2])**2 < TOL;
+        };
+        const bg = new Uint8Array(px.length);
+        const stack = [];
+        for (let x = 0; x < W; x++) { stack.push(x); stack.push((H - 1) * W + x); }
+        for (let y = 0; y < H; y++) { stack.push(y * W); stack.push(y * W + W - 1); }
+        while (stack.length) {
+            const j = stack.pop();
+            if (j < 0 || j >= px.length || bg[j] || !like(j)) continue;
+            bg[j] = 1;
+            const x = j % W;
+            if (x > 0)     stack.push(j - 1);
+            if (x < W - 1) stack.push(j + 1);
+            stack.push(j - W);
+            stack.push(j + W);
         }
 
-        const pal = medianCut(px.map(p => p.slice()), Math.log2(COLORS));
+        // Het palet alleen uit de speler zelf halen en FLAT er los naast
+        // zetten. Anders krijgt de achtergrondkleur een palet-entry en
+        // slaan donkere schaduwen op het gezicht om naar blauw.
+        const fg = [];
+        for (let j = 0; j < px.length; j++) if (!bg[j]) fg.push(px[j].slice());
+        const pal = fg.length ? medianCut(fg, Math.log2(COLORS)) : [FLAT];
         for (let i = 0, j = 0; i < d.data.length; i += 4, j++) {
-            const c = nearest(pal, px[j]);
+            const c = bg[j] ? FLAT : nearest(pal, px[j]);
             d.data[i] = c[0]; d.data[i+1] = c[1]; d.data[i+2] = c[2];
         }
         g.putImageData(d, 0, 0);
@@ -571,17 +596,19 @@ const PORTRAIT = (() => {
         g.imageSmoothingEnabled = false;
         g.fillStyle = '#232C57'; g.fillRect(0, 0, W, H);
         g.fillStyle = '#1A2145';
-        for (let y = 0; y < H; y += 4) g.fillRect(0, y, W, 2);
+        for (let y = 0; y < H; y += 6) g.fillRect(0, y, W, 3);
         // silhouet
         g.fillStyle = '#151B38';
-        g.fillRect(24, 14, 16, 18);                 // hoofd
-        g.fillRect(14, 34, 36, 30);                 // torso
-        g.fillRect(20, 30, 24, 6);                  // schouderlijn
+        g.fillRect(36, 21, 24, 27);                 // hoofd
+        g.fillRect(21, 51, 54, 45);                 // torso
+        g.fillRect(30, 45, 36, 9);                  // schouderlijn
         // shirt-wig in oranje
         g.fillStyle = '#F1942D';
-        for (let i = 0; i < 12; i++) g.fillRect(32 - i, 40 + i, 2 + i * 2, 2);
+        for (let i = 0; i < 18; i++) g.fillRect(48 - i, 60 + i, 2 + i * 2, 2);
+        // schaal 2 en vanaf de onderkand terugrekenen: op schaal 3 viel het
+        // nummer buiten het 120px hoge portret.
         const n = FONT.make(String(number == null ? '?' : number), 2, '#FFC873', '#080A16');
-        g.drawImage(n, Math.round((W - n.width / 1) / 2), 64);
+        g.drawImage(n, Math.round((W - n.width) / 2), H - n.height - 6);
         return cv;
     }
 
@@ -699,10 +726,13 @@ async function loadStand() {
 async function loadNews() {
     const html = await fetchWithFallback(NIEUWS_HOME);
     const doc = new DOMParser().parseFromString(html, 'text/html');
+    // De koppen staan in h3's; de nieuws-ankers zelf zijn lege spans, dus
+    // op ankertekst filteren leverde nul berichten op.
     const seen = new Set(), out = [];
-    doc.querySelectorAll('a[href*="/nieuws"], article a[href]').forEach(a => {
-        const t = (a.textContent || '').trim().replace(/\s+/g, ' ');
-        if (t.length < 18 || t.length > 130 || seen.has(t)) return;
+    const SKIP = /^(nieuwsarchief|voetbal academie|zakelijk netwerk|maatschappelijk)$/i;
+    doc.querySelectorAll('h3, h1.index_title').forEach(h => {
+        const t = (h.textContent || '').trim().replace(/\s+/g, ' ');
+        if (t.length < 10 || t.length > 130 || seen.has(t) || SKIP.test(t)) return;
         seen.add(t); out.push({ title: t });
     });
     DB.news = out.slice(0, 10);
