@@ -20,109 +20,212 @@
    "number": 1,
    "name": "Nick Frits",
    "nationality": "NL",
-   "photo": null
+   "photo": null,
+   "positie": "Goalkeeper",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "VV Dongen"
   },
   {
    "number": 2,
    "name": "Amir Limouri",
    "nationality": "MA",
-   "photo": null
+   "photo": null,
+   "positie": "Defender",
+   "leeftijd": 21,
+   "nationaliteiten": [
+    "Netherlands",
+    "Morocco"
+   ],
+   "vorige_club": "SC Feyenoord Rotterdam"
   },
   {
    "number": 3,
    "name": "Daan van Reeuwijk",
    "nationality": "NL",
-   "photo": "players/daan-van-reeuwijk.jpg"
+   "photo": "players/daan-van-reeuwijk.jpg",
+   "positie": "Centre-Back",
+   "leeftijd": 19,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 4,
    "name": "Lloyd Boomaars",
    "nationality": "NL",
-   "photo": null
+   "photo": null,
+   "positie": "Centre-Back",
+   "leeftijd": 22,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 5,
    "name": "Jordi Ewanena",
    "nationality": "BE",
-   "photo": "players/jordi-ewanena.jpg"
+   "photo": "players/jordi-ewanena.jpg",
+   "positie": "Left-Back",
+   "leeftijd": 30,
+   "nationaliteiten": [
+    "Belgium",
+    "Ghana"
+   ]
   },
   {
    "number": 6,
    "name": "Wesley Spieringhs",
    "nationality": "NL",
-   "photo": "players/wesley-spieringhs.jpg"
+   "photo": "players/wesley-spieringhs.jpg",
+   "positie": "Central Midfield",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 7,
    "name": "Lloyd Hendriks",
    "nationality": "NL",
-   "photo": "players/lloyd-hendriks.jpg"
+   "photo": "players/lloyd-hendriks.jpg",
+   "positie": "Right Winger",
+   "leeftijd": 22,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "VV Smitshoek"
   },
   {
    "number": 8,
    "name": "Marwin Reuvers",
    "nationality": "NL",
-   "photo": "players/marwin-reuvers.jpg"
+   "photo": "players/marwin-reuvers.jpg",
+   "positie": "Central Midfield",
+   "leeftijd": 27,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 9,
    "name": "Jens Verschuren",
    "nationality": "NL",
-   "photo": "players/jens-verschuren.jpg"
+   "photo": "players/jens-verschuren.jpg",
+   "positie": "Attacking Midfield",
+   "leeftijd": 25,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 10,
    "name": "Desley Ubbink",
    "nationality": "NL",
-   "photo": "players/desley-ubbink.jpg"
+   "photo": "players/desley-ubbink.jpg",
+   "positie": "Attacking Midfield",
+   "leeftijd": 33,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 11,
    "name": "Akram Tourki",
    "nationality": "MA",
-   "photo": "players/akram-tourki.jpg"
+   "photo": "players/akram-tourki.jpg",
+   "positie": "Attacking Midfield",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Belgium",
+    "Morocco"
+   ],
+   "vorige_club": "K. Lyra-Lierse"
   },
   {
    "number": 12,
    "name": "Jelte Pal",
    "nationality": "NL",
-   "photo": "players/jelte-pal.jpg"
+   "photo": "players/jelte-pal.jpg",
+   "positie": "Centre-Forward",
+   "leeftijd": 23,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 14,
    "name": "Oussama Bouyaghlafen",
    "nationality": "NL",
-   "photo": "players/oussama-bouyaghlafen.jpg"
+   "photo": "players/oussama-bouyaghlafen.jpg",
+   "positie": "Left Winger",
+   "leeftijd": 28,
+   "nationaliteiten": [
+    "Netherlands",
+    "Morocco"
+   ],
+   "vorige_club": "Kozakken Boys"
   },
   {
    "number": 15,
    "name": "Daniel Alexandrov",
    "nationality": "NL",
-   "photo": null
+   "photo": null,
+   "positie": "Striker",
+   "leeftijd": 20,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "RBC Roosendaal II"
   },
   {
    "number": 16,
    "name": "Timo Townsend",
    "nationality": "NL",
-   "photo": "players/timo-townsend.jpg"
+   "photo": "players/timo-townsend.jpg",
+   "positie": "Left-Back",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "VV Baronie"
   },
   {
    "number": 17,
    "name": "Bruno Hiensch",
    "nationality": "NL",
-   "photo": null
+   "photo": null,
+   "positie": "Midfielder",
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "NAC Breda U19"
   },
   {
    "number": 18,
    "name": "Jesper Troost",
    "nationality": "NL",
-   "photo": "players/jesper-troost.jpg"
+   "photo": "players/jesper-troost.jpg",
+   "positie": "Midfielder",
+   "leeftijd": 21,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "VV Smitshoek"
   },
   {
    "number": 19,
    "name": "Timo Regouin",
    "nationality": "NL",
-   "photo": null
+   "photo": null,
+   "positie": "Right Winger",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Netherlands"
+   ],
+   "vorige_club": "Hoogstraten VV"
   },
   {
    "number": 20,
@@ -134,27 +237,52 @@
    "number": 21,
    "name": "Wai Ming Yu",
    "nationality": "NL",
-   "photo": "players/wai-ming-yu.jpg"
+   "photo": "players/wai-ming-yu.jpg",
+   "positie": "Goalkeeper",
+   "leeftijd": 19,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 22,
    "name": "Gláucio Ventura Tiago",
    "nationality": "AO",
-   "photo": "players/glaucio-ventura-tiago.jpg"
+   "photo": "players/glaucio-ventura-tiago.jpg",
+   "positie": "Centre-Back",
+   "leeftijd": 24,
+   "nationaliteiten": [
+    "Netherlands"
+   ]
   },
   {
    "number": 23,
    "name": "Irdjoailly Emelina",
    "nationality": "CW",
-   "photo": null
+   "photo": null,
+   "positie": "Goalkeeper",
+   "leeftijd": 19,
+   "nationaliteiten": [
+    "Curacao",
+    "Netherlands"
+   ],
+   "vorige_club": "RVVH Ridderkerk U19"
   },
   {
    "number": 24,
    "name": "Leonardo Rocha de Almeida",
    "nationality": "CV",
-   "photo": "players/leonardo-rocha-de-almeida.jpg"
+   "photo": "players/leonardo-rocha-de-almeida.jpg",
+   "positie": "Right-Back",
+   "leeftijd": 23,
+   "nationaliteiten": [
+    "Netherlands",
+    "Cape Verde"
+   ]
   }
  ],
+ "squad_bijgewerkt": "2026-08-09",
+ "squad_bron": "Transfermarkt",
  "photos": {
   "Daan van Reeuwijk": "players/daan-van-reeuwijk.jpg",
   "Jordi Ewanena": "players/jordi-ewanena.jpg",
@@ -190,6 +318,5 @@
   "Wai Ming Yu": "rbc-library",
   "Gláucio Ventura Tiago": "rbc-library",
   "Leonardo Rocha de Almeida": "rbc-library"
- },
- "squad_bijgewerkt": "2026-07-26"
+ }
 }

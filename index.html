@@ -38,10 +38,28 @@ body {
     padding: 0 1rem 4rem;
 }
 
+/* ── taalkeuze ─────────────────────────────────────────── */
+.talen {
+    display: flex; justify-content: flex-end; gap: 0.4rem;
+    padding-top: 0.7rem;
+}
+.talen button {
+    font: inherit; font-size: 0.95rem; font-weight: 700;
+    padding: 0.5rem 0.7rem;
+    min-height: 2.8rem;
+    background: #fff; color: #000;
+    border: 2px solid var(--lijn);
+    border-radius: 0.35rem;
+    cursor: pointer;
+    line-height: 1;
+}
+.talen button[aria-pressed="true"] { border-color: #000; }
+.talen .vlag { font-size: 1.15rem; margin-right: 0.3rem; }
+
 /* ── kop ───────────────────────────────────────────────── */
 header {
     display: flex; align-items: center; gap: 0.9rem;
-    padding: 1.4rem 0 0.9rem;
+    padding: 0.6rem 0 0.9rem;
 }
 /* Aparte kleine versie van het logo: het origineel is 267 kB en de
    hele pagina weegt minder dan een tiende daarvan. */
@@ -74,7 +92,6 @@ nav a {
     display: flex; align-items: center; justify-content: center;
 }
 @media (min-width: 560px) { nav { grid-template-columns: repeat(4, 1fr); } }
-nav a:active { background: #000; color: #fff; }
 
 h2 {
     font-size: 1.3rem;
@@ -84,7 +101,7 @@ h2 {
 }
 section:first-of-type h2 { margin-top: 0; }
 
-/* ── wedstrijd / stand van zaken ───────────────────────── */
+/* ── wedstrijd ─────────────────────────────────────────── */
 .wedstrijd { font-size: 1.15rem; }
 .wedstrijd strong { font-size: 1.25rem; }
 .score {
@@ -126,6 +143,14 @@ label.zoek-label {
     line-height: 1.25;
 }
 #gevonden .leeg { font-size: 1rem; font-weight: 400; color: var(--grijs); }
+#gevonden .details {
+    display: block;
+    font-size: 0.95rem; font-weight: 400; line-height: 1.45;
+    color: var(--grijs); margin-top: 0.3rem;
+}
+#gevonden .details .van { color: #000; }
+/* rijen in de lijst zijn aan te tikken: niet iedereen typt */
+ul.spelers li { cursor: pointer; }
 
 /* ── spelerslijst ──────────────────────────────────────── */
 ul.spelers { list-style: none; }
@@ -170,7 +195,25 @@ ul.programma .duel { font-size: 1.1rem; }
 ul.programma li.rbc .duel { font-weight: 700; }
 
 /* ── doorsturen naar wie niet mee kon ──────────────────── */
-.deel { margin-top: 1.1rem; }
+.deel { margin-top: 1.2rem; }
+.deel .uitleg { font-size: 0.9rem; color: var(--grijs); margin-bottom: 0.6rem; }
+.deel-score {
+    display: grid; grid-template-columns: 1fr auto 1fr;
+    align-items: end; gap: 0.6rem;
+    margin-bottom: 0.7rem;
+}
+.deel-score .team {
+    display: block; font-size: 0.85rem; font-weight: 700;
+    margin-bottom: 0.25rem;
+    overflow-wrap: anywhere;
+}
+.deel-score input {
+    width: 100%; font: inherit; font-size: 1.9rem; font-weight: 700;
+    text-align: center; padding: 0.35rem;
+    border: 2px solid #000; border-radius: 0.4rem;
+    background: #fff; color: #000;
+}
+.deel-score .streep { font-size: 1.5rem; font-weight: 700; padding-bottom: 0.5rem; }
 .deel select, .deel button {
     width: 100%; font: inherit; font-size: 1.05rem;
     padding: 0.7rem; border: 2px solid #000; border-radius: 0.4rem;
@@ -179,7 +222,6 @@ ul.programma li.rbc .duel { font-weight: 700; }
 .deel select { margin-bottom: 0.6rem; }
 .deel button { font-weight: 700; background: #000; color: #fff; cursor: pointer; }
 .deel button:active { background: #444; }
-.deel .uitleg { font-size: 0.85rem; color: var(--grijs); margin-bottom: 0.45rem; }
 
 .wacht { color: var(--grijs); }
 .bron { font-size: 0.8rem; color: var(--grijs); margin-top: 0.6rem; }
@@ -200,76 +242,182 @@ footer a { color: #000; padding: 0.4rem 0; }
 </head>
 <body>
 
+<div class="talen">
+    <button type="button" id="taal-nl" aria-pressed="true"><span class="vlag">🇳🇱</span>NL</button>
+    <button type="button" id="taal-en" aria-pressed="false"><span class="vlag">🇬🇧</span>EN</button>
+</div>
+
 <header>
-    <img src="/rbc-klein.png" alt="Clublogo RBC Roosendaal" width="143" height="192">
+    <img src="/rbc-klein.png" alt="RBC Roosendaal" width="143" height="192">
     <div>
         <h1>RBC Roosendaal</h1>
-        <p>Derde Divisie B &middot; 2026/2027</p>
+        <p data-t="ondertitel"></p>
     </div>
 </header>
 
 <nav>
-    <a href="#spelers">Spelers</a>
-    <a href="#stand">Stand</a>
-    <a href="#uitslagen">Uitslagen</a>
-    <a href="#programma">Programma</a>
+    <a href="#spelers" data-t="nav_spelers"></a>
+    <a href="#stand" data-t="nav_stand"></a>
+    <a href="#uitslagen" data-t="nav_uitslagen"></a>
+    <a href="#programma" data-t="nav_programma"></a>
 </nav>
 
 <section id="wedstrijd">
-    <h2>Wedstrijd</h2>
-    <div id="wedstrijd-inhoud"><p class="wacht">Laden&hellip;</p></div>
+    <h2 data-t="kop_wedstrijd"></h2>
+    <div id="wedstrijd-inhoud"><p class="wacht" data-t="laden"></p></div>
     <div class="deel" id="deel"></div>
 </section>
 
 <section id="spelers">
-    <h2>Welke speler is dit?</h2>
+    <h2 data-t="kop_spelers"></h2>
     <div class="zoek">
-        <label class="zoek-label" for="nummer">Tik het rugnummer in</label>
+        <label class="zoek-label" for="nummer" data-t="tik_nummer"></label>
         <input id="nummer" type="text" inputmode="numeric" pattern="[0-9]*"
                maxlength="2" autocomplete="off" placeholder="14"
                aria-describedby="gevonden">
-        <div id="gevonden" role="status" aria-live="polite">
-            <span class="leeg">Of zoek het nummer op in de lijst hieronder.</span>
-        </div>
+        <div id="gevonden" role="status" aria-live="polite"></div>
     </div>
-    <ul class="spelers" id="spelerslijst"><li class="wacht">Laden&hellip;</li></ul>
+    <ul class="spelers" id="spelerslijst"><li class="wacht" data-t="laden"></li></ul>
     <p class="bron" id="selectie-datum"></p>
 </section>
 
 <section id="stand">
-    <h2>Stand</h2>
-    <div id="stand-inhoud"><p class="wacht">Laden&hellip;</p></div>
+    <h2 data-t="kop_stand"></h2>
+    <div id="stand-inhoud"><p class="wacht" data-t="laden"></p></div>
 </section>
 
 <section id="uitslagen">
-    <h2>Uitslagen</h2>
-    <div id="uitslagen-inhoud"><p class="wacht">Laden&hellip;</p></div>
+    <h2 data-t="kop_uitslagen"></h2>
+    <div id="uitslagen-inhoud"><p class="wacht" data-t="laden"></p></div>
 </section>
 
 <section id="programma">
-    <h2>Programma</h2>
-    <div id="programma-inhoud"><p class="wacht">Laden&hellip;</p></div>
+    <h2 data-t="kop_programma"></h2>
+    <div id="programma-inhoud"><p class="wacht" data-t="laden"></p></div>
 </section>
 
 <footer>
-    <a href="/klassiek.html">Uitgebreide site</a>
+    <a href="/klassiek.html" data-t="voet_uitgebreid"></a>
     <a href="/teletekst.html">Teletekst</a>
     <a href="/snes.html">16-bit</a>
 </footer>
 
 <script>
-/* ── bronnen: dezelfde als voorheen ─────────────────────── */
+/* ════════════════════════════════════════════════════════
+   TAAL
+   ════════════════════════════════════════════════════════ */
+const TEKST = {
+    nl: {
+        ondertitel: 'Derde Divisie B · 2026/2027',
+        nav_spelers: 'Spelers', nav_stand: 'Stand',
+        nav_uitslagen: 'Uitslagen', nav_programma: 'Programma',
+        kop_wedstrijd: 'Wedstrijd', kop_spelers: 'Welke speler is dit?',
+        kop_stand: 'Stand', kop_uitslagen: 'Uitslagen', kop_programma: 'Programma',
+        laden: 'Laden…',
+        tik_nummer: 'Tik het rugnummer in',
+        zoek_hint: 'Of zoek het nummer op in de lijst hieronder.',
+        niet_gevonden: n => 'Nummer ' + n + ' staat niet in de selectie.',
+        nummers_bijgewerkt: d => 'Rugnummers bijgewerkt op ' + d + '.',
+        nu_bezig: 'NU BEZIG',
+        geen_wedstrijd: 'Nog geen wedstrijd bekend.',
+        deel_uitleg: 'Stuur de stand door aan wie er niet bij is.',
+        wie_scoorde: 'Wie scoorde? (niet verplicht)',
+        deel_knop: 'Stuur de stand door',
+        doelpunt: 'Doelpunt',
+        th_club: 'Club', th_wed: 'Wed', th_ptn: 'Ptn',
+        bron_nos: 'Bron: NOS Teletekst 835 · ververst elke 30 seconden',
+        bron_nos_kort: 'Bron: NOS Teletekst 835',
+        geen_uitslagen: 'Nu geen uitslagen.',
+        geen_duels: 'Geen wedstrijden gevonden.',
+        stuk: w => w + ' is nu niet op te halen.',
+        w_stand: 'De stand', w_programma: 'Het programma',
+        w_uitslagen: 'De uitslagen', w_selectie: 'De selectie',
+        w_wedstrijd: 'De wedstrijd',
+        voet_uitgebreid: 'Uitgebreide site',
+        jaar: 'jaar', eerder_bij: 'Kwam van',
+        posities: {
+            'Goalkeeper':'Keeper', 'Defender':'Verdediger',
+            'Centre-Back':'Centrale verdediger', 'Left-Back':'Linksback',
+            'Right-Back':'Rechtsback', 'Midfielder':'Middenvelder',
+            'Central Midfield':'Centrale middenvelder',
+            'Attacking Midfield':'Aanvallende middenvelder',
+            'Left Winger':'Linksbuiten', 'Right Winger':'Rechtsbuiten',
+            'Centre-Forward':'Spits', 'Striker':'Spits'
+        },
+        landen: {
+            'Netherlands':'Nederland', 'Morocco':'Marokko', 'Belgium':'België',
+            'Ghana':'Ghana', 'Curacao':'Curaçao', 'Cape Verde':'Kaapverdië'
+        },
+        maanden: ['januari','februari','maart','april','mei','juni','juli',
+                  'augustus','september','oktober','november','december']
+    },
+    en: {
+        ondertitel: 'Dutch Third Division B · 2026/2027',
+        nav_spelers: 'Players', nav_stand: 'Table',
+        nav_uitslagen: 'Results', nav_programma: 'Fixtures',
+        kop_wedstrijd: 'Match', kop_spelers: 'Which player is this?',
+        kop_stand: 'Table', kop_uitslagen: 'Results', kop_programma: 'Fixtures',
+        laden: 'Loading…',
+        tik_nummer: 'Enter the shirt number',
+        zoek_hint: 'Or find the number in the list below.',
+        niet_gevonden: n => 'Number ' + n + ' is not in the squad.',
+        nummers_bijgewerkt: d => 'Shirt numbers updated on ' + d + '.',
+        nu_bezig: 'LIVE',
+        geen_wedstrijd: 'No match scheduled yet.',
+        deel_uitleg: 'Send the score to someone who could not make it.',
+        wie_scoorde: 'Who scored? (optional)',
+        deel_knop: 'Send the score',
+        doelpunt: 'Goal',
+        th_club: 'Club', th_wed: 'P', th_ptn: 'Pts',
+        bron_nos: 'Source: NOS Teletekst 835 · updates every 30 seconds',
+        bron_nos_kort: 'Source: NOS Teletekst 835',
+        geen_uitslagen: 'No results right now.',
+        geen_duels: 'No matches found.',
+        stuk: w => w + ' could not be loaded right now.',
+        w_stand: 'The table', w_programma: 'The fixtures',
+        w_uitslagen: 'The results', w_selectie: 'The squad',
+        w_wedstrijd: 'The match',
+        voet_uitgebreid: 'Full site',
+        jaar: 'years old', eerder_bij: 'Joined from',
+        posities: {},
+        landen: {},
+        maanden: ['January','February','March','April','May','June','July',
+                  'August','September','October','November','December']
+    }
+};
+let TAAL = 'nl';
+try { const v = localStorage.getItem('rbc-taal'); if (v === 'en' || v === 'nl') TAAL = v; } catch (e) {}
+const t = k => TEKST[TAAL][k];
+
+function zetTaal(nieuw) {
+    TAAL = nieuw;
+    try { localStorage.setItem('rbc-taal', nieuw); } catch (e) {}
+    document.documentElement.lang = nieuw;
+    document.getElementById('taal-nl').setAttribute('aria-pressed', String(nieuw === 'nl'));
+    document.getElementById('taal-en').setAttribute('aria-pressed', String(nieuw === 'en'));
+    document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
+    tekenAlles();
+}
+document.getElementById('taal-nl').addEventListener('click', () => zetTaal('nl'));
+document.getElementById('taal-en').addEventListener('click', () => zetTaal('en'));
+
+/* ════════════════════════════════════════════════════════
+   BRONNEN
+   ════════════════════════════════════════════════════════ */
 const SEASON = '2026-2027';
 const PROXIES = [
     'https://api.allorigins.win/raw?url=',
     'https://api.codetabs.com/v1/proxy?quest=',
     'https://api.cors.lol/?url='
 ];
-const STAND_URL = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/`;
+const STAND_URL = 'https://www.hollandsevelden.nl/competities/' + SEASON + '/landelijk/derde-divisie-b/';
 const PROGRAMMA_URL = STAND_URL + 'programma/';
 const NOS_URL = 'https://nos.nl/teletekst/835';
 
-let SQUAD = [];
+/* Alles wat binnenkomt blijft bewaard, zodat een taalwissel
+   opnieuw kan tekenen zonder de bronnen nog eens te bevragen. */
+const D = { squad: [], bijgewerkt: null, volgende: null, live: null,
+            stand: null, programma: null, uitslagen: null, fout: {} };
 
 async function haal(url) {
     for (const p of PROXIES) {
@@ -282,7 +430,6 @@ async function haal(url) {
 }
 const dom = h => new DOMParser().parseFromString(h, 'text/html');
 const zet = (id, html) => { document.getElementById(id).innerHTML = html; };
-const stuk = (id, wat) => zet(id, `<p class="wacht">${wat} is nu niet op te halen.</p>`);
 const veilig = s => String(s == null ? '' : s)
     .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const isRBC = n => /^rbc\b/i.test(String(n || '').trim());
@@ -292,11 +439,39 @@ const isRBC = n => /^rbc\b/i.test(String(n || '').trim());
    De ploeg is flink gewijzigd, dus op de tribune is dit de
    eerste vraag: wie is nummer zoveel?
    ════════════════════════════════════════════════════════ */
-function toonSpelers() {
-    zet('spelerslijst', SQUAD.map(p =>
-        `<li data-nr="${veilig(p.number)}">` +
-        `<span class="rug">${veilig(p.number)}</span>` +
-        `<span class="naam">${veilig(p.name)}</span></li>`).join(''));
+function tekenSpelers() {
+    const datumEl = document.getElementById('selectie-datum');
+    if (D.fout.squad) {
+        zet('spelerslijst', '<li class="wacht">' + veilig(t('stuk')(t('w_selectie'))) + '</li>');
+        datumEl.textContent = '';
+        return;
+    }
+    if (!D.squad.length) {
+        zet('spelerslijst', '<li class="wacht">' + t('laden') + '</li>');
+        return;
+    }
+    zet('spelerslijst', D.squad.map(function (p) {
+        return '<li data-nr="' + veilig(p.number) + '">' +
+               '<span class="rug">' + veilig(p.number) + '</span>' +
+               '<span class="naam">' + veilig(p.name) + '</span></li>';
+    }).join(''));
+
+    document.querySelectorAll('#spelerslijst li[data-nr]').forEach(function (li) {
+        li.addEventListener('click', function () {
+            document.getElementById('nummer').value = li.dataset.nr;
+            zoek();
+            document.getElementById('gevonden').scrollIntoView({ block: 'center' });
+        });
+    });
+
+    if (D.bijgewerkt) {
+        const d = new Date(D.bijgewerkt + 'T00:00:00');
+        const datum = TAAL === 'nl'
+            ? d.getDate() + ' ' + t('maanden')[d.getMonth()] + ' ' + d.getFullYear()
+            : t('maanden')[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+        datumEl.textContent = t('nummers_bijgewerkt')(datum);
+    } else { datumEl.textContent = ''; }
+    zoek();
 }
 
 function zoek() {
@@ -305,87 +480,118 @@ function zoek() {
     veld.value = nr;
     const uit = document.getElementById('gevonden');
 
-    document.querySelectorAll('#spelerslijst li').forEach(li => li.classList.remove('raak'));
+    document.querySelectorAll('#spelerslijst li').forEach(function (li) { li.classList.remove('raak'); });
 
-    if (!nr) {
-        uit.innerHTML = '<span class="leeg">Of zoek het nummer op in de lijst hieronder.</span>';
-        return;
-    }
-    const speler = SQUAD.find(p => String(p.number) === String(+nr));
+    if (!nr) { uit.innerHTML = '<span class="leeg">' + veilig(t('zoek_hint')) + '</span>'; return; }
+    const speler = D.squad.find(function (p) { return String(p.number) === String(+nr); });
     if (!speler) {
-        uit.innerHTML = `<span class="leeg">Nummer ${veilig(nr)} staat niet in de selectie.</span>`;
+        uit.innerHTML = '<span class="leeg">' + veilig(t('niet_gevonden')(nr)) + '</span>';
         return;
     }
-    uit.textContent = speler.name;
-    const li = document.querySelector(`#spelerslijst li[data-nr="${speler.number}"]`);
+    // naam groot, daaronder wat we van deze speler weten
+    const posities = t('posities'), landen = t('landen');
+    const regel = [];
+    if (speler.positie) regel.push(posities[speler.positie] || speler.positie);
+    if (speler.leeftijd) regel.push(speler.leeftijd + ' ' + t('jaar'));
+    if (speler.nationaliteiten && speler.nationaliteiten.length) {
+        regel.push(speler.nationaliteiten.map(function (n) { return landen[n] || n; }).join('/'));
+    }
+    let details = regel.length ? veilig(regel.join(' · ')) : '';
+    if (speler.vorige_club) {
+        details += (details ? '<br>' : '') +
+                   veilig(t('eerder_bij')) + ' <span class="van">' + veilig(speler.vorige_club) + '</span>';
+    }
+    uit.innerHTML = veilig(speler.name) + (details ? '<span class="details">' + details + '</span>' : '');
+
+    const li = document.querySelector('#spelerslijst li[data-nr="' + speler.number + '"]');
     if (li) li.classList.add('raak');
 }
 document.getElementById('nummer').addEventListener('input', zoek);
 
 /* ════════════════════════════════════════════════════════
-   WEDSTRIJD + LIVE STAND
+   WEDSTRIJD
    ════════════════════════════════════════════════════════ */
-let volgende = null;
-
-function toonWedstrijd(live) {
-    LIVE = live || null;
-    if (live) {
+function tekenWedstrijd() {
+    if (D.live) {
         zet('wedstrijd-inhoud',
-            `<span class="live">NU BEZIG</span>` +
-            `<div class="wedstrijd"><strong>${veilig(live.home)}</strong> &ndash; <strong>${veilig(live.away)}</strong></div>` +
-            `<div class="score">${live.homeScore} &ndash; ${live.awayScore}</div>` +
-            `<p class="bron">Bron: NOS Teletekst 835</p>`);
-        toonDelen();
-        return;
-    }
-    if (volgende && volgende.home_team) {
+            '<span class="live">' + veilig(t('nu_bezig')) + '</span>' +
+            '<div class="wedstrijd"><strong>' + veilig(D.live.home) + '</strong> &ndash; <strong>' +
+            veilig(D.live.away) + '</strong></div>' +
+            '<div class="score">' + D.live.homeScore + ' &ndash; ' + D.live.awayScore + '</div>' +
+            '<p class="bron">' + veilig(t('bron_nos_kort')) + '</p>');
+    } else if (D.volgende && D.volgende.home_team) {
         zet('wedstrijd-inhoud',
-            `<div class="wedstrijd"><strong>${veilig(volgende.home_team)}</strong> &ndash; ` +
-            `<strong>${veilig(volgende.away_team)}</strong></div>` +
-            `<p>${veilig(volgende.status || '')}</p>`);
+            '<div class="wedstrijd"><strong>' + veilig(D.volgende.home_team) + '</strong> &ndash; <strong>' +
+            veilig(D.volgende.away_team) + '</strong></div>' +
+            '<p>' + veilig(D.volgende.status || '') + '</p>');
+    } else if (D.fout.lokaal) {
+        zet('wedstrijd-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_wedstrijd'))) + '</p>');
     } else {
-        zet('wedstrijd-inhoud', '<p class="wacht">Nog geen wedstrijd bekend.</p>');
+        zet('wedstrijd-inhoud', '<p class="wacht">' + veilig(t('geen_wedstrijd')) + '</p>');
     }
-    toonDelen();
+    tekenDelen();
 }
 
 /* ════════════════════════════════════════════════════════
    DOORSTUREN
-   Op de tribune appen supporters de stand door aan wie niet
-   mee kon, en zetten er de doelpuntenmaker bij als ze die
-   weten. Daarom een knop die de tekst al klaarzet, met de
-   selectie als keuzelijst voor de naam.
+   Supporters appen de stand naar wie niet mee kon en zetten
+   de doelpuntenmaker erbij. Dat moet op elk moment kunnen,
+   ook zonder live wedstrijd: de stand is met de hand in te
+   vullen en de selectie staat altijd als keuzelijst klaar.
    ════════════════════════════════════════════════════════ */
-let LIVE = null;
-
-function toonDelen() {
+function tekenDelen() {
     const el = document.getElementById('deel');
-    if (!LIVE && !volgende) { el.innerHTML = ''; return; }
+    const thuis = D.live ? D.live.home : (D.volgende && D.volgende.home_team) || 'RBC';
+    const uitTeam = D.live ? D.live.away : (D.volgende && D.volgende.away_team) || '';
 
-    const opties = SQUAD.map(p =>
-        `<option value="${veilig(p.name)}">${veilig(p.number)} &ndash; ${veilig(p.name)}</option>`).join('');
+    // Wat de supporter al had ingevuld blijft staan bij hertekenen
+    // (taalwissel, nieuwe uitslag binnen).
+    const oudT = document.getElementById('score-thuis');
+    const oudU = document.getElementById('score-uit');
+    const oudS = document.getElementById('scorer');
+    const vT = oudT ? oudT.value : (D.live ? String(D.live.homeScore) : '0');
+    const vU = oudU ? oudU.value : (D.live ? String(D.live.awayScore) : '0');
+    const vS = oudS ? oudS.value : '';
+
+    const opties = D.squad.map(function (p) {
+        return '<option value="' + veilig(p.name) + '"' + (p.name === vS ? ' selected' : '') + '>' +
+               veilig(p.number) + ' &ndash; ' + veilig(p.name) + '</option>';
+    }).join('');
 
     el.innerHTML =
-        `<p class="uitleg">Stuur de stand door aan wie er niet bij is.</p>` +
-        (LIVE && SQUAD.length
-            ? `<select id="scorer" aria-label="Wie scoorde? Niet verplicht">
-                   <option value="">Wie scoorde? (niet verplicht)</option>${opties}
-               </select>`
+        '<p class="uitleg">' + veilig(t('deel_uitleg')) + '</p>' +
+        '<div class="deel-score">' +
+            '<div><span class="team">' + veilig(thuis) + '</span>' +
+            '<input id="score-thuis" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="' +
+            veilig(vT) + '" aria-label="' + veilig(thuis) + '"></div>' +
+            '<span class="streep">&ndash;</span>' +
+            '<div><span class="team">' + veilig(uitTeam) + '</span>' +
+            '<input id="score-uit" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="' +
+            veilig(vU) + '" aria-label="' + veilig(uitTeam) + '"></div>' +
+        '</div>' +
+        (D.squad.length
+            ? '<select id="scorer" aria-label="' + veilig(t('wie_scoorde')) + '">' +
+              '<option value="">' + veilig(t('wie_scoorde')) + '</option>' + opties + '</select>'
             : '') +
-        `<button type="button" id="deelknop">Stuur de stand door</button>`;
+        '<button type="button" id="deelknop">' + veilig(t('deel_knop')) + '</button>';
 
+    ['score-thuis', 'score-uit'].forEach(function (id) {
+        const i = document.getElementById(id);
+        i.addEventListener('input', function () { i.value = i.value.replace(/\D/g, ''); });
+    });
     document.getElementById('deelknop').addEventListener('click', deel);
 }
 
 function deelTekst() {
+    const thuis = D.live ? D.live.home : (D.volgende && D.volgende.home_team) || 'RBC';
+    const uitTeam = D.live ? D.live.away : (D.volgende && D.volgende.away_team) || '';
+    const a = (document.getElementById('score-thuis') || {}).value || '0';
+    const b = (document.getElementById('score-uit') || {}).value || '0';
     const sel = document.getElementById('scorer');
     const naam = sel ? sel.value : '';
-    if (LIVE) {
-        let t = `${LIVE.home} ${LIVE.homeScore}-${LIVE.awayScore} ${LIVE.away}`;
-        if (naam) t += `\nDoelpunt: ${naam}`;
-        return t + `\nrbcroosendaal.com`;
-    }
-    return `${volgende.home_team} - ${volgende.away_team}\n${volgende.status || ''}\nrbcroosendaal.com`;
+    let tekst = (thuis + ' ' + a + '-' + b + ' ' + uitTeam).trim();
+    if (naam) tekst += '\n' + t('doelpunt') + ': ' + naam;
+    return tekst + '\nrbcroosendaal.com';
 }
 
 async function deel() {
@@ -393,13 +599,15 @@ async function deel() {
     // Het deelvenster van de telefoon zelf: dan kan het naar
     // WhatsApp, sms of wat de supporter ook gebruikt.
     if (navigator.share) {
-        try { await navigator.share({ text: tekst }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+        try { await navigator.share({ text: tekst }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
     }
     window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
 }
 
-/* NOS Teletekst levert de regels als gekleurde stukjes:
-   geel = clubnaam, groen = doelpunten. */
+/* ════════════════════════════════════════════════════════
+   UITSLAGEN — NOS Teletekst 835
+   ════════════════════════════════════════════════════════ */
 function leesNOS(html) {
     const eindTag = '<' + '/script>';
     const m = html.match(new RegExp('__NEXT_DATA__[^{]*(\\{[\\s\\S]*?\\})\\s*' + eindTag));
@@ -410,7 +618,7 @@ function leesNOS(html) {
     if (!inhoud) return null;
 
     const uit = [];
-    inhoud.split('\n').forEach(regel => {
+    inhoud.split('\n').forEach(function (regel) {
         const delen = [];
         const re = /<span class="(yellow|green)\s*">\s*(.*?)<\/span>/g;
         let s;
@@ -420,7 +628,7 @@ function leesNOS(html) {
         for (let i = 0; i <= delen.length - 4; i++) {
             if (delen[i].k === 'yellow' && delen[i+1].k === 'green' &&
                 delen[i+2].k === 'yellow' && delen[i+3].k === 'green') {
-                const [h, hs, a, as] = [delen[i].t, delen[i+1].t, delen[i+2].t, delen[i+3].t];
+                const h = delen[i].t, hs = delen[i+1].t, a = delen[i+2].t, as = delen[i+3].t;
                 if (h && a && /^\d+$/.test(hs) && /^\d+$/.test(as)) {
                     uit.push({ home: h, away: a, homeScore: +hs, awayScore: +as });
                 }
@@ -430,135 +638,164 @@ function leesNOS(html) {
     return uit.length ? uit : null;
 }
 
-async function uitslagen() {
-    const html = await haal(NOS_URL);
-    const lijst = leesNOS(html);
-    if (!lijst) { zet('uitslagen-inhoud', '<p class="wacht">Nu geen uitslagen.</p>'); return; }
-
-    const eigen = lijst.find(w => isRBC(w.home) || isRBC(w.away));
-    if (eigen) toonWedstrijd(eigen);
-
+function tekenUitslagen() {
+    if (D.fout.uitslagen) {
+        zet('uitslagen-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_uitslagen'))) + '</p>');
+        return;
+    }
+    if (!D.uitslagen) {
+        zet('uitslagen-inhoud', '<p class="wacht">' + veilig(t('geen_uitslagen')) + '</p>');
+        return;
+    }
     zet('uitslagen-inhoud',
-        '<ul class="uitslagen">' + lijst.map(w => {
+        '<ul class="uitslagen">' + D.uitslagen.map(function (w) {
             const mij = isRBC(w.home) || isRBC(w.away);
-            return `<li${mij ? ' class="rbc"' : ''}>` +
-                   `<span>${veilig(w.home)} &ndash; ${veilig(w.away)}</span>` +
-                   `<span class="uitslag">${w.homeScore}&ndash;${w.awayScore}</span></li>`;
+            return '<li' + (mij ? ' class="rbc"' : '') + '>' +
+                   '<span>' + veilig(w.home) + ' &ndash; ' + veilig(w.away) + '</span>' +
+                   '<span class="uitslag">' + w.homeScore + '&ndash;' + w.awayScore + '</span></li>';
         }).join('') + '</ul>' +
-        '<p class="bron">Bron: NOS Teletekst 835 &middot; ververst elke 30 seconden</p>');
+        '<p class="bron">' + veilig(t('bron_nos')) + '</p>');
+}
+
+async function uitslagen() {
+    const lijst = leesNOS(await haal(NOS_URL));
+    D.uitslagen = lijst;
+    D.live = lijst ? (lijst.find(function (w) { return isRBC(w.home) || isRBC(w.away); }) || null) : null;
+    tekenUitslagen();
+    tekenWedstrijd();
 }
 
 /* ════════════════════════════════════════════════════════
    STAND
    ════════════════════════════════════════════════════════ */
 function standTabel(doc) {
-    for (const h2 of doc.querySelectorAll('h2')) {
+    const koppen = doc.querySelectorAll('h2');
+    for (let i = 0; i < koppen.length; i++) {
+        const h2 = koppen[i];
         if (!h2.textContent.includes('Stand')) continue;
         let el = h2.nextElementSibling;
         while (el) {
-            const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
-            if (t) return t;
+            const tb = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
+            if (tb) return tb;
             if (el.matches('h2,h3')) break;
             el = el.nextElementSibling;
         }
         let p = h2.parentElement;
-        while (p) { const t = p.querySelector('table'); if (t) return t; p = p.parentElement; if (!p || p.tagName === 'BODY') break; }
+        while (p) {
+            const tb = p.querySelector('table');
+            if (tb) return tb;
+            p = p.parentElement;
+            if (!p || p.tagName === 'BODY') break;
+        }
         break;
     }
     return null;
 }
-async function stand() {
-    const t = standTabel(dom(await haal(STAND_URL)));
-    if (!t) throw new Error('geen tabel');
-    const rijen = [...t.querySelectorAll('tbody tr')].map(r => {
-        const c = [...r.querySelectorAll('th,td')].map(e => e.textContent.trim().replace(/\s+/g, ' '));
-        if (c.length < 5) return null;
-        // er komen twee kolomindelingen voor
-        return c.length >= 9
-            ? { pos: c[0], club: c[1], wed: c[2], pnt: c[4] }
-            : { pos: c[0], club: c[1], wed: c[2], pnt: c[9] || '' };
-    }).filter(Boolean);
-    if (!rijen.length) throw new Error('leeg');
-
+function tekenStand() {
+    if (D.fout.stand) {
+        zet('stand-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_stand'))) + '</p>'); return;
+    }
+    if (!D.stand) { zet('stand-inhoud', '<p class="wacht">' + t('laden') + '</p>'); return; }
     zet('stand-inhoud',
-        '<table><thead><tr><th class="pos">#</th><th>Club</th>' +
-        '<th class="n">Wed</th><th class="n">Ptn</th></tr></thead><tbody>' +
-        rijen.map(r =>
-            `<tr${isRBC(r.club) ? ' class="rbc"' : ''}>` +
-            `<td class="pos">${veilig(r.pos)}</td>` +
-            `<td>${veilig(r.club)}</td>` +
-            `<td class="n">${veilig(r.wed)}</td>` +
-            `<td class="n">${veilig(r.pnt)}</td></tr>`).join('') +
-        '</tbody></table>');
+        '<table><thead><tr><th class="pos">#</th><th>' + veilig(t('th_club')) + '</th>' +
+        '<th class="n">' + veilig(t('th_wed')) + '</th><th class="n">' + veilig(t('th_ptn')) +
+        '</th></tr></thead><tbody>' +
+        D.stand.map(function (r) {
+            return '<tr' + (isRBC(r.club) ? ' class="rbc"' : '') + '>' +
+                   '<td class="pos">' + veilig(r.pos) + '</td>' +
+                   '<td>' + veilig(r.club) + '</td>' +
+                   '<td class="n">' + veilig(r.wed) + '</td>' +
+                   '<td class="n">' + veilig(r.pnt) + '</td></tr>';
+        }).join('') + '</tbody></table>');
+}
+async function stand() {
+    const tb = standTabel(dom(await haal(STAND_URL)));
+    if (!tb) throw new Error('geen tabel');
+    const rijen = [];
+    tb.querySelectorAll('tbody tr').forEach(function (r) {
+        const c = [];
+        r.querySelectorAll('th,td').forEach(function (e) {
+            c.push(e.textContent.trim().replace(/\s+/g, ' '));
+        });
+        if (c.length < 5) return;
+        // er komen twee kolomindelingen voor
+        rijen.push(c.length >= 9
+            ? { pos: c[0], club: c[1], wed: c[2], pnt: c[4] }
+            : { pos: c[0], club: c[1], wed: c[2], pnt: c[9] || '' });
+    });
+    if (!rijen.length) throw new Error('leeg');
+    D.stand = rijen;
+    tekenStand();
 }
 
 /* ════════════════════════════════════════════════════════
    PROGRAMMA
    ════════════════════════════════════════════════════════ */
+function tekenProgramma() {
+    if (D.fout.programma) {
+        zet('programma-inhoud', '<p class="wacht">' + veilig(t('stuk')(t('w_programma'))) + '</p>'); return;
+    }
+    if (!D.programma) { zet('programma-inhoud', '<p class="wacht">' + t('laden') + '</p>'); return; }
+    if (!D.programma.length) {
+        zet('programma-inhoud', '<p class="wacht">' + veilig(t('geen_duels')) + '</p>'); return;
+    }
+    zet('programma-inhoud', '<ul class="programma">' + D.programma.map(function (w) {
+        return '<li' + (isRBC(w.thuis) || isRBC(w.uit) ? ' class="rbc"' : '') + '>' +
+               '<span class="datum">' + veilig(w.datum) + ' &middot; ' + veilig(w.tijd) + '</span>' +
+               '<span class="duel">' + veilig(w.thuis) + ' &ndash; ' + veilig(w.uit) + '</span></li>';
+    }).join('') + '</ul>');
+}
 async function programma() {
     const doc = dom(await haal(PROGRAMMA_URL));
     const uit = [];
-    doc.querySelectorAll('table.match,table[class*="match"]').forEach(t => {
-        const cap = t.querySelector('caption time,caption');
+    doc.querySelectorAll('table.match,table[class*="match"]').forEach(function (tb) {
+        const cap = tb.querySelector('caption time,caption');
         // "Wedstrijden op zondag 16 augustus 2026" -> "zondag 16 augustus"
         const datum = cap
             ? cap.textContent.trim().replace(/\s+/g, ' ')
                  .replace(/^wedstrijden op\s*/i, '')
                  .replace(/\s*20\d\d$/, '')
             : '';
-        t.querySelectorAll('tbody tr').forEach(row => {
+        tb.querySelectorAll('tbody tr').forEach(function (row) {
             const c = row.querySelectorAll('td');
             if (c.length < 4) return;
             uit.push({
-                datum,
+                datum: datum,
                 thuis: c[0].textContent.trim().replace(/\s+/g, ' '),
                 uit: c[2].textContent.trim().replace(/\s+/g, ' '),
                 tijd: c[3].textContent.trim().replace(/\s+/g, ' ')
             });
         });
     });
-    const eigen = uit.filter(w => isRBC(w.thuis) || isRBC(w.uit));
-    const lijst = (eigen.length ? eigen : uit).slice(0, 8);
-    if (!lijst.length) { zet('programma-inhoud', '<p class="wacht">Geen wedstrijden gevonden.</p>'); return; }
-
-    zet('programma-inhoud', '<ul class="programma">' + lijst.map(w =>
-        `<li${isRBC(w.thuis) || isRBC(w.uit) ? ' class="rbc"' : ''}>` +
-        `<span class="datum">${veilig(w.datum)} &middot; ${veilig(w.tijd)}</span>` +
-        `<span class="duel">${veilig(w.thuis)} &ndash; ${veilig(w.uit)}</span></li>`).join('') + '</ul>');
+    const eigen = uit.filter(function (w) { return isRBC(w.thuis) || isRBC(w.uit); });
+    D.programma = (eigen.length ? eigen : uit).slice(0, 8);
+    tekenProgramma();
 }
 
 /* ════════════════════════════════════════════════════════
-   START — elke bron apart, zodat een storing de rest
-   niet meesleept
+   START
    ════════════════════════════════════════════════════════ */
+function tekenAlles() {
+    tekenSpelers(); tekenWedstrijd(); tekenStand();
+    tekenUitslagen(); tekenProgramma();
+}
+
 (async function () {
     try {
         const m = await (await fetch('data.json?v=' + Date.now())).json();
-        SQUAD = (m.squad || []).slice().sort((a, b) => a.number - b.number);
-        volgende = m.match || null;
-        toonSpelers();
-        // Laat zien hoe oud de rugnummers zijn: ze komen uit een eigen
-        // bestand, niet live binnen, en de selectie wijzigt.
-        if (m.squad_bijgewerkt) {
-            const d = new Date(m.squad_bijgewerkt + 'T00:00:00');
-            const mnd = ['januari','februari','maart','april','mei','juni','juli',
-                         'augustus','september','oktober','november','december'];
-            document.getElementById('selectie-datum').textContent =
-                'Rugnummers bijgewerkt op ' + d.getDate() + ' ' + mnd[d.getMonth()] + ' ' + d.getFullYear() + '.';
-        }
-        toonWedstrijd(null);
-    } catch (e) {
-        zet('spelerslijst', '<li class="wacht">Selectie is nu niet op te halen.</li>');
-        zet('wedstrijd-inhoud', '<p class="wacht">Wedstrijd is nu niet op te halen.</p>');
-    }
+        D.squad = (m.squad || []).slice().sort(function (a, b) { return a.number - b.number; });
+        D.bijgewerkt = m.squad_bijgewerkt || null;
+        D.volgende = m.match || null;
+    } catch (e) { D.fout.squad = true; D.fout.lokaal = true; }
+    zetTaal(TAAL);        // vult de vaste teksten en tekent alles
 })();
 
-stand().catch(() => stuk('stand-inhoud', 'De stand'));
-programma().catch(() => stuk('programma-inhoud', 'Het programma'));
-uitslagen().catch(() => stuk('uitslagen-inhoud', 'De uitslagen'));
-setInterval(() => { uitslagen().catch(() => {}); }, 30000);
+stand().catch(function () { D.fout.stand = true; tekenStand(); });
+programma().catch(function () { D.fout.programma = true; tekenProgramma(); });
+uitslagen().catch(function () { D.fout.uitslagen = true; tekenUitslagen(); });
+setInterval(function () { uitslagen().catch(function () {}); }, 30000);
 
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(function () {});
 </script>
 </body>
 </html>
