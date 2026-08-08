@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RBC Roosendaal</title>
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="RBC Roosendaal — stand, programma, selectie en clubnieuws. Eenvoudige tekstversie.">
+<link rel="icon" href="/rbc.png">
+<style>
+/* ════════════════════════════════════════════════════════════
+   Tekstversie: wit vlak, zwarte letters, verder niets.
+   Geen kleuren, geen lijnen, geen afbeeldingen, geen kaders.
+   Alleen typografie en witruimte doen het werk.
+   ════════════════════════════════════════════════════════════ */
+:root { color-scheme: light; }
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: #fff;
+    color: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    max-width: 34rem;
+    margin: 0 auto;
+    padding: 3.5rem 1.25rem 6rem;
+    -webkit-text-size-adjust: 100%;
+}
+
+h1 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+.sub { margin-bottom: 2.75rem; }
+
+h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 2.75rem 0 0.6rem;
+}
+
+p { margin: 0 0 0.6rem; }
+p:last-child { margin-bottom: 0; }
+
+/* Tabellen zonder lijnen: uitlijning doet het werk, niet randen. */
+table { border-collapse: collapse; width: 100%; }
+th, td { text-align: left; padding: 0.12rem 0.6rem 0.12rem 0; vertical-align: top; }
+th { font-weight: 400; }
+td.n, th.n {
+    text-align: right; padding-right: 0;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+td.pos { width: 2ch; text-align: right; padding-right: 0.7rem; font-variant-numeric: tabular-nums; }
+tr.zelf td { font-weight: 700; }
+
+ul { list-style: none; }
+li { margin-bottom: 0.35rem; }
+li .nr {
+    display: inline-block; min-width: 2.2ch; text-align: right;
+    margin-right: 0.65rem; font-variant-numeric: tabular-nums;
+}
+
+.wacht { color: #666; }
+
+a { color: #000; }
+a:hover { text-decoration: none; }
+
+footer { margin-top: 4rem; }
+footer a { margin-right: 1.1rem; display: inline-block; }
+
+@media print {
+    body { max-width: none; padding: 0; font-size: 11pt; }
+    footer { display: none; }
+}
+</style>
+</head>
+<body>
+
+<h1>RBC Roosendaal</h1>
+<p class="sub">Derde Divisie B, seizoen 2026/2027</p>
+
+<h2>Volgende wedstrijd</h2>
+<div id="wedstrijd"><p class="wacht">Laden…</p></div>
+
+<h2>Stand</h2>
+<div id="stand"><p class="wacht">Laden…</p></div>
+
+<h2>Programma</h2>
+<div id="programma"><p class="wacht">Laden…</p></div>
+
+<h2>Selectie</h2>
+<div id="selectie"><p class="wacht">Laden…</p></div>
+
+<h2>Clubnieuws</h2>
+<div id="nieuws"><p class="wacht">Laden…</p></div>
+
+<h2>Over de club</h2>
+<p>Opgericht in 1912. Thuis in het Atik Stadion in Roosendaal.
+Clubkleuren oranje en wit.</p>
+
+<footer>
+    <a href="/">Gewone site</a>
+    <a href="/teletekst.html">Teletekst</a>
+    <a href="/snes.html">16-bit</a>
+</footer>
+
+<script>
+/* Dezelfde bronnen als de rest van de site. */
+const SEASON = '2026-2027';
+const PROXIES = [
+    'https://api.allorigins.win/raw?url=',
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.cors.lol/?url='
+];
+const STAND_URL = `https://www.hollandsevelden.nl/competities/${SEASON}/landelijk/derde-divisie-b/`;
+const PROGRAMMA_URL = STAND_URL + 'programma/';
+const NIEUWS_URL = 'https://rbcvoetbal.nl/';
+
+async function haal(url) {
+    for (const p of PROXIES) {
+        try {
+            const r = await fetch(p + encodeURIComponent(url), { signal: AbortSignal.timeout(9000) });
+            if (r.ok) return await r.text();
+        } catch (e) { /* volgende proxy */ }
+    }
+    throw new Error('bron onbereikbaar');
+}
+const dom = h => new DOMParser().parseFromString(h, 'text/html');
+const zet = (id, html) => { document.getElementById(id).innerHTML = html; };
+const stuk = id => zet(id, '<p class="wacht">Niet beschikbaar.</p>');
+const veilig = s => String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+/* ── volgende wedstrijd + selectie ── */
+async function lokaal() {
+    const m = await (await fetch('data.json?v=' + Date.now())).json();
+
+    if (m.match && m.match.home_team) {
+        zet('wedstrijd',
+            `<p>${veilig(m.match.home_team)} &ndash; ${veilig(m.match.away_team)}<br>` +
+            `${veilig(m.match.status || '')}</p>`);
+    } else {
+        zet('wedstrijd', '<p class="wacht">Nog niet bekend.</p>');
+    }
+
+    const squad = (m.squad || []).slice().sort((a, b) => a.number - b.number);
+    zet('selectie', squad.length
+        ? '<ul>' + squad.map(p =>
+            `<li><span class="nr">${veilig(p.number)}</span>${veilig(p.name)}</li>`).join('') + '</ul>'
+        : '<p class="wacht">Niet beschikbaar.</p>');
+}
+
+/* ── stand ── */
+function standTabel(doc) {
+    for (const h2 of doc.querySelectorAll('h2')) {
+        if (!h2.textContent.includes('Stand')) continue;
+        let el = h2.nextElementSibling;
+        while (el) {
+            const t = el.querySelector('table') || (el.tagName === 'TABLE' ? el : null);
+            if (t) return t;
+            if (el.matches('h2,h3')) break;
+            el = el.nextElementSibling;
+        }
+        let p = h2.parentElement;
+        while (p) { const t = p.querySelector('table'); if (t) return t; p = p.parentElement; if (!p || p.tagName === 'BODY') break; }
+        break;
+    }
+    return null;
+}
+async function stand() {
+    const t = standTabel(dom(await haal(STAND_URL)));
+    if (!t) throw new Error('geen tabel');
+    const rijen = [...t.querySelectorAll('tbody tr')].map(r => {
+        const c = [...r.querySelectorAll('th,td')].map(e => e.textContent.trim().replace(/\s+/g, ' '));
+        if (c.length < 5) return null;
+        // twee kolomindelingen komen in het wild voor
+        return c.length >= 9
+            ? { pos: c[0], club: c[1], wed: c[2], pnt: c[4] }
+            : { pos: c[0], club: c[1], wed: c[2], pnt: c[9] || '' };
+    }).filter(Boolean);
+    if (!rijen.length) throw new Error('leeg');
+
+    zet('stand',
+        '<table><tr><td></td><th>Club</th><th class="n">Gespeeld</th><th class="n">Punten</th></tr>' +
+        rijen.map(r => {
+            const zelf = /^rbc$/i.test(r.club);
+            return `<tr${zelf ? ' class="zelf"' : ''}>` +
+                   `<td class="pos">${veilig(r.pos)}</td>` +
+                   `<td>${veilig(r.club)}</td>` +
+                   `<td class="n">${veilig(r.wed)}</td>` +
+                   `<td class="n">${veilig(r.pnt)}</td></tr>`;
+        }).join('') + '</table>');
+}
+
+/* ── programma ── */
+async function programma() {
+    const doc = dom(await haal(PROGRAMMA_URL));
+    const uit = [];
+    doc.querySelectorAll('table.match,table[class*="match"]').forEach(t => {
+        const cap = t.querySelector('caption time,caption');
+        // "Wedstrijden op zondag 16 augustus 2026" -> "zondag 16 augustus".
+        // De hele zin herhaalde zich op elke regel en liep om.
+        const datum = cap
+            ? cap.textContent.trim().replace(/\s+/g, ' ')
+                 .replace(/^wedstrijden op\s*/i, '')
+                 .replace(/\s*20\d\d$/, '')
+            : '';
+        t.querySelectorAll('tbody tr').forEach(row => {
+            const c = row.querySelectorAll('td');
+            if (c.length < 4) return;
+            uit.push({
+                datum,
+                thuis: c[0].textContent.trim().replace(/\s+/g, ' '),
+                uit: c[2].textContent.trim().replace(/\s+/g, ' '),
+                tijd: c[3].textContent.trim().replace(/\s+/g, ' ')
+            });
+        });
+    });
+    const eigen = uit.filter(w => /^rbc$/i.test(w.thuis) || /^rbc$/i.test(w.uit));
+    const lijst = (eigen.length ? eigen : uit).slice(0, 10);
+    if (!lijst.length) { zet('programma', '<p class="wacht">Geen wedstrijden gevonden.</p>'); return; }
+
+    zet('programma', '<table>' + lijst.map(w =>
+        `<tr><td>${veilig(w.datum)}</td>` +
+        `<td>${veilig(w.thuis)} &ndash; ${veilig(w.uit)}</td>` +
+        `<td class="n">${veilig(w.tijd)}</td></tr>`).join('') + '</table>');
+}
+
+/* ── clubnieuws ── */
+async function nieuws() {
+    const doc = dom(await haal(NIEUWS_URL));
+    // De koppen staan in h3's; de nieuwsankers zelf zijn lege spans.
+    const gezien = new Set(), uit = [];
+    const SKIP = /^(nieuwsarchief|voetbal academie|zakelijk netwerk|maatschappelijk)$/i;
+    doc.querySelectorAll('h1.index_title, h3').forEach(h => {
+        const t = h.textContent.trim().replace(/\s+/g, ' ');
+        if (t.length < 10 || t.length > 140 || gezien.has(t) || SKIP.test(t)) return;
+        gezien.add(t); uit.push(t);
+    });
+    zet('nieuws', uit.length
+        ? '<ul>' + uit.slice(0, 8).map(t => `<li>${veilig(t)}</li>`).join('') + '</ul>'
+        : '<p class="wacht">Geen berichten gevonden.</p>');
+}
+
+/* Elke bron apart: een kapotte bron laat de rest staan. */
+lokaal().catch(() => { stuk('wedstrijd'); stuk('selectie'); });
+stand().catch(() => stuk('stand'));
+programma().catch(() => stuk('programma'));
+nieuws().catch(() => stuk('nieuws'));
+
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+</script>
+</body>
+</html>
