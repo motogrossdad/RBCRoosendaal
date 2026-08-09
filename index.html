@@ -585,6 +585,16 @@ function zetTaal(nieuw) {
     tekenAlles();
 }
 
+/* De knoppen zaten wel in de pagina, maar luisterden nergens naar:
+   bij het omzetten naar de app zijn deze twee regels weggevallen en
+   stond de taal muurvast op wat er in de opslag stond. Nu via de
+   omhullende balk, zodat het niet opnieuw aan losse regels hangt. */
+document.querySelector('.talen').addEventListener('click', function (e) {
+    const knop = e.target.closest('button');
+    if (!knop) return;
+    zetTaal(knop.id === 'taal-en' ? 'en' : 'nl');
+});
+
 /* ════════════════════════════════════════════════════════
    2. OPSLAG
    Alles lokaal. De app moet het doen zonder bereik.
