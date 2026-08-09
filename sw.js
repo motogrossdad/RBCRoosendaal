@@ -7,13 +7,31 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v9';
+const CACHE = 'rbc-app-v10';
 
 const SCHIL = [
     '/', '/index.html', '/data.json',
     '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
     '/rbc.png', '/rbc-klein.png', '/manifest.json',
-    '/klassiek.html', '/teletekst.html', '/snes.html'
+    '/klassiek.html', '/teletekst.html', '/snes.html',
+    // Portretten mee offline: op de tribune is juist dan de vraag
+    // "welke van die elf is nummer 14".
+    '/players/akram-tourki.jpg',
+    '/players/daan-van-reeuwijk.jpg',
+    '/players/desley-ubbink.jpg',
+    '/players/glaucio-ventura-tiago.jpg',
+    '/players/jelte-pal.jpg',
+    '/players/jens-verschuren.jpg',
+    '/players/jesper-troost.jpg',
+    '/players/jordi-ewanena.jpg',
+    '/players/leonardo-rocha-de-almeida.jpg',
+    '/players/lloyd-hendriks.jpg',
+    '/players/luque-casas-diaz.jpg',
+    '/players/marwin-reuvers.jpg',
+    '/players/oussama-bouyaghlafen.jpg',
+    '/players/timo-townsend.jpg',
+    '/players/wai-ming-yu.jpg',
+    '/players/wesley-spieringhs.jpg'
 ];
 
 self.addEventListener('install', e => {

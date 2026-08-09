@@ -215,6 +215,24 @@ ul.spelers .rug {
     font-size: 1.4rem; font-weight: 700; font-variant-numeric: tabular-nums;
 }
 ul.spelers .pos { font-size: 0.8rem; color: var(--grijs); }
+/* Portret erbij: op de tribune is de vraag niet "hoe heet 14" maar
+   "welke van die elf is 14". Een gezicht beantwoordt dat. */
+ul.spelers .portret {
+    flex: 0 0 auto; width: 2.6rem; height: 3.4rem;
+    object-fit: cover; object-position: 50% 12%;
+    border-radius: 0.25rem; background: var(--lijn);
+}
+ul.spelers .geenportret {
+    flex: 0 0 auto; width: 2.6rem; height: 3.4rem;
+    border-radius: 0.25rem; background: var(--lijn);
+}
+#gevonden .kaartje { display: flex; align-items: flex-start; gap: 0.8rem; }
+#gevonden .kaartje img {
+    flex: 0 0 auto; width: 5.4rem; height: 7.2rem;
+    object-fit: cover; object-position: 50% 12%;
+    border-radius: 0.4rem; background: var(--lijn);
+}
+#gevonden .kaartje .tekst { min-width: 0; }
 ul.spelers li.raak { background: var(--oranje-licht); }
 ul.spelers li.raak .rug { color: var(--oranje); }
 
@@ -239,6 +257,20 @@ ul.programma li.rbc .duel { font-weight: 700; }
     padding: 0.8rem; margin-top: 0.8rem;
 }
 .kaart p + p { margin-top: 0.4rem; }
+.kaart .adres { font-size: 0.95rem; }
+/* bewaarde wedstrijden */
+ul.historie { list-style: none; margin-top: 0.5rem; }
+ul.historie li {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.65rem 0; border-bottom: 1px solid var(--lijn);
+}
+ul.historie .uit { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+ul.historie .tegen { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+ul.historie .wanneer { display: block; font-size: 0.78rem; color: var(--grijs); }
+ul.historie button {
+    flex: 0 0 auto; background: none; border: 0; cursor: pointer;
+    font: inherit; font-size: 1.3rem; color: var(--grijs); padding: 0.15rem 0.35rem;
+}
 .rij-knoppen { display: grid; gap: 0.55rem; margin-top: 0.8rem; }
 
 /* ── melding offline / bijgewerkt ──────────────────────── */
@@ -328,6 +360,14 @@ footer a { color: #000; padding: 0.35rem 0; }
             <button class="klein" id="nieuwe-wedstrijd" data-t="nieuwe_wedstrijd"></button>
         </div>
         <p class="bron" data-t="bord_uitleg"></p>
+
+        <div id="historie-blok" hidden>
+            <h2 data-t="kop_historie"></h2>
+            <ul class="historie" id="historie"></ul>
+        </div>
+
+        <h2 data-t="kop_heenweg"></h2>
+        <div id="heenweg"></div>
     </div>
 </section>
 
@@ -369,6 +409,8 @@ footer a { color: #000; padding: 0.35rem 0; }
             <p data-t="app_tekst"></p>
             <div class="rij-knoppen">
                 <button class="groot" id="installeer" data-t="installeer" hidden></button>
+                <button class="groot" id="deel-app" data-t="deel_app"></button>
+                <button class="klein" id="agenda-alles" data-t="agenda_alles"></button>
                 <button class="klein" id="ververs" data-t="ververs"></button>
             </div>
             <p class="bron" id="cache-info"></p>
@@ -444,6 +486,20 @@ const TEKST = {
         cache: d => 'Laatst opgehaald: ' + d, cache_nooit: 'Nog niets opgehaald.',
         voet_uitgebreid: 'Uitgebreide site',
         nieuwe_versie: 'Nieuwe versie — tik om te vernieuwen',
+        kop_historie: 'Eerdere wedstrijden',
+        kop_heenweg: 'Hoe kom je er',
+        thuis_bij: 'Thuis in het Atik Stadion',
+        uit_bij: t => 'Uit bij ' + t,
+        op_de_kaart: 'Bekijk op de kaart',
+        in_agenda: 'Zet in je agenda',
+        agenda_alles: 'Hele programma in je agenda',
+        agenda_niets: 'Nog geen wedstrijd om in te plannen.',
+        deel_app: 'Stuur deze app door',
+        deel_app_tekst: 'De RBC-app: rugnummers opzoeken en de stand doorsturen. Werkt zonder bereik.',
+        historie_leeg: '',
+        bewaard: 'Wedstrijd bewaard.',
+        weg: 'verwijderen',
+        uit_adres: 'Adres van de tegenstander staat niet in de app — zoek het op de kaart.',
         posities: {
             'Goalkeeper':'Keeper','Defender':'Verdediger','Centre-Back':'Centrale verdediger',
             'Left-Back':'Linksback','Right-Back':'Rechtsback','Midfielder':'Middenvelder',
@@ -491,6 +547,20 @@ const TEKST = {
         cache: d => 'Last downloaded: ' + d, cache_nooit: 'Nothing downloaded yet.',
         voet_uitgebreid: 'Full site',
         nieuwe_versie: 'New version — tap to refresh',
+        kop_historie: 'Earlier matches',
+        kop_heenweg: 'Getting there',
+        thuis_bij: 'Home at the Atik Stadion',
+        uit_bij: t => 'Away at ' + t,
+        op_de_kaart: 'Open in maps',
+        in_agenda: 'Add to your calendar',
+        agenda_alles: 'All fixtures to your calendar',
+        agenda_niets: 'No match to schedule yet.',
+        deel_app: 'Send this app to someone',
+        deel_app_tekst: 'The RBC app: look up shirt numbers and send the score. Works with no signal.',
+        historie_leeg: '',
+        bewaard: 'Match saved.',
+        weg: 'delete',
+        uit_adres: 'The opponent address is not in the app — look it up on the map.',
         posities: {}, landen: {},
         maanden: ['January','February','March','April','May','June','July',
                   'August','September','October','November','December']
@@ -661,32 +731,15 @@ $('venster').addEventListener('click', function (e) { if (e.target === $('venste
 document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && wachtOpKeuze) sluitVenster(); });
 
 $('nieuwe-wedstrijd').addEventListener('click', function () {
+    // eerst bewaren: anders was de vorige wedstrijd weg
+    if (archiveer()) meld(t('bewaard'));
     nieuweWedstrijd(D.volgende ? tegenstanderVan(D.volgende) : '');
-    tekenBord();
+    tekenBord(); tekenHistorie();
 });
 
 /* ── doorsturen ── */
-function deelTekst() {
-    const tegen = W.tegen || '';
-    const regels = ['RBC ' + W.rbc + ' - ' + W.hen + (tegen ? ' ' + tegen : '')];
-    if (W.doelpunten.length) {
-        regels.push('');
-        W.doelpunten.forEach(function (d) {
-            const wie = d.eigen ? (d.naam || 'RBC') : (tegen || '—');
-            regels.push((d.minuut ? d.minuut + "'" : '') + '  ' + wie);
-        });
-    }
-    regels.push('', 'rbcroosendaal.com');
-    return regels.join('\n');
-}
-$('deelknop').addEventListener('click', async function () {
-    const tekst = deelTekst();
-    if (navigator.share) {
-        try { await navigator.share({ text: tekst }); return; }
-        catch (e) { if (e && e.name === 'AbortError') return; }
-    }
-    window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
-});
+function deelTekst() { return tekstVan(W); }
+$('deelknop').addEventListener('click', function () { stuur(deelTekst()); });
 
 /* ════════════════════════════════════════════════════════
    4. SPELERS
@@ -700,8 +753,11 @@ function tekenSpelers() {
     const posities = t('posities');
     $('spelerslijst').innerHTML = D.squad.map(function (p) {
         const pos = p.positie ? (posities[p.positie] || p.positie) : '';
+        const beeld = p.photo
+            ? '<img class="portret" src="' + veilig(p.photo) + '" alt="" loading="lazy" width="300" height="400">'
+            : '<span class="geenportret" aria-hidden="true"></span>';
         return '<li data-nr="' + veilig(p.number) + '">' +
-               '<span class="rug">' + veilig(p.number) + '</span>' +
+               '<span class="rug">' + veilig(p.number) + '</span>' + beeld +
                '<span><span class="naam">' + veilig(p.name) + '</span>' +
                (pos ? '<br><span class="pos">' + veilig(pos) + '</span>' : '') + '</span></li>';
     }).join('');
@@ -746,7 +802,12 @@ function zoek() {
         details += (details ? '<br>' : '') + veilig(t('eerder_bij')) +
                    ' <span class="van">' + veilig(speler.vorige_club) + '</span>';
     }
-    uit.innerHTML = veilig(speler.name) + (details ? '<span class="details">' + details + '</span>' : '');
+    const tekstBlok = '<span class="tekst">' + veilig(speler.name) +
+        (details ? '<span class="details">' + details + '</span>' : '') + '</span>';
+    uit.innerHTML = speler.photo
+        ? '<span class="kaartje"><img src="' + veilig(speler.photo) + '" alt="' + veilig(speler.name) +
+          '" width="300" height="400">' + tekstBlok + '</span>'
+        : tekstBlok;
     const li = document.querySelector('#spelerslijst li[data-nr="' + speler.number + '"]');
     if (li) li.classList.add('raak');
 }
@@ -862,7 +923,7 @@ async function haalProgramma() {
     const eigen = uit.filter(function (w) { return isRBC(w.thuis) || isRBC(w.uit); });
     D.programma = (eigen.length ? eigen : uit).slice(0, 10);
     OPSLAG.schrijf('rbc-programma', D.programma);
-    tekenProgramma();
+    tekenProgramma(); tekenHeenweg();
 }
 
 /* ════════════════════════════════════════════════════════
@@ -882,7 +943,10 @@ document.querySelectorAll('#tabs button').forEach(function (b) {
     b.addEventListener('click', function () { toon(b.dataset.scherm); });
 });
 
-function tekenAlles() { tekenBord(); tekenSpelers(); tekenStand(); tekenProgramma(); tekenCacheInfo(); }
+function tekenAlles() {
+    tekenBord(); tekenSpelers(); tekenStand(); tekenProgramma();
+    tekenCacheInfo(); tekenHistorie(); tekenHeenweg();
+}
 
 /* ════════════════════════════════════════════════════════
    7. MELDINGEN, INSTALLEREN, VERVERSEN
@@ -928,8 +992,194 @@ async function verversAlles(metMelding) {
     }
 }
 $('ververs').addEventListener('click', function () { verversAlles(true); });
+$('deel-app').addEventListener('click', function () {
+    stuur(t('deel_app_tekst') + '\nhttps://rbcroosendaal.com');
+});
+$('agenda-alles').addEventListener('click', function () {
+    if (!D.programma || !D.programma.length) { meld(t('agenda_niets')); return; }
+    const afspraken = [];
+    D.programma.forEach(function (w) {
+        const dt = leesDatum(w.datum, w.tijd);
+        if (!dt) return;
+        afspraken.push({ start: dt, titel: w.thuis + ' - ' + w.uit,
+                         plek: isRBC(w.thuis) ? STADION.naam + ', ' + STADION.adres : w.thuis });
+    });
+    if (!afspraken.length) { meld(t('agenda_niets')); return; }
+    bewaarICS(maakICS(afspraken), 'rbc-programma.ics');
+});
 window.addEventListener('online', function () { verversAlles(false); });
 window.addEventListener('offline', function () { meld(t('offline')); });
+
+
+/* ════════════════════════════════════════════════════════
+   9. HEENWEG EN AGENDA
+   Adres nagetrokken op rbcvoetbal.nl/atik-stadion. Van de
+   tegenstanders hebben we geen adres, dus daar sturen we naar
+   een zoekopdracht op de kaart in plaats van iets te verzinnen.
+   ════════════════════════════════════════════════════════ */
+const STADION = { naam: 'Atik Stadion', adres: 'Borchwerf 4, 4704 RG Roosendaal' };
+const MAANDNR = { januari:0, februari:1, maart:2, april:3, mei:4, juni:5, juli:6,
+                  augustus:7, september:8, oktober:9, november:10, december:11 };
+
+/* "zondag 16 augustus" + "14.30 uur" -> Date. Het seizoen loopt over
+   de jaarwisseling: augustus t/m december is 2026, daarna 2027. */
+function leesDatum(datum, tijd) {
+    if (!datum) return null;
+    const d = datum.toLowerCase().match(/(\d{1,2})\s+([a-zé]+)/);
+    if (!d) return null;
+    const maand = MAANDNR[d[2]];
+    if (maand === undefined) return null;
+    const jaar = maand >= 7 ? 2026 : 2027;
+    let uur = 14, min = 30;
+    const tm = (tijd || '').match(/(\d{1,2})[.:](\d{2})/);
+    if (tm) { uur = +tm[1]; min = +tm[2]; }
+    return new Date(jaar, maand, +d[1], uur, min);
+}
+function tweeCijfers(n) { return String(n).padStart(2, '0'); }
+function icsTijd(d) {
+    return d.getFullYear() + tweeCijfers(d.getMonth() + 1) + tweeCijfers(d.getDate()) +
+           'T' + tweeCijfers(d.getHours()) + tweeCijfers(d.getMinutes()) + '00';
+}
+function maakICS(afspraken) {
+    const r = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//RBC Roosendaal//NL', 'CALSCALE:GREGORIAN'];
+    afspraken.forEach(function (a, i) {
+        const eind = new Date(a.start.getTime() + 105 * 60000);   // 90 minuten plus rust
+        r.push('BEGIN:VEVENT',
+            'UID:rbc-' + icsTijd(a.start) + '-' + i + '@rbcroosendaal.com',
+            'DTSTAMP:' + icsTijd(new Date()),
+            'DTSTART:' + icsTijd(a.start),
+            'DTEND:' + icsTijd(eind),
+            'SUMMARY:' + a.titel.replace(/[,;]/g, ' '),
+            'LOCATION:' + (a.plek || '').replace(/[,;]/g, ' '),
+            'END:VEVENT');
+    });
+    r.push('END:VCALENDAR');
+    return r.join('\r\n');
+}
+function bewaarICS(tekst, naam) {
+    const blob = new Blob([tekst], { type: 'text/calendar;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = naam;
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+function kaartLink(zoek) {
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(zoek);
+}
+
+function eerstvolgende() {
+    if (D.programma && D.programma.length) {
+        for (let i = 0; i < D.programma.length; i++) {
+            const w = D.programma[i];
+            const dt = leesDatum(w.datum, w.tijd);
+            if (dt && dt.getTime() > Date.now() - 3 * 3600000) {
+                return { thuis: w.thuis, uit: w.uit, start: dt, datum: w.datum, tijd: w.tijd };
+            }
+        }
+    }
+    return null;
+}
+
+function tekenHeenweg() {
+    const el = $('heenweg');
+    if (!el) return;
+    const v = eerstvolgende();
+    if (!v) {
+        el.innerHTML = '<div class="kaart"><p class="wacht">' + veilig(t('agenda_niets')) + '</p></div>';
+        return;
+    }
+    const thuisWedstrijd = isRBC(v.thuis);
+    const plek = thuisWedstrijd ? STADION.naam + ', ' + STADION.adres : v.thuis;
+    const zoek = thuisWedstrijd ? STADION.naam + ' ' + STADION.adres : v.thuis + ' voetbal stadion';
+
+    el.innerHTML = '<div class="kaart">' +
+        '<p><strong>' + veilig(v.thuis) + ' – ' + veilig(v.uit) + '</strong></p>' +
+        '<p>' + veilig(v.datum) + ' · ' + veilig(v.tijd) + '</p>' +
+        '<p class="adres">' + (thuisWedstrijd
+            ? veilig(t('thuis_bij')) + '<br>' + veilig(STADION.adres)
+            : veilig(t('uit_bij')(v.thuis)) + '<br><span class="wacht">' + veilig(t('uit_adres')) + '</span>') +
+        '</p>' +
+        '<div class="rij-knoppen">' +
+        '<a class="groot" href="' + kaartLink(zoek) + '" target="_blank" rel="noopener">' + veilig(t('op_de_kaart')) + '</a>' +
+        '<button class="groot" type="button" id="agenda-een">' + veilig(t('in_agenda')) + '</button>' +
+        '</div></div>';
+
+    $('agenda-een').addEventListener('click', function () {
+        bewaarICS(maakICS([{ start: v.start, titel: v.thuis + ' - ' + v.uit, plek: plek }]), 'rbc-wedstrijd.ics');
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   10. EERDERE WEDSTRIJDEN
+   "Nieuwe wedstrijd" gooide de vorige weg. Nu blijft er een
+   eigen seizoensoverzicht van staan: bij welke wedstrijden
+   was je, en wie scoorde.
+   ════════════════════════════════════════════════════════ */
+function historie() { return OPSLAG.lees('rbc-historie', []); }
+function bewaarHistorie(lijst) { OPSLAG.schrijf('rbc-historie', lijst); }
+
+function archiveer() {
+    if (!W || (!W.doelpunten.length && !W.rbc && !W.hen)) return false;
+    const lijst = historie();
+    lijst.unshift({ tegen: W.tegen, rbc: W.rbc, hen: W.hen,
+                    doelpunten: W.doelpunten, wanneer: W.begonnen || Date.now() });
+    bewaarHistorie(lijst.slice(0, 40));
+    return true;
+}
+
+function tekenHistorie() {
+    const blok = $('historie-blok'), lijst = historie();
+    if (!blok) return;
+    if (!lijst.length) { blok.hidden = true; return; }
+    blok.hidden = false;
+    $('historie').innerHTML = lijst.map(function (m, i) {
+        const d = new Date(m.wanneer);
+        const wanneer = d.toLocaleDateString(TAAL === 'nl' ? 'nl-NL' : 'en-GB',
+            { day: 'numeric', month: 'short', year: 'numeric' });
+        return '<li>' +
+            '<span class="uit">' + m.rbc + '–' + m.hen + '</span>' +
+            '<span class="tegen">' + veilig(m.tegen || '—') +
+            '<span class="wanneer">' + veilig(wanneer) + '</span></span>' +
+            '<button type="button" data-deel="' + i + '" aria-label="delen">↗</button>' +
+            '<button type="button" data-weg="' + i + '" aria-label="' + veilig(t('weg')) + '">×</button>' +
+            '</li>';
+    }).join('');
+    $('historie').querySelectorAll('[data-weg]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            const l = historie(); l.splice(+b.dataset.weg, 1); bewaarHistorie(l); tekenHistorie();
+        });
+    });
+    $('historie').querySelectorAll('[data-deel]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            const m = historie()[+b.dataset.deel];
+            stuur(tekstVan(m));
+        });
+    });
+}
+
+/* ════════════════════════════════════════════════════════
+   11. DELEN
+   ════════════════════════════════════════════════════════ */
+async function stuur(tekst) {
+    if (navigator.share) {
+        try { await navigator.share({ text: tekst }); return; }
+        catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    window.open('https://wa.me/?text=' + encodeURIComponent(tekst), '_blank', 'noopener');
+}
+function tekstVan(m) {
+    const regels = ['RBC ' + m.rbc + ' - ' + m.hen + (m.tegen ? ' ' + m.tegen : '')];
+    if (m.doelpunten && m.doelpunten.length) {
+        regels.push('');
+        m.doelpunten.forEach(function (d) {
+            const wie = d.eigen ? (d.naam || 'RBC') : (m.tegen || '—');
+            regels.push((d.minuut ? d.minuut + "'" : '') + '  ' + wie);
+        });
+    }
+    regels.push('', 'rbcroosendaal.com');
+    return regels.join('\n');
+}
 
 /* ════════════════════════════════════════════════════════
    8. START
