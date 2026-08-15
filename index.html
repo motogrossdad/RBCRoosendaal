@@ -151,7 +151,101 @@ img{ display:block; max-width:100% }
 .regel.klein .flap i{ font-size:calc(var(--ch) * .62) }
 
 /* ── scorebord ────────────────────────────────────────────── */
-.scherm{ flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch }
+/* Een echt bord heeft meer dan één pagina: je veegt hem door.
+   Geen derde knop dus — de twee onderaan blijven wat ze zijn. */
+.bladen{
+    flex:1 1 auto; min-height:0; display:flex; overflow-x:auto; overflow-y:hidden;
+    scroll-snap-type:x mandatory; scrollbar-width:none; overscroll-behavior-x:contain;
+}
+.bladen::-webkit-scrollbar{ display:none }
+.scherm{
+    flex:0 0 100%; width:100%; scroll-snap-align:start; scroll-snap-stop:always;
+    min-height:0; overflow-y:auto; overscroll-behavior-y:contain; -webkit-overflow-scrolling:touch;
+}
+.stippen{
+    flex:none; display:flex; justify-content:center; gap:7px; padding:9px 0 11px;
+    border-top:1px solid var(--lijn);
+}
+.stip{
+    width:7px; height:7px; border-radius:50%; background:#3a332c; padding:0;
+    transition:background .2s, width .2s; border:0;
+}
+.stip[aria-current="true"]{ background:var(--oranje); width:20px; border-radius:4px }
+.zij{ padding:16px clamp(12px,3vw,26px) 24px }
+
+/* ── ranglijst ─────────────────────────────────────────── */
+.rang{ width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums }
+.rang th{
+    font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:#6c635b;
+    font-weight:800; text-align:right; padding:0 4px 8px;
+}
+.rang th.l{ text-align:left }
+.rang td{ padding:8px 4px; font-size:13px; text-align:right; border-top:1px solid rgba(244,236,225,.05) }
+.rang td.club{ text-align:left; font-weight:700; letter-spacing:.02em;
+               max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; width:99% }
+.rang td.pos{ color:#6c635b; font-weight:800; width:26px; position:relative; padding-left:9px }
+.rang td.pnt{ font-weight:900 }
+.rang tr.rbc td{ background:rgba(255,106,19,.12); color:var(--been) }
+.rang tr.rbc td.club{ color:var(--oranje) }
+.rang tr.rbc td.pos{ color:var(--oranje) }
+/* de zones komen uit de bron: promotie, nacompetitie, degradatie */
+.rang td.pos::before{
+    content:""; position:absolute; left:0; top:2px; bottom:2px; width:3px; border-radius:2px;
+    background:transparent;
+}
+tr.zone-p td.pos::before{ background:#39c07a }
+tr.zone-n td.pos::before{ background:var(--oranje) }
+tr.zone-d td.pos::before{ background:#d1453c }
+.vorm{ display:inline-flex; gap:2px; vertical-align:middle }
+.vorm i{ width:7px; height:7px; border-radius:2px; background:#3a332c; display:block }
+.vorm i.w{ background:#39c07a } .vorm i.g{ background:#8b8178 } .vorm i.v{ background:#d1453c }
+.uitleg{
+    display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:12px;
+    font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#6c635b; font-weight:700;
+}
+.uitleg span{ display:flex; align-items:center; gap:5px }
+.uitleg b{ width:8px; height:8px; border-radius:2px; display:block }
+.bron{ margin-top:14px; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#5c554e }
+
+/* ── programma ─────────────────────────────────────────── */
+.duels{ list-style:none; display:flex; flex-direction:column; gap:1px }
+.duels li{
+    display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;
+    padding:10px 12px; border-radius:8px; background:rgba(255,255,255,.022); font-size:13px;
+}
+.duels li.rbc{ background:rgba(255,106,19,.10) }
+.duels .duel{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; letter-spacing:.02em }
+.duels li.rbc .duel{ color:var(--oranje); font-weight:700 }
+.duels .wanneer{ color:var(--dim); font-size:12px; font-weight:800; white-space:nowrap }
+.duels .dag{
+    padding:14px 2px 4px; font-size:9px; letter-spacing:.2em; text-transform:uppercase;
+    color:#5c554e; font-weight:800; background:none;
+}
+
+/* ── periodes ──────────────────────────────────────────── */
+.periode-kop{ padding:2px 0 14px }
+.periode-kop b{
+    display:block; font-size:clamp(21px,6vw,30px); font-weight:900; letter-spacing:.01em;
+    text-transform:uppercase; color:var(--oranje);
+}
+.periode-kop span{
+    display:block; font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--dim); margin-top:5px;
+}
+.periode-kop em{
+    display:block; font-style:normal; font-size:11.5px; color:#6c635b; margin-top:9px;
+    letter-spacing:.03em; line-height:1.5;
+}
+.periode{ margin-bottom:22px }
+.periode.later{ opacity:.5 }
+.periode > h3{
+    font-size:10px; letter-spacing:.22em; text-transform:uppercase; color:#6c635b;
+    font-weight:800; margin-bottom:8px; display:flex; align-items:center; gap:8px;
+}
+.periode > h3 .nu{
+    color:#160e06; background:var(--oranje); border-radius:999px; padding:3px 8px;
+    font-size:9px; letter-spacing:.12em;
+}
 .stand{
     display:grid; grid-template-columns:1fr auto 1fr; align-items:start;
     gap:clamp(8px,3vw,26px); padding:clamp(14px,4vw,26px) clamp(12px,3vw,26px) 10px;
@@ -366,6 +460,10 @@ img{ display:block; max-width:100% }
     .zijde .naam{ max-width:260px }
     .tel .cijfer{ max-width:180px }
     .log{ padding:0 40px 30px; display:grid; grid-template-columns:1fr 1fr; gap:0 34px; align-items:start }
+    /* Een ranglijst die over de volle breedte uitwaaiert leest slecht:
+       de club staat dan meters van zijn eigen punten. */
+    .zij{ padding:22px 40px 30px; max-width:760px; margin:0 auto; width:100% }
+    .rang td{ padding:9px 6px }
     .log .kolom-a{ grid-column:1 } .log .kolom-b{ grid-column:2 }
     .balk{ max-width:520px; margin:0 auto }
     .groot{ min-height:74px }
@@ -392,7 +490,8 @@ img{ display:block; max-width:100% }
             </div>
         </div>
 
-        <div class="scherm">
+        <div class="bladen" id="bladen">
+        <div class="scherm" data-blad="bord">
             <section class="stand">
                 <div class="zijde">
                     <div class="regel naam" id="naam-rbc" style="--n:3"></div>
@@ -432,6 +531,25 @@ img{ display:block; max-width:100% }
                 </div>
             </section>
         </div>
+
+        <div class="scherm" data-blad="tabel">
+            <section class="zij">
+                <h2 class="streep" id="kop-tabel">stand</h2>
+                <div id="tabel-uit"><p class="leeg">…</p></div>
+                <h2 class="streep" id="kop-programma">programma</h2>
+                <ul class="duels" id="programma-uit"></ul>
+            </section>
+        </div>
+
+        <div class="scherm" data-blad="periodes">
+            <section class="zij">
+                <div class="periode-kop" id="periode-kop"></div>
+                <div id="periodes-uit"><p class="leeg">…</p></div>
+            </section>
+        </div>
+        </div>
+
+        <div class="stippen" id="stippen"></div>
     </main>
 
     <nav class="balk">
@@ -535,7 +653,14 @@ const TEKST = {
         gekopieerd: 'stand gekopieerd', plaatje: 'bord‑plaatje klaar',
         opgeslagen: 'wedstrijd bewaard', offline: 'geen bereik — bord werkt gewoon door',
         nieuwe_versie: 'nieuwe versie — tik om te verversen', deel: 'stuur',
-        uit_bij: 'uit bij', thuis_tegen: 'thuis tegen', bijgewerkt: 'selectie bijgewerkt'
+        uit_bij: 'uit bij', thuis_tegen: 'thuis tegen', bijgewerkt: 'selectie bijgewerkt',
+        tabel: 'stand', programma: 'programma', periodes: 'periodes',
+        th_club: 'club', th_wed: 'w', th_pnt: 'ptn', th_ds: 'ds', th_vorm: 'vorm',
+        z_promotie: 'kampioen', z_nacompetitie: 'nacompetitie', z_degradatie: 'degradatie',
+        periode_nu: 'e periode', nog_rondes: n => 'nog ' + n + (n === 1 ? ' ronde' : ' rondes') + ' te spelen',
+        periode_uitleg: 'De winnaar van een periode plaatst zich voor de nacompetitie. Drie periodes: 12, 11 en 11 rondes.',
+        gespeeld_al: 'gespeeld', geen_tabel: 'stand nog niet opgehaald',
+        van_bron: 'bron: hollandsevelden.nl', bijgewerkt_om: 'bijgewerkt'
     },
     en: {
         tik: 'tap a digit = goal', verloop: 'timeline', eerder: 'earlier',
@@ -550,7 +675,14 @@ const TEKST = {
         gekopieerd: 'score copied', plaatje: 'board image ready',
         opgeslagen: 'match saved', offline: 'no signal — the board carries on',
         nieuwe_versie: 'new version — tap to refresh', deel: 'send',
-        uit_bij: 'away at', thuis_tegen: 'home to', bijgewerkt: 'squad updated'
+        uit_bij: 'away at', thuis_tegen: 'home to', bijgewerkt: 'squad updated',
+        tabel: 'table', programma: 'fixtures', periodes: 'periods',
+        th_club: 'club', th_wed: 'p', th_pnt: 'pts', th_ds: 'gd', th_vorm: 'form',
+        z_promotie: 'champion', z_nacompetitie: 'play-offs', z_degradatie: 'relegation',
+        periode_nu: 'st period', nog_rondes: n => n + (n === 1 ? ' round' : ' rounds') + ' left',
+        periode_uitleg: 'The winner of a period qualifies for the play-offs. Three periods: 12, 11 and 11 rounds.',
+        gespeeld_al: 'played', geen_tabel: 'table not fetched yet',
+        van_bron: 'source: hollandsevelden.nl', bijgewerkt_om: 'updated'
     }
 };
 const POSITIES = {
@@ -951,6 +1083,168 @@ function vlagVan(land) {
 }
 
 /* ════════════════════════════════════════════════════════
+   8b. BLADEN
+   Het bord heeft drie pagina's: het scorebord, de stand en de
+   periodes. Je veegt ertussen — geen derde knop onderaan.
+   ════════════════════════════════════════════════════════ */
+const BLADEN = ['bord', 'tabel', 'periodes'];
+let bladNu = 0;
+
+(function bouwStippen() {
+    const h = $('stippen');
+    BLADEN.forEach(function (naam, i) {
+        const b = document.createElement('button');
+        b.className = 'stip'; b.type = 'button';
+        b.setAttribute('aria-label', naam);
+        b.addEventListener('click', function () { naarBlad(i); });
+        h.appendChild(b);
+    });
+})();
+function naarBlad(i) {
+    i = Math.max(0, Math.min(BLADEN.length - 1, i));
+    const bladen = $('bladen');
+    bladen.scrollTo({ left: bladen.clientWidth * i, behavior: RUSTIG ? 'auto' : 'smooth' });
+}
+function merkBlad() {
+    const bladen = $('bladen');
+    const i = Math.round(bladen.scrollLeft / Math.max(bladen.clientWidth, 1));
+    if (i === bladNu) return;
+    bladNu = i;
+    [...$('stippen').children].forEach(function (s, k) {
+        s.setAttribute('aria-current', k === i ? 'true' : 'false');
+    });
+    OPSLAG.schrijf('rbc-blad', i);
+    klik();
+}
+$('bladen').addEventListener('scroll', function () {
+    clearTimeout(merkBlad.klok);
+    merkBlad.klok = setTimeout(merkBlad, 90);
+}, { passive: true });
+
+/* ════════════════════════════════════════════════════════
+   8c. STAND, PROGRAMMA EN PERIODES
+   Uit competitie.json, dat elk uur door een taak in de repo
+   wordt ververst. Geen proxy vanaf de telefoon dus: op de
+   tribune staat de tabel er meteen, ook zonder bereik.
+   ════════════════════════════════════════════════════════ */
+let C = null;
+const isRBC = naam => /^rbc\b/i.test(String(naam || '').trim());
+
+function zoneVan(pos, aantal) {
+    if (!C || !C.zones) return '';
+    if (pos <= (C.zones.promotie || 0)) return 'zone-p';
+    if (pos <= (C.zones.promotie || 0) + (C.zones.nacompetitie || 0)) return 'zone-n';
+    if (pos > aantal - (C.zones.degradatie || 0)) return 'zone-d';
+    return '';
+}
+
+function tekenTabel() {
+    const el = $('tabel-uit');
+    if (!C || !C.stand || !C.stand.length) {
+        el.innerHTML = '<p class="leeg">' + veilig(t('geen_tabel')) + '</p>';
+        return;
+    }
+    const n = C.stand.length;
+    el.innerHTML =
+        '<table class="rang"><thead><tr>' +
+            '<th></th><th class="l">' + veilig(t('th_club')) + '</th>' +
+            '<th>' + veilig(t('th_wed')) + '</th><th>' + veilig(t('th_pnt')) + '</th>' +
+            '<th>' + veilig(t('th_ds')) + '</th><th class="l">' + veilig(t('th_vorm')) + '</th>' +
+        '</tr></thead><tbody>' +
+        C.stand.map(function (r) {
+            const klas = [zoneVan(r.pos, n), isRBC(r.club) ? 'rbc' : ''].filter(Boolean).join(' ');
+            const vorm = (r.vorm || []).map(function (v) {
+                return '<i class="' + veilig(v.uitslag) + '" title="' + veilig(v.wat || '') + '"></i>';
+            }).join('');
+            return '<tr class="' + klas + '">' +
+                '<td class="pos">' + veilig(r.pos) + '</td>' +
+                '<td class="club">' + veilig(r.club) + '</td>' +
+                '<td>' + veilig(r.wed) + '</td>' +
+                '<td class="pnt">' + veilig(r.pnt) + '</td>' +
+                '<td>' + (r.ds > 0 ? '+' : '') + veilig(r.ds) + '</td>' +
+                '<td><span class="vorm">' + vorm + '</span></td></tr>';
+        }).join('') +
+        '</tbody></table>' +
+        '<div class="uitleg">' +
+            '<span><b style="background:#39c07a"></b>' + veilig(t('z_promotie')) + '</span>' +
+            '<span><b style="background:#ff6a13"></b>' + veilig(t('z_nacompetitie')) + '</span>' +
+            '<span><b style="background:#d1453c"></b>' + veilig(t('z_degradatie')) + '</span>' +
+        '</div>' +
+        '<p class="bron">' + veilig(t('bijgewerkt_om')) + ' ' + veilig(wanneer(C.bijgewerkt)) +
+            '  ·  ' + veilig(t('van_bron')) + '</p>';
+}
+
+function wanneer(iso) {
+    if (!iso) return '—';
+    try {
+        return new Date(iso).toLocaleString(TAAL === 'nl' ? 'nl-NL' : 'en-GB',
+            { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso; }
+}
+
+function tekenProgramma() {
+    const el = $('programma-uit');
+    const duels = (C && C.programma) || [];
+    if (!duels.length) { el.innerHTML = '<li class="leeg">—</li>'; return; }
+    let dag = '';
+    el.innerHTML = duels.slice(0, 12).map(function (w) {
+        let kop = '';
+        if (w.datum && w.datum !== dag) { dag = w.datum; kop = '<li class="dag">' + veilig(dag) + '</li>'; }
+        const ons = isRBC(w.thuis) || isRBC(w.uit);
+        return kop + '<li class="' + (ons ? 'rbc' : '') + '">' +
+            '<span class="duel">' + veilig(w.thuis) + ' – ' + veilig(w.uit) + '</span>' +
+            '<span class="wanneer">' + veilig(w.tijd || '') + '</span></li>';
+    }).join('');
+}
+
+function tekenPeriodes() {
+    const kop = $('periode-kop'), el = $('periodes-uit');
+    if (!C || !C.periodes || !C.periodes.length) {
+        kop.innerHTML = ''; el.innerHTML = '<p class="leeg">' + veilig(t('geen_tabel')) + '</p>';
+        return;
+    }
+    const nu = C.periode_nu || 1;
+    const rest = C.periode_resterend;
+    kop.innerHTML =
+        '<b>' + veilig(nu) + veilig(t('periode_nu')) + '</b>' +
+        '<span>' + (rest != null ? veilig(t('nog_rondes')(rest)) : '') + '</span>' +
+        '<em>' + veilig(t('periode_uitleg')) + '</em>';
+
+    el.innerHTML = C.periodes.map(function (p, i) {
+        const actief = (i + 1) === nu;
+        const rijen = p.rijen || [];
+        const n = rijen.length;
+        return '<div class="periode' + (i + 1 > nu ? ' later' : '') + '">' +
+            '<h3>' + veilig(p.naam) + (actief ? '<span class="nu">nu</span>' : '') + '</h3>' +
+            '<table class="rang"><tbody>' +
+            rijen.slice(0, actief ? n : 5).map(function (r) {
+                const klas = [r.pos === 1 ? 'zone-n' : '', isRBC(r.club) ? 'rbc' : ''].filter(Boolean).join(' ');
+                return '<tr class="' + klas + '">' +
+                    '<td class="pos">' + veilig(r.pos) + '</td>' +
+                    '<td class="club">' + veilig(r.club) + '</td>' +
+                    '<td>' + veilig(r.wed) + '</td>' +
+                    '<td class="pnt">' + veilig(r.pnt) + '</td>' +
+                    '<td>' + (r.ds > 0 ? '+' : '') + veilig(r.ds) + '</td></tr>';
+            }).join('') +
+            '</tbody></table></div>';
+    }).join('');
+}
+
+function tekenCompetitie() { tekenTabel(); tekenProgramma(); tekenPeriodes(); }
+
+function haalCompetitie() {
+    const bewaard = OPSLAG.lees('rbc-competitie', null);
+    if (bewaard) { C = bewaard; tekenCompetitie(); }
+    fetch('competitie.json?v=' + Date.now())
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(function (d) {
+            if (!d || !d.stand) return;
+            C = d; OPSLAG.schrijf('rbc-competitie', d); tekenCompetitie();
+        })
+        .catch(function () { if (!C) tekenCompetitie(); });
+}
+
+/* ════════════════════════════════════════════════════════
    9. STUREN
    Eerst als plaatje: een bord‑plaatje in de groepsapp zegt meer
    dan "2-1". Lukt dat niet, dan gewoon de tekst.
@@ -1107,7 +1401,9 @@ function zetTaal(nieuw) {
     $('kop-nummer').textContent = t('wie_nummer');
     $('kop-scorer').textContent = t('wie_scoorde');
     $('scorer-onbekend').textContent = t('onbekend');
-    tekenKop(); tekenVerloop(); tekenEerder();
+    $('kop-tabel').textContent = t('tabel');
+    $('kop-programma').textContent = t('programma');
+    tekenKop(); tekenVerloop(); tekenEerder(); tekenCompetitie();
     if ($('laag-nummer').classList.contains('aan')) tekenShirt();
 }
 
@@ -1157,8 +1453,8 @@ document.addEventListener('keydown', function (e) {
     }
     if ($('laag-scorer').classList.contains('aan')) return;
     if (e.key === ' ') { $('klok-start').click(); e.preventDefault(); }
-    if (e.key === 'ArrowLeft') scoor(true);
-    if (e.key === 'ArrowRight') scoor(false);
+    if (e.key === 'ArrowLeft') naarBlad(bladNu - 1);
+    if (e.key === 'ArrowRight') naarBlad(bladNu + 1);
 });
 
 /* ════════════════════════════════════════════════════════
@@ -1194,6 +1490,10 @@ function vulUit(m) {
 
     zetTaal(TAAL);
     tekenBord(); tekenEerder(); tekenKop();
+    haalCompetitie();
+    [...$('stippen').children].forEach(function (s, k) {
+        s.setAttribute('aria-current', k === 0 ? 'true' : 'false');
+    });
 
     fetch('data.json?v=' + Date.now())
         .then(r => r.json())

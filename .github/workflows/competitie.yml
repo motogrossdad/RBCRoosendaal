@@ -1,0 +1,55 @@
+# Houdt competitie.json bij: stand, periodestanden, programma en uitslagen.
+#
+# Waarom hier en niet in de app: op de tribune is het bereik slecht en de
+# publieke CORS-proxies zijn traag en wisselvallig. Eén keer per uur hier
+# ophalen en meecommitten betekent dat de tabel er meteen staat, ook zonder
+# bereik — en dat de bron niet door elke bezoeker apart wordt bevraagd.
+
+name: Competitie bijwerken
+
+on:
+  schedule:
+    # Elk uur op :20. Rond de wedstrijden (za/zo-middag) is dat ruim op tijd,
+    # en :00 is bij iedereen druk.
+    - cron: '20 * * * *'
+  workflow_dispatch:        # met de hand kunnen starten
+
+permissions:
+  contents: write
+
+concurrency:
+  group: competitie
+  cancel-in-progress: false
+
+jobs:
+  bijwerken:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: beautifulsoup installeren
+        run: pip install --quiet beautifulsoup4
+
+      - name: ophalen
+        run: python3 tools/haal-competitie.py
+
+      - name: committen als er iets veranderd is
+        run: |
+          if [ -z "$(git status --porcelain competitie.json)" ]; then
+            echo "niets veranderd"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add competitie.json
+          git commit -m "Competitie bijgewerkt"
+          # Iemand kan intussen geduwd hebben; dan opnieuw proberen boven op main.
+          for poging in 1 2 3; do
+            git push && exit 0
+            git pull --rebase origin main || true
+          done
+          exit 1
