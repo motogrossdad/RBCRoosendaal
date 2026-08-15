@@ -356,7 +356,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
 }
 .stand{
     display:grid; grid-template-columns:1fr auto 1fr; align-items:start;
-    gap:clamp(8px,3vw,26px); padding:clamp(14px,4vw,26px) clamp(12px,3vw,26px) 10px;
+    gap:clamp(8px,3vw,26px); padding:clamp(10px,3vw,26px) clamp(12px,3vw,26px) 6px;
 }
 .zijde{ display:flex; flex-direction:column; align-items:center; gap:10px; min-width:0 }
 .zijde .naam{ width:100%; max-width:210px }
@@ -366,18 +366,31 @@ tr.zone-d td.pos::before{ background:#d1453c }
     transition:background .12s, border-color .12s;
 }
 .tel:active{ background:rgba(255,106,19,.10); border-color:rgba(255,106,19,.35) }
-.tel .cijfer{ width:100%; max-width:min(31vw, 148px) }
-.wenk{
-    text-align:center; font-size:10px; letter-spacing:.2em; text-transform:uppercase;
-    color:#6c635b; font-weight:800; padding:2px 12px 0;
+.tel .cijfer{ width:100%; max-width:min(26vw, 128px) }
+/* Eén knop, groot genoeg om zonder bril te raken. Wie er scoorde
+   vraagt hij daarna; hoe laat het ongeveer is rekent hij zelf uit. */
+.doelpunt-vak{ padding:6px clamp(12px,3vw,26px) 2px }
+.doelpunt{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:12px;
+    padding:20px 16px; border-radius:16px; border:0;
+    background:var(--oranje); color:#160e06;
+    font-size:clamp(17px,4.8vw,21px); font-weight:900; letter-spacing:.1em; text-transform:uppercase;
+    box-shadow:0 12px 30px -12px rgba(255,106,19,.9);
+    min-height:68px; line-height:1;
+}
+.doelpunt:active{ background:var(--oranje-diep); transform:translateY(1px) }
+.doelpunt .bal{ font-size:24px; line-height:1 }
+.klok-uitleg{
+    font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; color:#6c635b;
+    font-weight:800; text-align:center; margin-top:6px; min-height:12px;
 }
 .min{
     font-size:11px; letter-spacing:.12em; font-weight:700; color:#6c635b;
-    padding:7px 16px; border-radius:999px; border:1px solid var(--lijn);
+    padding:6px 15px; border-radius:999px; border:1px solid var(--lijn);
 }
 .min:hover{ color:var(--been) }
 /* de klok hangt op de hoogte van de cijfers, de knopjes eronder */
-.midden{ display:flex; flex-direction:column; align-items:center; gap:12px; padding-top:clamp(52px,17vw,104px) }
+.midden{ display:flex; flex-direction:column; align-items:center; gap:10px; padding-top:clamp(44px,14vw,92px) }
 .klok{ width:clamp(50px,14vw,88px); position:relative }
 .klok::after{
     content:"'"; position:absolute; left:calc(100% + 3px); top:2px;
@@ -541,16 +554,23 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .toets.stil{ font-size:12px; letter-spacing:.12em; font-weight:800; color:var(--dim) }
 
 /* ── wie scoorde ──────────────────────────────────────────── */
-.rooster{ display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px }
+.rooster{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:9px }
 .speler{
-    display:flex; flex-direction:column; align-items:center; gap:5px; padding:11px 5px;
-    border-radius:11px; background:rgba(255,255,255,.035); border:1px solid var(--lijn);
-    text-align:center;
+    display:flex; flex-direction:column; align-items:center; gap:6px; padding:15px 6px;
+    border-radius:12px; background:rgba(255,255,255,.045); border:1px solid var(--lijn);
+    text-align:center; min-height:78px; justify-content:center;
 }
 .speler:active{ background:var(--oranje); color:#160e06; border-color:var(--oranje) }
-.speler b{ font-size:20px; font-weight:900; font-variant-numeric:tabular-nums; line-height:1 }
-.speler span{ font-size:9.5px; letter-spacing:.04em; text-transform:uppercase; opacity:.72;
+.speler b{ font-size:25px; font-weight:900; font-variant-numeric:tabular-nums; line-height:1 }
+.speler span{ font-size:11px; letter-spacing:.03em; text-transform:uppercase; opacity:.8;
               overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100% }
+/* de tegenpartij is geen speler maar wel een keuze: over de volle breedte */
+.speler.breed{
+    grid-column:1 / -1; flex-direction:row; gap:12px; min-height:66px; padding:14px;
+    background:rgba(255,255,255,.06);
+}
+.speler.breed b{ font-size:22px }
+.speler.breed span{ font-size:13px; font-weight:800; letter-spacing:.06em; opacity:1 }
 
 /* ── melding ──────────────────────────────────────────────── */
 #melding{
@@ -613,10 +633,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
 
                 <div class="midden">
                     <div class="regel klok klein" id="klok" style="--n:2"></div>
-                    <div class="klok-knoppen">
-                        <button class="rond" id="klok-start" aria-label="klok">▶</button>
-                        <button class="rond" id="klok-nul" aria-label="klok op nul">↺</button>
-                    </div>
+                    <p class="klok-uitleg" id="klok-uitleg"></p>
                 </div>
 
                 <div class="zijde">
@@ -627,7 +644,12 @@ tr.zone-d td.pos::before{ background:#d1453c }
                     <button class="min" id="min-tegen">−1</button>
                 </div>
             </section>
-            <p class="wenk" id="wenk">tik op een cijfer = doelpunt</p>
+            <div class="doelpunt-vak">
+                <button class="doelpunt" id="knop-doelpunt">
+                    <span class="bal">⚽</span>
+                    <span id="lab-doelpunt">er is gescoord</span>
+                </button>
+            </div>
 
             <section class="log">
                 <div class="kolom-a">
@@ -802,7 +824,10 @@ function plat(s) {
    ════════════════════════════════════════════════════════ */
 const TEKST = {
     nl: {
-        tik: 'tik op een cijfer = doelpunt', verloop: 'verloop', eerder: 'eerder',
+        tik: 'er is gescoord', verloop: 'verloop', eerder: 'eerder',
+        wie_was_het: 'wie scoorde er?', de_tegenpartij: 'de tegenpartij',
+        weet_niet: 'weet ik niet', vanaf_aftrap: 'geteld vanaf de aftrap',
+        geen_klok: 'geen tijd bekend',
         verloop_leeg: 'Nog niet gescoord. Tik op een cijfer.',
         eerder_leeg: 'Nog geen bewaarde wedstrijden.',
         nieuw: 'nieuwe wedstrijd', stuur: 'stuur stand', stuur_sub: 'als bord‑plaatje',
@@ -832,7 +857,10 @@ const TEKST = {
         thuis_bij: 'thuis in het Atik Stadion'
     },
     en: {
-        tik: 'tap a digit = goal', verloop: 'timeline', eerder: 'earlier',
+        tik: 'someone scored', verloop: 'timeline', eerder: 'earlier',
+        wie_was_het: 'who scored?', de_tegenpartij: 'the opposition',
+        weet_niet: "don't know", vanaf_aftrap: 'counted from kick-off',
+        geen_klok: 'no time known',
         verloop_leeg: 'No goals yet. Tap a digit.',
         eerder_leeg: 'No saved matches yet.',
         nieuw: 'new match', stuur: 'send score', stuur_sub: 'as a board image',
@@ -1036,25 +1064,37 @@ function bewaarHistorie(l) { OPSLAG.schrijf('rbc-historie', l.slice(0, 12)); }
    Voetbal telt vanaf de eerste minuut: de eerste zestig
    seconden zijn minuut 1, niet minuut 0.
    ════════════════════════════════════════════════════════ */
-function verstreken() {
-    if (!W) return 1;
-    return Math.floor((W.gestopt + (W.start ? Date.now() - W.start : 0)) / 60000) + 1;
+/* Niemand hoeft een stopwatch te bedienen. De aftrap staat in het
+   programma, dus de app weet zelf hoe laat het ongeveer in de
+   wedstrijd is. Ruw is precies genoeg: het gaat om "rond de 40e". */
+function aftrapTijd() {
+    const w = onsDuel();
+    if (!w) return null;
+    return leesDatum(w.datum, w.tijd);
 }
-function loopt() { return !!(W && W.start); }
-function minuutNu() { return (W && (W.start || W.gestopt)) ? String(verstreken()) : ''; }
+function verstreken() {
+    const start = aftrapTijd();
+    if (!start) return null;
+    const min = Math.floor((Date.now() - start) / 60000) + 1;
+    if (min < 1 || min > 140) return null;          /* ruim voor of lang na de tijd */
+    if (min > 45 && min <= 60) return 45;           /* rust: blijft op 45 staan */
+    if (min > 60) return Math.min(min - 15, 95);    /* na rust weer doortellen */
+    return min;
+}
+function loopt() { return verstreken() != null; }
+function minuutNu() { const m = verstreken(); return m == null ? '' : String(m); }
 
 let regelKlok, regelScoreRbc, regelScoreTegen, regelNaamRbc, regelNaamTegen;
 
 function tekenKlok() {
-    const aan = loopt();
+    const m = verstreken();
+    const aan = m != null;
     $('lamp').classList.toggle('aan', aan);
-    $('klok-start').textContent = aan ? '❚❚' : '▶';
-    $('klok-start').classList.toggle('speelt', aan);
-    const bezig = !!(W && (W.start || W.gestopt));
-    $('klok').classList.toggle('loopt-al', bezig);
-    regelKlok.zet(bezig ? String(verstreken()).padStart(2, ' ') : '');
+    $('klok').classList.toggle('loopt-al', aan);
+    regelKlok.zet(aan ? String(m).padStart(2, ' ') : '');
+    $('klok-uitleg').textContent = aan ? t('vanaf_aftrap') : '';
 }
-setInterval(function () { if (loopt()) tekenKlok(); }, 10000);
+setInterval(tekenKlok, 30000);
 
 /* ════════════════════════════════════════════════════════
    6. HET BORD TEKENEN
@@ -1132,13 +1172,39 @@ function tekenKop() {
 /* ════════════════════════════════════════════════════════
    7. SCOREN
    ════════════════════════════════════════════════════════ */
-function scoor(eigen) {
+function scoor(eigen, naam) {
     if (!W) nieuweWedstrijd(tegenstanderVan(D.volgende));
     if (eigen) W.rbc++; else W.hen++;
-    W.doelpunten.push({ eigen: eigen, minuut: minuutNu(), naam: '' });
+    W.doelpunten.push({ eigen: eigen, minuut: minuutNu(), naam: naam || '' });
     bewaar(); tekenBord(); tekenSeizoen();
     if (navigator.vibrate) { try { navigator.vibrate(eigen ? [14, 40, 14] : 10); } catch (e) {} }
-    if (eigen) openScorer(W.doelpunten.length - 1);
+}
+
+/* De enige handeling tijdens de wedstrijd: er is gescoord. Wie het
+   was vraagt hij meteen erna, en de tegenpartij staat als eerste
+   keuze bovenaan — dan is het één knop en één tik. */
+function erIsGescoord() {
+    const r = $('scorer-rooster');
+    $('kop-scorer').textContent = t('wie_was_het');
+    const tegen = (W && W.tegen) || t('de_tegenpartij');
+    r.innerHTML =
+        '<button class="speler breed" data-kant="tegen"><b>⚽</b><span>' +
+            veilig(tegen) + '</span></button>' +
+        D.squad.map(function (p) {
+            return '<button class="speler" data-nr="' + veilig(p.number) + '">' +
+                '<b>' + veilig(p.number) + '</b><span>' + veilig(kortNaam(p.name)) + '</span></button>';
+        }).join('');
+    r.querySelectorAll('[data-nr]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            const p = D.squad.find(x => String(x.number) === b.dataset.nr);
+            dicht('laag-scorer');
+            scoor(true, p ? p.name : '');
+        });
+    });
+    const t2 = r.querySelector('[data-kant="tegen"]');
+    if (t2) t2.addEventListener('click', function () { dicht('laag-scorer'); scoor(false); });
+    kiesKlaar = null;
+    open('laag-scorer');
 }
 function terug(eigen) {
     if (!W) return;
@@ -1187,7 +1253,8 @@ function openScorer(i) {
 }
 $('scorer-onbekend').addEventListener('click', function () {
     dicht('laag-scorer');
-    if (kiesKlaar) kiesKlaar(null);
+    if (kiesKlaar) { const k = kiesKlaar; kiesKlaar = null; k(null); return; }
+    scoor(true);                       /* wel een RBC-doelpunt, alleen geen naam */
 });
 function kortNaam(n) {
     const d = String(n || '').trim().split(/\s+/);
@@ -1945,7 +2012,8 @@ function zetTaal(nieuw) {
     TAAL = nieuw; OPSLAG.schrijf('rbc-taal', nieuw);
     document.documentElement.lang = nieuw;
     $('knop-taal').textContent = nieuw === 'nl' ? 'EN' : 'NL';
-    $('wenk').textContent = t('tik');
+    $('lab-doelpunt').textContent = t('tik');
+    $('scorer-onbekend').textContent = t('weet_niet');
     $('kop-verloop').textContent = t('verloop');
     $('kop-eerder').textContent = t('eerder');
     $('knop-nieuw').textContent = t('nieuw');
@@ -1955,7 +2023,6 @@ function zetTaal(nieuw) {
     $('sub-nummer').textContent = t('nummer_sub');
     $('kop-nummer').textContent = t('wie_nummer');
     $('kop-scorer').textContent = t('wie_scoorde');
-    $('scorer-onbekend').textContent = t('onbekend');
     $('kop-tabel').textContent = t('tabel');
     $('kop-programma').textContent = t('programma');
     $('kop-uitslagen').textContent = t('uitslagen');
@@ -1971,19 +2038,12 @@ function zetTaal(nieuw) {
 /* ════════════════════════════════════════════════════════
    12. KNOPPEN
    ════════════════════════════════════════════════════════ */
-$('tel-rbc').addEventListener('click', () => scoor(true));
-$('tel-tegen').addEventListener('click', () => scoor(false));
+$('knop-doelpunt').addEventListener('click', erIsGescoord);
+$('tel-rbc').addEventListener('click', erIsGescoord);
+$('tel-tegen').addEventListener('click', erIsGescoord);
 $('min-rbc').addEventListener('click', () => terug(true));
 $('min-tegen').addEventListener('click', () => terug(false));
-$('klok-start').addEventListener('click', function () {
-    if (!W) nieuweWedstrijd(tegenstanderVan(D.volgende));
-    if (W.start) { W.gestopt += Date.now() - W.start; W.start = null; }
-    else { W.start = Date.now(); }
-    bewaar(); tekenKlok();
-});
-$('klok-nul').addEventListener('click', function () {
-    if (!W) return; W.start = null; W.gestopt = 0; bewaar(); tekenKlok();
-});
+
 $('knop-stuur').addEventListener('click', function () { stuur(W); });
 $('knop-nummer').addEventListener('click', openNummer);
 $('knop-taal').addEventListener('click', function () { zetTaal(TAAL === 'nl' ? 'en' : 'nl'); });
@@ -1994,7 +2054,7 @@ $('knop-geluid').addEventListener('click', function () {
     if (GELUID) klik();
 });
 $('knop-nieuw').addEventListener('click', function () {
-    if (W && (W.rbc || W.hen || W.gestopt || W.start)) {
+    if (W && (W.rbc || W.hen || W.doelpunten.length)) {
         const l = historie();
         l.unshift({ rbc: W.rbc, hen: W.hen, tegen: W.tegen, doelpunten: W.doelpunten, sinds: W.sinds });
         bewaarHistorie(l);
@@ -2013,7 +2073,7 @@ document.addEventListener('keydown', function (e) {
         return;
     }
     if ($('laag-scorer').classList.contains('aan')) return;
-    if (e.key === ' ') { $('klok-start').click(); e.preventDefault(); }
+    if (e.key === ' ') { $('knop-doelpunt').click(); e.preventDefault(); }
     if (e.key === 'ArrowLeft') naarBlad(bladNu - 1);
     if (e.key === 'ArrowRight') naarBlad(bladNu + 1);
 });
