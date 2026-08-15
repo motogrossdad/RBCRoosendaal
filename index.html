@@ -53,7 +53,11 @@ img{ display:block; max-width:100% }
 
 /* ── de kast waar het bord in hangt ───────────────────────── */
 .kamer{
-    height:100vh; height:100dvh;
+    /* Op de telefoon schuift de browserbalk onderaan over de pagina
+       heen. dvh houdt daar niet altijd rekening mee, svh wel, en
+       --app-h (uit visualViewport) is het nauwkeurigst. Alle drie,
+       in oplopende betrouwbaarheid. */
+    height:100vh; height:100svh; height:var(--app-h, 100svh);
     display:flex; flex-direction:column;
     padding:max(10px, env(safe-area-inset-top)) 10px 0;
     max-width:1180px; margin:0 auto; width:100%;
@@ -282,7 +286,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .veld-vak{ container-type:inline-size; display:flex; justify-content:center }
 .veld{
     position:relative; aspect-ratio:.72;
-    height:min(calc(100dvh - 292px), 134vw); width:auto; max-width:100%; border-radius:12px; overflow:hidden;
+    height:min(calc(var(--app-h, 100svh) - 292px), 134vw); width:auto; max-width:100%; border-radius:12px; overflow:hidden;
     background:
         repeating-linear-gradient(180deg, rgba(255,255,255,.028) 0 8.33%, transparent 8.33% 16.66%),
         linear-gradient(180deg, #1d3524, #16281b);
@@ -435,6 +439,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .balk{
     flex:none; display:grid; grid-template-columns:1fr 1fr; gap:10px;
     padding:12px 0 calc(12px + env(safe-area-inset-bottom));
+    padding-bottom:calc(12px + env(safe-area-inset-bottom) + var(--balk-extra, 0px));
 }
 .groot{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px;
@@ -450,7 +455,8 @@ tr.zone-d td.pos::before{ background:#d1453c }
 
 /* ── lagen (rugnummer + wie scoorde) ──────────────────────── */
 .laag{
-    position:fixed; inset:0; z-index:40; display:none;
+    position:fixed; left:0; top:0; right:0; z-index:40; display:none;
+    height:100vh; height:100svh; height:var(--app-h, 100svh);
     background:rgba(8,7,6,.86); backdrop-filter:blur(14px);
     padding:max(10px, env(safe-area-inset-top)) 10px calc(10px + env(safe-area-inset-bottom));
 }
@@ -559,7 +565,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
 /* ── groot scherm ─────────────────────────────────────────── */
 @media (min-width:820px){
     .kamer{ padding:22px 22px 0; justify-content:center }
-    .bord{ flex:0 1 auto; max-height:calc(100dvh - 44px) }
+    .bord{ flex:0 1 auto; max-height:calc(var(--app-h, 100svh) - 44px) }
     .stand{ padding:34px 40px 16px; gap:40px }
     .zijde .naam{ max-width:260px }
     .tel .cijfer{ max-width:180px }
@@ -745,6 +751,32 @@ tr.zone-d td.pos::before{ background:#d1453c }
 
 <script>
 "use strict";
+
+/* ════════════════════════════════════════════════════════
+   0a. HOE HOOG IS HET SCHERM ECHT
+   Safari en Chrome op de telefoon leggen hun eigen balk over de
+   pagina. visualViewport weet wél hoeveel er overblijft; we zetten
+   dat in --app-h zodat de knoppenbalk nooit onder die balk valt.
+   ════════════════════════════════════════════════════════ */
+(function () {
+    const vv = window.visualViewport;
+    function meet() {
+        const h = vv ? vv.height : window.innerHeight;
+        if (h > 200) document.documentElement.style.setProperty('--app-h', h + 'px');
+        /* Staat de balk eroverheen? Dan houden we wat extra lucht. */
+        const verschil = window.innerHeight - h;
+        document.documentElement.style.setProperty('--balk-extra',
+            (verschil > 4 && verschil < 140 ? Math.min(verschil, 24) : 0) + 'px');
+    }
+    meet();
+    if (vv) {
+        vv.addEventListener('resize', meet);
+        vv.addEventListener('scroll', meet);
+    }
+    window.addEventListener('resize', meet);
+    window.addEventListener('orientationchange', function () { setTimeout(meet, 250); });
+    window.addEventListener('pageshow', meet);
+})();
 
 /* ════════════════════════════════════════════════════════
    0. GEREEDSCHAP
