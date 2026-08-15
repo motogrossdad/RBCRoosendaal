@@ -416,12 +416,16 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .streep::after{ content:""; flex:1 1 auto; height:1px; background:var(--lijn) }
 .doelpunten{ list-style:none; display:flex; flex-direction:column; gap:1px }
 .doelpunten li{
-    display:grid; grid-template-columns:52px 1fr auto; align-items:center; gap:12px;
+    display:grid; grid-template-columns:minmax(52px,auto) 1fr auto; align-items:center; gap:12px;
     padding:11px 12px; border-radius:8px; background:rgba(255,255,255,.022);
     border-left:2px solid #3a332c;
 }
 .doelpunten li.eigen{ border-left-color:var(--oranje); background:rgba(255,106,19,.07) }
-.doelpunten .m{ font-size:13px; font-weight:800; color:var(--dim); font-variant-numeric:tabular-nums }
+.doelpunten .m{
+    font-size:13px; font-weight:800; color:var(--dim); font-variant-numeric:tabular-nums;
+    text-align:left; padding:4px 0; border-bottom:1px dashed rgba(244,236,225,.22);
+}
+.doelpunten .m:active{ color:var(--oranje) }
 .doelpunten li.eigen .m{ color:var(--oranje) }
 .doelpunten .w{
     font-size:14px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
@@ -554,6 +558,23 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .toets.stil{ font-size:12px; letter-spacing:.12em; font-weight:800; color:var(--dim) }
 
 /* ── wie scoorde ──────────────────────────────────────────── */
+/* Wanneer ongeveer: grote, duidelijke keuzes. Niemand hoeft een
+   minuut in te typen — "eerste helft" is voor het thuisfront net zo
+   bruikbaar als "38e". */
+.wanneer-keuze{ display:flex; flex-direction:column; gap:9px }
+.wanneer-keuze button{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left;
+    padding:18px 16px; border-radius:13px; border:1px solid var(--lijn);
+    background:rgba(255,255,255,.045); min-height:64px;
+}
+.wanneer-keuze button:active{ background:var(--oranje); color:#160e06; border-color:var(--oranje) }
+.wanneer-keuze b{
+    font-size:17px; font-weight:900; letter-spacing:.04em; text-transform:uppercase; flex:1 1 auto;
+}
+.wanneer-keuze .hint{ font-size:11.5px; color:var(--dim); font-weight:700; letter-spacing:.05em }
+.wanneer-keuze button:active .hint{ color:rgba(22,14,6,.7) }
+.wanneer-keuze .nu-tip{ background:rgba(255,106,19,.14); border-color:rgba(255,106,19,.5) }
+
 .rooster{ display:grid; grid-template-columns:repeat(auto-fill,minmax(96px,1fr)); gap:9px }
 .speler{
     display:flex; flex-direction:column; align-items:center; gap:6px; padding:15px 6px;
@@ -764,6 +785,19 @@ tr.zone-d td.pos::before{ background:#d1453c }
     </div>
 </div>
 
+<!-- ═══ laag: wanneer ongeveer ════════════════════════════ -->
+<div class="laag" id="laag-wanneer" role="dialog" aria-modal="true">
+    <div class="blad">
+        <div class="blad-kop">
+            <b id="kop-wanneer">wanneer ongeveer?</b>
+            <button class="sluit" data-sluit="laag-wanneer" aria-label="sluiten">×</button>
+        </div>
+        <div class="blad-lijf">
+            <div class="wanneer-keuze" id="wanneer-keuze"></div>
+        </div>
+    </div>
+</div>
+
 <div id="melding" role="status" aria-live="polite"></div>
 
 <!-- Reservekopie van data.json, zodat het bord ook bij de eerste
@@ -827,6 +861,10 @@ const TEKST = {
         tik: 'er is gescoord', verloop: 'verloop', eerder: 'eerder',
         wie_was_het: 'wie scoorde er?', de_tegenpartij: 'de tegenpartij',
         weet_niet: 'weet ik niet', vanaf_aftrap: 'geteld vanaf de aftrap',
+        wanneer_kop: 'wanneer ongeveer?', nu_ongeveer: m => 'nu, rond de ' + m + 'e minuut',
+        eerste_helft: 'eerste helft', tweede_helft: 'tweede helft',
+        rust_tijd: 'rust', na_afloop: 'na afloop', wanneer_weet_niet: 'geen tijd erbij',
+        tik_tijd: 'tik op de tijd om hem te wijzigen',
         geen_klok: 'geen tijd bekend',
         verloop_leeg: 'Nog niet gescoord. Tik op een cijfer.',
         eerder_leeg: 'Nog geen bewaarde wedstrijden.',
@@ -860,6 +898,10 @@ const TEKST = {
         tik: 'someone scored', verloop: 'timeline', eerder: 'earlier',
         wie_was_het: 'who scored?', de_tegenpartij: 'the opposition',
         weet_niet: "don't know", vanaf_aftrap: 'counted from kick-off',
+        wanneer_kop: 'roughly when?', nu_ongeveer: m => 'now, around ' + m + " min",
+        eerste_helft: 'first half', tweede_helft: 'second half',
+        rust_tijd: 'half-time', na_afloop: 'after the final whistle', wanneer_weet_niet: 'no time',
+        tik_tijd: 'tap the time to change it',
         geen_klok: 'no time known',
         verloop_leeg: 'No goals yet. Tap a digit.',
         eerder_leeg: 'No saved matches yet.',
@@ -1084,6 +1126,15 @@ function verstreken() {
 function loopt() { return verstreken() != null; }
 function minuutNu() { const m = verstreken(); return m == null ? '' : String(m); }
 
+/* Een doelpunt heeft óf een minuut ("38"), óf een fase ("eerste
+   helft"), óf niets. Overal waar we een tijd tonen gaat het hier
+   langs, zodat het bord, de tekst en het plaatje hetzelfde zeggen. */
+function wanneerTekst(d, leegTeken) {
+    if (d && d.minuut) return d.minuut + "'";
+    if (d && d.fase) return t(d.fase) || d.fase;
+    return leegTeken === undefined ? '—' : leegTeken;
+}
+
 let regelKlok, regelScoreRbc, regelScoreTegen, regelNaamRbc, regelNaamTegen;
 
 function tekenKlok() {
@@ -1132,10 +1183,13 @@ function tekenVerloop() {
     l.innerHTML = W.doelpunten.map(function (d, i) {
         const wie = d.eigen ? (d.naam || t('onbekende_speler')) : (W.tegen || t('tegenpartij'));
         return '<li class="' + (d.eigen ? 'eigen' : '') + '">' +
-            '<span class="m">' + (d.minuut ? veilig(d.minuut) + "'" : '—') + '</span>' +
+            '<button class="m" data-tijd="' + i + '">' + veilig(wanneerTekst(d)) + '</button>' +
             '<span class="w">' + veilig(wie) + '</span>' +
             '<button class="weg" data-i="' + i + '" aria-label="verwijderen">×</button></li>';
     }).join('');
+    l.querySelectorAll('[data-tijd]').forEach(function (b) {
+        b.addEventListener('click', function () { vraagWanneer(+b.dataset.tijd); });
+    });
     l.querySelectorAll('.weg').forEach(function (b) {
         b.addEventListener('click', function () {
             const i = +b.dataset.i, d = W.doelpunten[i];
@@ -1175,9 +1229,53 @@ function tekenKop() {
 function scoor(eigen, naam) {
     if (!W) nieuweWedstrijd(tegenstanderVan(D.volgende));
     if (eigen) W.rbc++; else W.hen++;
-    W.doelpunten.push({ eigen: eigen, minuut: minuutNu(), naam: naam || '' });
+    const minuut = minuutNu();
+    W.doelpunten.push({ eigen: eigen, minuut: minuut, naam: naam || '', fase: null });
     bewaar(); tekenBord(); tekenSeizoen();
     if (navigator.vibrate) { try { navigator.vibrate(eigen ? [14, 40, 14] : 10); } catch (e) {} }
+    /* Weet de app de tijd niet, dan vragen we hem: anders staat er
+       straks een doelpunt zonder wanneer in de groepsapp. */
+    if (!minuut) setTimeout(function () { vraagWanneer(W.doelpunten.length - 1); }, 220);
+    else meld(minuut + "'  ·  " + t('tik_tijd'));
+}
+
+/* Wanneer ongeveer? Weet de app de aftrap, dan staat de lopende
+   minuut bovenaan als eerste keuze en is het één tik. Weet hij het
+   niet, dan is "eerste helft" ook een prima antwoord — het gaat om
+   wat je het thuisfront vertelt, niet om de officiële statistiek. */
+function vraagWanneer(i, klaar) {
+    const d = W.doelpunten[i];
+    if (!d) return;
+    const nu = verstreken();
+    const keuzes = [];
+    if (nu != null) keuzes.push({ merk: 'nu', groot: t('nu_ongeveer')(nu), tip: true });
+    keuzes.push({ merk: '1', groot: t('eerste_helft') });
+    keuzes.push({ merk: 'rust', groot: t('rust_tijd') });
+    keuzes.push({ merk: '2', groot: t('tweede_helft') });
+    keuzes.push({ merk: 'na', groot: t('na_afloop') });
+    keuzes.push({ merk: 'geen', groot: t('wanneer_weet_niet') });
+
+    $('kop-wanneer').textContent = t('wanneer_kop');
+    $('wanneer-keuze').innerHTML = keuzes.map(function (k) {
+        return '<button type="button" data-merk="' + k.merk + '"' +
+               (k.tip ? ' class="nu-tip"' : '') + '>' +
+               '<b>' + veilig(k.groot) + '</b></button>';
+    }).join('');
+    $('wanneer-keuze').querySelectorAll('[data-merk]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            const m = b.dataset.merk;
+            d.minuut = ''; d.fase = null;
+            if (m === 'nu') d.minuut = String(nu);
+            else if (m === '1') d.fase = 'eerste_helft';
+            else if (m === 'rust') d.fase = 'rust_tijd';
+            else if (m === '2') d.fase = 'tweede_helft';
+            else if (m === 'na') d.fase = 'na_afloop';
+            bewaar(); tekenVerloop(); tekenSeizoen();
+            dicht('laag-wanneer');
+            if (klaar) klaar();
+        });
+    });
+    open('laag-wanneer');
 }
 
 /* De enige handeling tijdens de wedstrijd: er is gescoord. Wie het
@@ -1877,7 +1975,7 @@ function tekstVan(m) {
         r.push('');
         m.doelpunten.forEach(function (d) {
             const wie = d.eigen ? (d.naam || 'RBC') : (m.tegen || '—');
-            r.push((d.minuut ? d.minuut + "'" : '') + '  ' + wie);
+            r.push(wanneerTekst(d, '') + '  ' + wie);
         });
     }
     r.push('', 'rbcroosendaal.com');
@@ -1935,9 +2033,13 @@ function bordPlaatje(m) {
         x.fillRect(150, ly - 26, 5, 36);
         x.font = '800 26px system-ui, sans-serif';
         x.fillStyle = d.eigen ? '#ff6a13' : '#8b8178';
-        x.fillText(d.minuut ? d.minuut + "'" : '—', 176, ly);
+        /* "38'" is smal, "TWEEDE HELFT" niet: de naam schuift mee, anders
+           schrijven ze over elkaar heen. */
+        const tijd = plat(wanneerTekst(d));
+        x.fillText(tijd, 176, ly);
+        const kolom = Math.max(x.measureText(tijd).width + 22, 78);
         x.fillStyle = d.eigen ? '#f4ece1' : '#8b8178';
-        x.fillText(plat(d.eigen ? (d.naam || 'RBC') : (m.tegen || '—')).slice(0, 26), 254, ly);
+        x.fillText(plat(d.eigen ? (d.naam || 'RBC') : (m.tegen || '—')).slice(0, 24), 176 + kolom, ly);
         ly += 52;
     });
 
