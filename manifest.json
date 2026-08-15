@@ -1,13 +1,13 @@
 {
-  "name": "RBC Roosendaal",
+  "name": "RBC Roosendaal — Het Bord",
   "short_name": "RBC",
   "description": "De app voor op de tribune: wie is welk rugnummer, houd de stand zelf bij en stuur hem door. Werkt zonder bereik.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#0a0908",
+  "theme_color": "#14110f",
   "lang": "nl",
   "categories": ["sports"],
   "icons": [
