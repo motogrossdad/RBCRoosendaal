@@ -558,6 +558,24 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .toets.stil{ font-size:12px; letter-spacing:.12em; font-weight:800; color:var(--dim) }
 
 /* ── wie scoorde ──────────────────────────────────────────── */
+/* Zelf een minuut intikken: dezelfde toetsen als bij het rugnummer,
+   want die kent iedereen dan al. */
+.minuut-toon{
+    display:flex; align-items:baseline; justify-content:center; gap:4px;
+    padding:22px 0 6px;
+}
+.minuut-toon span{
+    font-size:clamp(58px,20vw,96px); font-weight:900; line-height:1;
+    color:var(--oranje); font-variant-numeric:tabular-nums; letter-spacing:-.03em;
+}
+.minuut-toon i{ font-style:normal; font-size:clamp(26px,8vw,42px); font-weight:900; color:var(--oranje) }
+.minuut-hint{
+    text-align:center; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color:#6c635b; font-weight:800; min-height:14px;
+}
+.toets.klaar{ background:var(--oranje); color:#160e06; border-color:var(--oranje);
+              font-size:13px; letter-spacing:.12em; font-weight:900 }
+
 /* Wanneer ongeveer: grote, duidelijke keuzes. Niemand hoeft een
    minuut in te typen — "eerste helft" is voor het thuisfront net zo
    bruikbaar als "38e". */
@@ -592,6 +610,15 @@ tr.zone-d td.pos::before{ background:#d1453c }
 }
 .speler.breed b{ font-size:22px }
 .speler.breed span{ font-size:13px; font-weight:800; letter-spacing:.06em; opacity:1 }
+.speler.breed .kant{
+    font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:var(--dim);
+    display:block; margin-top:3px; font-weight:800;
+}
+.speler.breed:active .kant{ color:rgba(22,14,6,.75) }
+.rooster-kop{
+    font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; color:#6c635b;
+    font-weight:800; grid-column:1 / -1; padding:8px 2px 0;
+}
 
 /* ── melding ──────────────────────────────────────────────── */
 #melding{
@@ -798,6 +825,21 @@ tr.zone-d td.pos::before{ background:#d1453c }
     </div>
 </div>
 
+<!-- ═══ laag: zelf de minuut kiezen ═══════════════════════ -->
+<div class="laag" id="laag-minuut" role="dialog" aria-modal="true">
+    <div class="blad">
+        <div class="blad-kop">
+            <b id="kop-minuut">welke minuut?</b>
+            <button class="sluit" data-sluit="laag-minuut" aria-label="sluiten">×</button>
+        </div>
+        <div class="blad-lijf">
+            <div class="minuut-toon"><span id="minuut-cijfer">—</span><i>'</i></div>
+            <p class="minuut-hint" id="minuut-hint"></p>
+        </div>
+        <div class="toetsen" id="minuut-toetsen"></div>
+    </div>
+</div>
+
 <div id="melding" role="status" aria-live="polite"></div>
 
 <!-- Reservekopie van data.json, zodat het bord ook bij de eerste
@@ -865,6 +907,9 @@ const TEKST = {
         eerste_helft: 'eerste helft', tweede_helft: 'tweede helft',
         rust_tijd: 'rust', na_afloop: 'na afloop', wanneer_weet_niet: 'geen tijd erbij',
         tik_tijd: 'tik op de tijd om hem te wijzigen',
+        zelf_minuut: 'zelf de minuut kiezen', welke_minuut: 'welke minuut?',
+        minuut_klaar: 'klaar', minuut_hint: 'tik de minuut in, bijvoorbeeld 38',
+        tegenpartij_kant: 'de tegenpartij scoorde', rbc_kant: 'een speler van RBC',
         geen_klok: 'geen tijd bekend',
         verloop_leeg: 'Nog niet gescoord. Tik op een cijfer.',
         eerder_leeg: 'Nog geen bewaarde wedstrijden.',
@@ -902,6 +947,9 @@ const TEKST = {
         eerste_helft: 'first half', tweede_helft: 'second half',
         rust_tijd: 'half-time', na_afloop: 'after the final whistle', wanneer_weet_niet: 'no time',
         tik_tijd: 'tap the time to change it',
+        zelf_minuut: 'pick the minute myself', welke_minuut: 'which minute?',
+        minuut_klaar: 'done', minuut_hint: 'type the minute, for example 38',
+        tegenpartij_kant: 'the opposition scored', rbc_kant: 'an RBC player',
         geen_klok: 'no time known',
         verloop_leeg: 'No goals yet. Tap a digit.',
         eerder_leeg: 'No saved matches yet.',
@@ -1239,6 +1287,47 @@ function scoor(eigen, naam) {
     else meld(minuut + "'  ·  " + t('tik_tijd'));
 }
 
+/* Zelf een minuut intikken. Dezelfde toetsen als bij het rugnummer,
+   met een grote OK eronder; 1 t/m 120, want blessuretijd bestaat. */
+let minuutGetikt = '', minuutKlaar = null;
+function openMinuut(begin, klaar) {
+    minuutGetikt = begin ? String(begin) : '';
+    minuutKlaar = klaar;
+    $('kop-minuut').textContent = t('welke_minuut');
+    $('minuut-hint').textContent = t('minuut_hint');
+    tekenMinuut();
+    open('laag-minuut');
+}
+function tekenMinuut() {
+    $('minuut-cijfer').textContent = minuutGetikt || '—';
+    const ok = $('minuut-ok');
+    if (ok) ok.disabled = !minuutGetikt;
+    if (ok) ok.style.opacity = minuutGetikt ? '1' : '.45';
+}
+(function bouwMinuutToetsen() {
+    const k = $('minuut-toetsen');
+    ['1','2','3','4','5','6','7','8','9','wis','0','ok'].forEach(function (c) {
+        const b = document.createElement('button');
+        b.className = 'toets' + (c === 'wis' ? ' stil' : (c === 'ok' ? ' klaar' : ''));
+        b.textContent = c === 'wis' ? '⌫' : (c === 'ok' ? '✓' : c);
+        if (c === 'ok') b.id = 'minuut-ok';
+        b.addEventListener('click', function () {
+            if (c === 'ok') {
+                if (!minuutGetikt) return;
+                const m = Math.max(1, Math.min(120, +minuutGetikt));
+                dicht('laag-minuut');
+                if (minuutKlaar) { const f = minuutKlaar; minuutKlaar = null; f(String(m)); }
+                return;
+            }
+            if (c === 'wis') minuutGetikt = minuutGetikt.slice(0, -1);
+            else if (minuutGetikt.length < 3) minuutGetikt += c;
+            if (+minuutGetikt > 120) minuutGetikt = minuutGetikt.slice(0, -1);
+            tekenMinuut();
+        });
+        k.appendChild(b);
+    });
+})();
+
 /* Wanneer ongeveer? Weet de app de aftrap, dan staat de lopende
    minuut bovenaan als eerste keuze en is het één tik. Weet hij het
    niet, dan is "eerste helft" ook een prima antwoord — het gaat om
@@ -1249,6 +1338,7 @@ function vraagWanneer(i, klaar) {
     const nu = verstreken();
     const keuzes = [];
     if (nu != null) keuzes.push({ merk: 'nu', groot: t('nu_ongeveer')(nu), tip: true });
+    keuzes.push({ merk: 'zelf', groot: t('zelf_minuut') });
     keuzes.push({ merk: '1', groot: t('eerste_helft') });
     keuzes.push({ merk: 'rust', groot: t('rust_tijd') });
     keuzes.push({ merk: '2', groot: t('tweede_helft') });
@@ -1264,6 +1354,15 @@ function vraagWanneer(i, klaar) {
     $('wanneer-keuze').querySelectorAll('[data-merk]').forEach(function (b) {
         b.addEventListener('click', function () {
             const m = b.dataset.merk;
+            if (m === 'zelf') {
+                dicht('laag-wanneer');
+                openMinuut(d.minuut || (nu != null ? nu : ''), function (gekozen) {
+                    d.minuut = gekozen; d.fase = null;
+                    bewaar(); tekenVerloop(); tekenSeizoen();
+                    if (klaar) klaar();
+                });
+                return;
+            }
             d.minuut = ''; d.fase = null;
             if (m === 'nu') d.minuut = String(nu);
             else if (m === '1') d.fase = 'eerste_helft';
@@ -1287,7 +1386,8 @@ function erIsGescoord() {
     const tegen = (W && W.tegen) || t('de_tegenpartij');
     r.innerHTML =
         '<button class="speler breed" data-kant="tegen"><b>⚽</b><span>' +
-            veilig(tegen) + '</span></button>' +
+            veilig(tegen) + '<i class="kant">' + veilig(t('tegenpartij_kant')) + '</i></span></button>' +
+        '<p class="rooster-kop">' + veilig(t('rbc_kant')) + '</p>' +
         D.squad.map(function (p) {
             return '<button class="speler" data-nr="' + veilig(p.number) + '">' +
                 '<b>' + veilig(p.number) + '</b><span>' + veilig(kortNaam(p.name)) + '</span></button>';
