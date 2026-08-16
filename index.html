@@ -248,6 +248,7 @@ tr.zone-d td.pos::before{ background:#d1453c }
               font-weight:800; margin-top:3px }
 .nu-bezig{ color:var(--oranje); font-weight:900; letter-spacing:.1em; text-transform:uppercase; font-size:13px }
 .doen{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px }
+.doen .breed-doen{ grid-column:1 / -1; color:var(--oranje); border-color:rgba(255,106,19,.4) }
 .doen a,.doen button{
     display:flex; align-items:center; justify-content:center; gap:7px; text-decoration:none;
     border:1px solid var(--lijn); border-radius:11px; padding:12px 8px; color:var(--been);
@@ -268,38 +269,29 @@ tr.zone-d td.pos::before{ background:#d1453c }
 .schutters .nr{ font-weight:900; color:var(--oranje); font-variant-numeric:tabular-nums; min-width:18px }
 .schutters .aantal{ font-weight:900; font-variant-numeric:tabular-nums }
 
-/* ── live van de club ──────────────────────────────────── */
-.live-vak{ margin-bottom:6px }
-.live-aan{
-    width:100%; display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:16px; border-radius:13px; border:1px solid rgba(255,106,19,.4);
-    background:rgba(255,106,19,.09); color:var(--been);
-    font-size:13px; font-weight:900; letter-spacing:.12em; text-transform:uppercase;
+/* ── nieuws van de club ────────────────────────────────── */
+.nieuws{ list-style:none; display:flex; flex-direction:column; gap:8px }
+.nieuws li{
+    border:1px solid var(--lijn); border-radius:12px; overflow:hidden;
+    background:rgba(255,255,255,.025);
 }
-.live-aan small{
-    font-size:10.5px; font-weight:700; letter-spacing:.06em; text-transform:none; color:var(--dim);
+.nieuws .kop{
+    width:100%; text-align:left; padding:13px 14px; display:block;
 }
-.live-aan:active{ background:rgba(255,106,19,.18) }
-.live-bol{
-    width:8px; height:8px; border-radius:50%; background:var(--oranje);
-    box-shadow:0 0 8px 1px rgba(255,106,19,.9); animation:pols 1.6s infinite; margin-bottom:2px;
+.nieuws .wanneer-klein{
+    font-size:9.5px; letter-spacing:.18em; text-transform:uppercase; color:#6c635b; font-weight:800;
 }
-.live-raam{
-    border:1px solid var(--lijn); border-radius:13px; overflow:hidden;
-    background:#15120f; min-height:170px;
+.nieuws .titel{
+    display:block; font-size:14px; font-weight:800; letter-spacing:.01em; margin-top:5px;
+    line-height:1.35; color:var(--been);
 }
-.live-raam iframe{ width:100% !important; border:0; display:block }
-.live-wacht{
-    padding:24px 14px; text-align:center; font-size:12px; color:#6c635b;
-    letter-spacing:.05em; font-weight:700; line-height:1.6;
+.nieuws li.open .titel{ color:var(--oranje) }
+.nieuws .lijf{ padding:0 14px 14px; font-size:13px; line-height:1.62; color:#b3a99e }
+.nieuws .lijf a{
+    display:inline-block; margin-top:10px; color:var(--oranje); font-size:10.5px;
+    font-weight:800; letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
 }
-.live-onder{ display:flex; gap:8px; margin-top:8px }
-.live-onder a,.live-onder button{
-    flex:1 1 0; text-align:center; text-decoration:none;
-    font-size:10px; font-weight:800; letter-spacing:.12em; color:var(--dim); text-transform:uppercase;
-    border:1px solid var(--lijn); border-radius:999px; padding:9px 10px;
-}
-.live-onder a:hover,.live-onder button:hover{ color:var(--oranje); border-color:rgba(255,106,19,.45) }
+.nieuws .verder{ opacity:.55 }
 
 /* ── opstelling ────────────────────────────────────────── */
 .opst-kop{ display:flex; align-items:center; gap:6px; margin-bottom:10px }
@@ -750,14 +742,8 @@ tr.zone-d td.pos::before{ background:#d1453c }
                 <div class="aftrap" id="aftrap"></div>
                 <div class="doen" id="doen"></div>
 
-                <h2 class="streep" id="kop-live">live van de club</h2>
-                <div class="live-vak" id="live-vak">
-                    <button class="live-aan" id="knop-live">
-                        <span class="live-bol"></span>
-                        <span id="lab-live">live volgen</span>
-                        <small id="sub-live">berichten van @RBCvoetbal</small>
-                    </button>
-                </div>
+                <h2 class="streep" id="kop-nieuws">van de club</h2>
+                <ul class="nieuws" id="nieuws-uit"></ul>
 
                 <h2 class="streep" id="kop-uitslagen">uitslagen</h2>
                 <ul class="duels" id="uitslagen-uit"></ul>
@@ -953,6 +939,8 @@ const TEKST = {
         zelf_minuut: 'zelf de minuut kiezen', welke_minuut: 'welke minuut?',
         minuut_klaar: 'klaar', minuut_hint: 'tik de minuut in, bijvoorbeeld 38',
         tegenpartij_kant: 'de tegenpartij scoorde', rbc_kant: 'een speler van RBC',
+        nieuws_kop: 'van de club', nieuws_leeg: 'nog geen berichten opgehaald',
+        lees_verder: 'lees verder op de clubsite', live_op_x: 'live op X',
         live_kop: 'live van de club', live_aan: 'live volgen',
         live_sub: 'berichten van @RBCvoetbal', live_laden: 'berichten ophalen…',
         live_mislukt: 'Geen bereik, of X laadt niet. Probeer het op X zelf.',
@@ -997,6 +985,8 @@ const TEKST = {
         zelf_minuut: 'pick the minute myself', welke_minuut: 'which minute?',
         minuut_klaar: 'done', minuut_hint: 'type the minute, for example 38',
         tegenpartij_kant: 'the opposition scored', rbc_kant: 'an RBC player',
+        nieuws_kop: 'from the club', nieuws_leeg: 'no posts fetched yet',
+        lees_verder: 'read on at the club site', live_op_x: 'live on X',
         live_kop: 'live from the club', live_aan: 'follow live',
         live_sub: 'posts from @RBCvoetbal', live_laden: 'loading posts…',
         live_mislukt: 'No signal, or X will not load. Try X itself.',
@@ -1829,12 +1819,15 @@ function tekenWedstrijd() {
         const plek = thuis ? (STADION.naam + ', ' + STADION.adres) : (tegen + ' voetbal');
         doen.innerHTML =
             '<a href="' + veilig(kaartLink(plek)) + '" target="_blank" rel="noopener">📍 ' + veilig(t('heenweg')) + '</a>' +
-            '<button type="button" id="knop-agenda">🗓 ' + veilig(t('agenda')) + '</button>';
+            '<button type="button" id="knop-agenda">🗓 ' + veilig(t('agenda')) + '</button>' +
+            '<a class="breed-doen" href="https://x.com/' + X_NAAM + '" target="_blank" rel="noopener">' +
+                '🔴 ' + veilig(t('live_op_x')) + '  ·  @' + X_NAAM + '</a>';
         const ag = $('knop-agenda');
         if (ag) ag.addEventListener('click', function () { zetInAgenda(w, start, plek); });
     }
 
     tekenUitslagen();
+    tekenNieuws();
     tekenSeizoen();
 }
 
@@ -1910,99 +1903,47 @@ function tekenSeizoen() {
 }
 
 /* ════════════════════════════════════════════════════════
-   8d2. LIVE VAN DE CLUB
-   De club doet op X zelf verslag: doelpunten, tijden, de
-   opstelling. Dat halen we niet binnen maar tonen we zoals X het
-   bedoeld heeft, met hun eigen tijdlijn.
+   8d2. NIEUWS VAN DE CLUB
+   X toont een ingesloten tijdlijn sinds 2026 alleen nog aan wie
+   ingelogd is; op de tribune ziet een supporter dus een leeg vak.
+   De clubsite zelf is wél gewoon te lezen, en daar staan de
+   wedstrijdverslagen mét doelpuntenmakers in. Die halen we elk uur
+   op, zodat ze er ook zonder bereik staan.
 
-   Pas laden als er op geklikt wordt. Zo blijft het bord snel, komt
-   er niets van X binnen zolang je het niet vraagt, en werkt de rest
-   van de app gewoon door zonder bereik.
+   Voor het minuut-voor-minuut verslag blijft X het beste adres:
+   daar staat een knop naar, die opent de X-app waar je wél
+   ingelogd bent.
    ════════════════════════════════════════════════════════ */
 const X_NAAM = 'RBCvoetbal';
-let liveGeladen = false;
+let nieuwsOpen = -1;
 
-function liveAan() {
-    const vak = $('live-vak');
-    liveGeladen = true;
-    OPSLAG.schrijf('rbc-live-aan', true);
-    vak.innerHTML =
-        '<div class="live-raam" id="live-raam"><p class="live-wacht" id="live-wacht">' +
-            veilig(t('live_laden')) + '</p></div>' +
-        '<div class="live-onder">' +
-            '<a href="https://x.com/' + X_NAAM + '" target="_blank" rel="noopener">' +
-                veilig(t('live_open')) + '</a>' +
-            '<button type="button" id="knop-live-uit">' + veilig(t('live_uit')) + '</button>' +
-        '</div>';
-    $('knop-live-uit').addEventListener('click', liveUit);
-
-    /* X wil zijn eigen script; dat halen we één keer op. */
-    if (window.twttr && window.twttr.widgets) { liveTeken(); return; }
-    const sc = document.createElement('script');
-    sc.src = 'https://platform.twitter.com/widgets.js';
-    sc.async = true;
-    sc.onload = liveTeken;
-    sc.onerror = liveStuk;
-    document.head.appendChild(sc);
-    liveWaakhond();
-}
-
-function liveTeken() {
-    const raam = $('live-raam');
-    if (!raam || !window.twttr || !window.twttr.widgets) { liveStuk(); return; }
-    window.twttr.widgets.createTimeline(
-        { sourceType: 'profile', screenName: X_NAAM },
-        raam,
-        { height: 460, theme: 'dark', chrome: 'noheader nofooter noborders transparent',
-          lang: TAAL === 'nl' ? 'nl' : 'en', dnt: true }
-    ).then(function (el) {
-        /* X levert bij een mislukking geen fout maar niets terug. */
-        if (!el) { liveStuk(); return; }
-        const w = $('live-wacht'); if (w) w.remove();
-        liveWaakhond();
-    }).catch(liveStuk);
-}
-
-/* Een leeg raam ziet eruit als "hij doet het bijna". Blijft de
-   tijdlijn na tien tellen zonder hoogte staan, dan zeg je beter
-   eerlijk dat het niet lukt en wijs je naar X zelf. */
-function liveWaakhond() {
-    clearTimeout(liveWaakhond.klok);
-    liveWaakhond.klok = setTimeout(function () {
-        const raam = $('live-raam');
-        if (!raam) return;
-        const f = raam.querySelector('iframe');
-        if (!f || f.getBoundingClientRect().height < 60) liveStuk();
-    }, 10000);
-}
-
-function liveStuk() {
-    const raam = $('live-raam');
-    if (!raam) return;
-    let w = $('live-wacht');
-    if (!w) {
-        w = document.createElement('p');
-        w.className = 'live-wacht'; w.id = 'live-wacht';
-        raam.innerHTML = ''; raam.appendChild(w);
+function tekenNieuws() {
+    const el = $('nieuws-uit');
+    const lijst = (C && C.nieuws) || [];
+    if (!lijst.length) {
+        el.innerHTML = '<li class="leeg">' + veilig(t('nieuws_leeg')) + '</li>';
+        return;
     }
-    w.textContent = t('live_mislukt');
-}
-
-function liveUit() {
-    liveGeladen = false;
-    OPSLAG.schrijf('rbc-live-aan', false);
-    tekenLiveKnop();
-}
-
-function tekenLiveKnop() {
-    const vak = $('live-vak');
-    vak.innerHTML =
-        '<button class="live-aan" id="knop-live">' +
-            '<span class="live-bol"></span>' +
-            '<span id="lab-live">' + veilig(t('live_aan')) + '</span>' +
-            '<small id="sub-live">' + veilig(t('live_sub')) + '</small>' +
-        '</button>';
-    $('knop-live').addEventListener('click', liveAan);
+    el.innerHTML = lijst.slice(0, 6).map(function (n, i) {
+        const open = i === nieuwsOpen;
+        return '<li class="' + (open ? 'open' : '') + '">' +
+            '<button class="kop" data-nieuws="' + i + '">' +
+                '<span class="wanneer-klein">' + veilig(n.datum || '') + '</span>' +
+                '<span class="titel">' + veilig(n.titel || '') + '</span>' +
+            '</button>' +
+            (open ? '<div class="lijf">' + veilig(n.tekst || '') +
+                '<span class="verder">…</span><br>' +
+                '<a href="' + veilig(n.url) + '" target="_blank" rel="noopener">' +
+                    veilig(t('lees_verder')) + '</a></div>' : '') +
+        '</li>';
+    }).join('');
+    el.querySelectorAll('[data-nieuws]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            const i = +b.dataset.nieuws;
+            nieuwsOpen = (nieuwsOpen === i) ? -1 : i;
+            tekenNieuws(); klik();
+        });
+    });
 }
 
 /* ════════════════════════════════════════════════════════
@@ -2374,8 +2315,7 @@ function zetTaal(nieuw) {
     $('kop-scorer').textContent = t('wie_scoorde');
     $('kop-tabel').textContent = t('tabel');
     $('kop-programma').textContent = t('programma');
-    $('kop-live').textContent = t('live_kop');
-    if (!liveGeladen) tekenLiveKnop();
+    $('kop-nieuws').textContent = t('nieuws_kop');
     $('kop-uitslagen').textContent = t('uitslagen');
     $('kop-seizoen').textContent = t('mijn_seizoen');
     $('knop-elftal').textContent = t('elftal');
@@ -2463,18 +2403,6 @@ function vulUit(m) {
     zetTaal(TAAL);
     tekenBord(); tekenEerder(); tekenKop();
     tekenFormaties(); tekenVeld();
-    tekenLiveKnop();
-    /* Had je hem de vorige keer aan staan, dan pas laden als je er
-       ook echt naartoe veegt. Anders haal je X op voor niets. */
-    if (OPSLAG.lees('rbc-live-aan', false)) {
-        const eenmalig = function () {
-            if (BLADEN[bladNu] === 'wedstrijd' && !liveGeladen) {
-                liveAan();
-                $('bladen').removeEventListener('scroll', eenmalig);
-            }
-        };
-        $('bladen').addEventListener('scroll', eenmalig, { passive: true });
-    }
     haalCompetitie();
     [...$('stippen').children].forEach(function (s, k) {
         s.setAttribute('aria-current', k === 0 ? 'true' : 'false');

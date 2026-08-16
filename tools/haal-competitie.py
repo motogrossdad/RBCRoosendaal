@@ -158,6 +158,68 @@ def lees_duels(soep):
     return gespeeld, komt
 
 
+CLUB = 'https://www.rbcvoetbal.nl'
+
+
+def lees_nieuws(oud_nieuws):
+    """Nieuws van de club zelf. X laat een tijdlijn alleen nog aan
+    ingelogde bezoekers zien, dus dat werkt niet voor een supporter
+    op de tribune. De clubsite wel, en daar staan de wedstrijd-
+    verslagen met de doelpuntenmakers in.
+
+    Van berichten die we al hadden halen we de tekst niet opnieuw op:
+    schelen verzoeken, en de site is van de club zelf."""
+    try:
+        html = haal(CLUB + '/nieuws')
+    except Exception:
+        return oud_nieuws or []
+    soep = BeautifulSoup(html, 'html.parser')
+
+    bekend = {n['url']: n for n in (oud_nieuws or [])}
+    uit, gezien = [], set()
+    for a in soep.find_all('a', href=True):
+        href = a['href']
+        if '/nieuws/' not in href.lower():
+            continue
+        # De site gebruikt protocol-relatieve links: //www.rbcvoetbal.nl/...
+        if href.startswith('//'):
+            url = 'https:' + href
+        elif href.startswith('http'):
+            url = href
+        else:
+            url = CLUB + '/' + href.lstrip('/')
+        if url in gezien:
+            continue
+        tekst = schoon(a)
+        m = re.match(r'(\d{2}-\d{2}-\d{4})\s*:\s*(.+)', tekst)
+        if not m:
+            continue
+        gezien.add(url)
+        uit.append({'datum': m.group(1), 'titel': m.group(2).strip(), 'url': url})
+        if len(uit) >= 8:
+            break
+
+    for n in uit:
+        if n['url'] in bekend and bekend[n['url']].get('tekst'):
+            n['tekst'] = bekend[n['url']]['tekst']
+            continue
+        try:
+            art = BeautifulSoup(haal(n['url']), 'html.parser')
+            for weg in art(['script', 'style', 'nav', 'header', 'footer']):
+                weg.decompose()
+            heel = re.sub(r'\s+', ' ', art.get_text(' ', strip=True))
+            # De titel staat ook in <title> en in het menu; de laatste
+            # keer is die boven het artikel zelf.
+            i = heel.rfind(n['titel'])
+            if i >= 0:
+                heel = heel[i + len(n['titel']):]
+            heel = re.sub(r'^\s*\d{2}-\d{2}-\d{4}\s*', '', heel).strip()
+            n['tekst'] = heel[:600].rsplit(' ', 1)[0]
+        except Exception:
+            n['tekst'] = ''
+    return uit
+
+
 def main():
     html = haal(BRON)
     soep = BeautifulSoup(html, 'html.parser')
@@ -166,6 +228,15 @@ def main():
     periodes = lees_periodes(soep)
     rondes = lees_rondes(soep)
     uitslagen, programma = lees_duels(soep)
+
+    oud_bestand = {}
+    if os.path.exists(UIT):
+        try:
+            with open(UIT, encoding='utf-8') as f:
+                oud_bestand = json.load(f)
+        except Exception:
+            oud_bestand = {}
+    nieuws = lees_nieuws(oud_bestand.get('nieuws'))
 
     # In welke periode zitten we? De eerste periode die nog niet vol is.
     gespeeld = max((r['wed'] for r in stand), default=0)
@@ -192,6 +263,7 @@ def main():
         'periodes': periodes,
         'programma': programma[:40],
         'uitslagen': uitslagen[-40:],
+        'nieuws': nieuws,
     }
 
     oud = None
@@ -215,7 +287,7 @@ def main():
         f.write('\n')
     print(f'geschreven: {len(stand)} clubs, {len(periodes)} periodes, '
           f'{len(programma)} te spelen, {len(uitslagen)} gespeeld, '
-          f'periode {huidige}, ronde {gespeeld}')
+          f'{len(nieuws)} nieuwsberichten, periode {huidige}, ronde {gespeeld}')
     return 0
 
 
