@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-08-22T15:35:03+00:00",
+ "bijgewerkt": "2026-08-22T18:48:49+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -59,6 +59,26 @@
   },
   {
    "pos": 3,
+   "club": "UDI '19",
+   "wed": 2,
+   "wgv": "1-1-0",
+   "pnt": 4,
+   "dv": 3,
+   "dt": 1,
+   "ds": 2,
+   "vorm": [
+    {
+     "uitslag": "g",
+     "wat": "15-08-2026: UDI '19 - Excelsior Maassluis: 1 - 1"
+    },
+    {
+     "uitslag": "w",
+     "wat": "22-08-2026: VVSB - UDI '19: 0 - 2"
+    }
+   ]
+  },
+  {
+   "pos": 4,
    "club": "VV Dongen",
    "wed": 1,
    "wgv": "1-0-0",
@@ -74,7 +94,7 @@
    ]
   },
   {
-   "pos": 4,
+   "pos": 5,
    "club": "FC Lisse",
    "wed": 1,
    "wgv": "1-0-0",
@@ -90,7 +110,7 @@
    ]
   },
   {
-   "pos": 5,
+   "pos": 6,
    "club": "RBC",
    "wed": 1,
    "wgv": "1-0-0",
@@ -106,7 +126,7 @@
    ]
   },
   {
-   "pos": 6,
+   "pos": 7,
    "club": "VV Goes",
    "wed": 1,
    "wgv": "1-0-0",
@@ -118,22 +138,6 @@
     {
      "uitslag": "w",
      "wat": "16-08-2026: VV Goes - EVV: 3 - 2"
-    }
-   ]
-  },
-  {
-   "pos": 7,
-   "club": "VVSB",
-   "wed": 1,
-   "wgv": "1-0-0",
-   "pnt": 3,
-   "dv": 1,
-   "dt": 0,
-   "ds": 1,
-   "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "15-08-2026: SV Poortugaal - VVSB: 0 - 1"
     }
    ]
   },
@@ -159,6 +163,26 @@
   },
   {
    "pos": 9,
+   "club": "VVSB",
+   "wed": 2,
+   "wgv": "1-0-1",
+   "pnt": 3,
+   "dv": 1,
+   "dt": 2,
+   "ds": -1,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "15-08-2026: SV Poortugaal - VVSB: 0 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "22-08-2026: VVSB - UDI '19: 0 - 2"
+    }
+   ]
+  },
+  {
+   "pos": 10,
    "club": "VV UNA",
    "wed": 2,
    "wgv": "0-2-0",
@@ -178,7 +202,7 @@
    ]
   },
   {
-   "pos": 10,
+   "pos": 11,
    "club": "VV Gemert",
    "wed": 1,
    "wgv": "0-1-0",
@@ -194,7 +218,7 @@
    ]
   },
   {
-   "pos": 11,
+   "pos": 12,
    "club": "FC Rijnvogels",
    "wed": 1,
    "wgv": "0-1-0",
@@ -206,22 +230,6 @@
     {
      "uitslag": "g",
      "wat": "15-08-2026: FC Rijnvogels - VV Gemert: 2 - 2"
-    }
-   ]
-  },
-  {
-   "pos": 12,
-   "club": "UDI '19",
-   "wed": 1,
-   "wgv": "0-1-0",
-   "pnt": 1,
-   "dv": 1,
-   "dt": 1,
-   "ds": 0,
-   "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "15-08-2026: UDI '19 - Excelsior Maassluis: 1 - 1"
     }
    ]
   },
@@ -358,35 +366,35 @@
     },
     {
      "pos": 3,
+     "club": "UDI '19",
+     "wed": 2,
+     "pnt": 4,
+     "ds": 2
+    },
+    {
+     "pos": 4,
      "club": "VV Dongen",
      "wed": 1,
      "pnt": 3,
      "ds": 4
     },
     {
-     "pos": 4,
+     "pos": 5,
      "club": "FC Lisse",
      "wed": 1,
      "pnt": 3,
      "ds": 3
     },
     {
-     "pos": 5,
+     "pos": 6,
      "club": "RBC",
      "wed": 1,
      "pnt": 3,
      "ds": 2
     },
     {
-     "pos": 6,
-     "club": "VV Goes",
-     "wed": 1,
-     "pnt": 3,
-     "ds": 1
-    },
-    {
      "pos": 7,
-     "club": "VVSB",
+     "club": "VV Goes",
      "wed": 1,
      "pnt": 3,
      "ds": 1
@@ -400,28 +408,28 @@
     },
     {
      "pos": 9,
+     "club": "VVSB",
+     "wed": 2,
+     "pnt": 3,
+     "ds": -1
+    },
+    {
+     "pos": 10,
      "club": "VV UNA",
      "wed": 2,
      "pnt": 2,
      "ds": 0
     },
     {
-     "pos": 10,
+     "pos": 11,
      "club": "VV Gemert",
      "wed": 1,
      "pnt": 1,
      "ds": 0
     },
     {
-     "pos": 11,
-     "club": "FC Rijnvogels",
-     "wed": 1,
-     "pnt": 1,
-     "ds": 0
-    },
-    {
      "pos": 12,
-     "club": "UDI '19",
+     "club": "FC Rijnvogels",
      "wed": 1,
      "pnt": 1,
      "ds": 0
@@ -736,12 +744,6 @@
  "programma": [
   {
    "datum": "zaterdag 22 augustus 2026",
-   "thuis": "VVSB",
-   "uit": "UDI '19",
-   "tijd": "15:30"
-  },
-  {
-   "datum": "zaterdag 22 augustus 2026",
    "thuis": "RBC",
    "uit": "FC Lisse",
    "tijd": "19:00"
@@ -793,6 +795,13 @@
    "uit": "SV Poortugaal",
    "thuis_doelpunten": 1,
    "uit_doelpunten": 3
+  },
+  {
+   "datum": "zaterdag 22 augustus 2026",
+   "thuis": "VVSB",
+   "uit": "UDI '19",
+   "thuis_doelpunten": 0,
+   "uit_doelpunten": 2
   }
  ],
  "nieuws": [
