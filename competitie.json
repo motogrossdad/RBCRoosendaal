@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-12T17:10:25+00:00",
+ "bijgewerkt": "2026-09-12T19:22:04+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -952,15 +952,15 @@
  "programma": [
   {
    "datum": "zaterdag 12 september 2026",
-   "thuis": "RKSV Groene Ster",
-   "uit": "VV Zwaluwen",
-   "tijd": "18:00"
-  },
-  {
-   "datum": "zaterdag 12 september 2026",
    "thuis": "RBC",
    "uit": "Blauw Geel '38",
    "tijd": "19:00"
+  },
+  {
+   "datum": "zaterdag 12 september 2026",
+   "thuis": "RKSV Groene Ster",
+   "uit": "VV Zwaluwen",
+   "tijd": "19:30"
   },
   {
    "datum": "zondag 13 september 2026",
