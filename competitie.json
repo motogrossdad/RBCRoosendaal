@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-12T19:22:04+00:00",
+ "bijgewerkt": "2026-09-12T22:17:55+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -260,12 +260,12 @@
   {
    "pos": 9,
    "club": "RBC",
-   "wed": 4,
-   "wgv": "2-0-2",
+   "wed": 5,
+   "wgv": "2-0-3",
    "pnt": 6,
-   "dv": 6,
-   "dt": 3,
-   "ds": 3,
+   "dv": 7,
+   "dt": 6,
+   "ds": 1,
    "vorm": [
     {
      "uitslag": "w",
@@ -282,6 +282,10 @@
     {
      "uitslag": "w",
      "wat": "05-09-2026: RBC - VV Achilles Veen: 3 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "12-09-2026: RBC - Blauw Geel '38: 1 - 3"
     }
    ]
   },
@@ -347,34 +351,70 @@
   },
   {
    "pos": 12,
-   "club": "VV Zwaluwen",
-   "wed": 4,
-   "wgv": "1-1-2",
-   "pnt": 4,
-   "dv": 3,
+   "club": "Blauw Geel '38",
+   "wed": 5,
+   "wgv": "1-2-2",
+   "pnt": 5,
+   "dv": 7,
    "dt": 8,
-   "ds": -5,
+   "ds": -1,
    "vorm": [
     {
      "uitslag": "v",
-     "wat": "15-08-2026: VV Dongen - VV Zwaluwen: 4 - 0"
+     "wat": "15-08-2026: VV Noordwijk - Blauw Geel '38: 2 - 0"
     },
     {
      "uitslag": "g",
-     "wat": "22-08-2026: VV Zwaluwen - VV UNA: 1 - 1"
+     "wat": "23-08-2026: Blauw Geel '38 - FC Rijnvogels: 0 - 0"
     },
     {
      "uitslag": "v",
-     "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
+     "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
+    },
+    {
+     "uitslag": "g",
+     "wat": "06-09-2026: Blauw Geel '38 - VV Goes: 2 - 2"
     },
     {
      "uitslag": "w",
-     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
+     "wat": "12-09-2026: RBC - Blauw Geel '38: 1 - 3"
     }
    ]
   },
   {
    "pos": 13,
+   "club": "RKSV Groene Ster",
+   "wed": 5,
+   "wgv": "1-2-2",
+   "pnt": 5,
+   "dv": 9,
+   "dt": 12,
+   "ds": -3,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "16-08-2026: RKSV Groene Ster - RBC: 1 - 3"
+    },
+    {
+     "uitslag": "v",
+     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
+    },
+    {
+     "uitslag": "g",
+     "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
+    },
+    {
+     "uitslag": "g",
+     "wat": "05-09-2026: TOGB - RKSV Groene Ster: 3 - 3"
+    },
+    {
+     "uitslag": "w",
+     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
+    }
+   ]
+  },
+  {
+   "pos": 14,
    "club": "VVSB",
    "wed": 5,
    "wgv": "1-1-3",
@@ -406,7 +446,39 @@
    ]
   },
   {
-   "pos": 14,
+   "pos": 15,
+   "club": "VV Zwaluwen",
+   "wed": 5,
+   "wgv": "1-1-3",
+   "pnt": 4,
+   "dv": 3,
+   "dt": 9,
+   "ds": -6,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "15-08-2026: VV Dongen - VV Zwaluwen: 4 - 0"
+    },
+    {
+     "uitslag": "g",
+     "wat": "22-08-2026: VV Zwaluwen - VV UNA: 1 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
+    },
+    {
+     "uitslag": "w",
+     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
+    }
+   ]
+  },
+  {
+   "pos": 16,
    "club": "VV Achilles Veen",
    "wed": 5,
    "wgv": "1-0-4",
@@ -434,62 +506,6 @@
     {
      "uitslag": "v",
      "wat": "12-09-2026: VV Achilles Veen - Excelsior Maassluis: 2 - 3"
-    }
-   ]
-  },
-  {
-   "pos": 15,
-   "club": "Blauw Geel '38",
-   "wed": 4,
-   "wgv": "0-2-2",
-   "pnt": 2,
-   "dv": 4,
-   "dt": 7,
-   "ds": -3,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "15-08-2026: VV Noordwijk - Blauw Geel '38: 2 - 0"
-    },
-    {
-     "uitslag": "g",
-     "wat": "23-08-2026: Blauw Geel '38 - FC Rijnvogels: 0 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
-    },
-    {
-     "uitslag": "g",
-     "wat": "06-09-2026: Blauw Geel '38 - VV Goes: 2 - 2"
-    }
-   ]
-  },
-  {
-   "pos": 16,
-   "club": "RKSV Groene Ster",
-   "wed": 4,
-   "wgv": "0-2-2",
-   "pnt": 2,
-   "dv": 8,
-   "dt": 12,
-   "ds": -4,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "16-08-2026: RKSV Groene Ster - RBC: 1 - 3"
-    },
-    {
-     "uitslag": "v",
-     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
-    },
-    {
-     "uitslag": "g",
-     "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
-    },
-    {
-     "uitslag": "g",
-     "wat": "05-09-2026: TOGB - RKSV Groene Ster: 3 - 3"
     }
    ]
   },
@@ -617,9 +633,9 @@
     {
      "pos": 9,
      "club": "RBC",
-     "wed": 4,
+     "wed": 5,
      "pnt": 6,
-     "ds": 3
+     "ds": 1
     },
     {
      "pos": 10,
@@ -637,38 +653,38 @@
     },
     {
      "pos": 12,
-     "club": "VV Zwaluwen",
-     "wed": 4,
-     "pnt": 4,
-     "ds": -5
+     "club": "Blauw Geel '38",
+     "wed": 5,
+     "pnt": 5,
+     "ds": -1
     },
     {
      "pos": 13,
+     "club": "RKSV Groene Ster",
+     "wed": 5,
+     "pnt": 5,
+     "ds": -3
+    },
+    {
+     "pos": 14,
      "club": "VVSB",
      "wed": 5,
      "pnt": 4,
      "ds": -4
     },
     {
-     "pos": 14,
+     "pos": 15,
+     "club": "VV Zwaluwen",
+     "wed": 5,
+     "pnt": 4,
+     "ds": -6
+    },
+    {
+     "pos": 16,
      "club": "VV Achilles Veen",
      "wed": 5,
      "pnt": 3,
      "ds": -10
-    },
-    {
-     "pos": 15,
-     "club": "Blauw Geel '38",
-     "wed": 4,
-     "pnt": 2,
-     "ds": -3
-    },
-    {
-     "pos": 16,
-     "club": "RKSV Groene Ster",
-     "wed": 4,
-     "pnt": 2,
-     "ds": -4
     },
     {
      "pos": 17,
@@ -951,18 +967,6 @@
  ],
  "programma": [
   {
-   "datum": "zaterdag 12 september 2026",
-   "thuis": "RBC",
-   "uit": "Blauw Geel '38",
-   "tijd": "19:00"
-  },
-  {
-   "datum": "zaterdag 12 september 2026",
-   "thuis": "RKSV Groene Ster",
-   "uit": "VV Zwaluwen",
-   "tijd": "19:30"
-  },
-  {
    "datum": "zondag 13 september 2026",
    "thuis": "VV Dongen",
    "uit": "VV Goes",
@@ -1009,6 +1013,20 @@
    "uit": "VV Gemert",
    "thuis_doelpunten": 1,
    "uit_doelpunten": 2
+  },
+  {
+   "datum": "zaterdag 12 september 2026",
+   "thuis": "RBC",
+   "uit": "Blauw Geel '38",
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 3
+  },
+  {
+   "datum": "zaterdag 12 september 2026",
+   "thuis": "RKSV Groene Ster",
+   "uit": "VV Zwaluwen",
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 0
   }
  ],
  "nieuws": [
