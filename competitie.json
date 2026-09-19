@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-19T18:01:09+00:00",
+ "bijgewerkt": "2026-09-19T20:40:27+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -403,6 +403,38 @@
   },
   {
    "pos": 13,
+   "club": "RKSV Groene Ster",
+   "wed": 6,
+   "wgv": "1-3-2",
+   "pnt": 6,
+   "dv": 10,
+   "dt": 13,
+   "ds": -3,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
+    },
+    {
+     "uitslag": "g",
+     "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
+    },
+    {
+     "uitslag": "g",
+     "wat": "05-09-2026: TOGB - RKSV Groene Ster: 3 - 3"
+    },
+    {
+     "uitslag": "w",
+     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
+    },
+    {
+     "uitslag": "g",
+     "wat": "19-09-2026: EVV - RKSV Groene Ster: 1 - 1"
+    }
+   ]
+  },
+  {
+   "pos": 14,
    "club": "RBC",
    "wed": 6,
    "wgv": "2-0-4",
@@ -434,7 +466,7 @@
    ]
   },
   {
-   "pos": 14,
+   "pos": 15,
    "club": "Blauw Geel '38",
    "wed": 5,
    "wgv": "1-2-2",
@@ -462,38 +494,6 @@
     {
      "uitslag": "w",
      "wat": "12-09-2026: RBC - Blauw Geel '38: 1 - 3"
-    }
-   ]
-  },
-  {
-   "pos": 15,
-   "club": "RKSV Groene Ster",
-   "wed": 5,
-   "wgv": "1-2-2",
-   "pnt": 5,
-   "dv": 9,
-   "dt": 12,
-   "ds": -3,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "16-08-2026: RKSV Groene Ster - RBC: 1 - 3"
-    },
-    {
-     "uitslag": "v",
-     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
-    },
-    {
-     "uitslag": "g",
-     "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
-    },
-    {
-     "uitslag": "g",
-     "wat": "05-09-2026: TOGB - RKSV Groene Ster: 3 - 3"
-    },
-    {
-     "uitslag": "w",
-     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
     }
    ]
   },
@@ -564,17 +564,13 @@
   {
    "pos": 18,
    "club": "EVV",
-   "wed": 5,
-   "wgv": "0-0-5",
-   "pnt": 0,
-   "dv": 6,
-   "dt": 15,
+   "wed": 6,
+   "wgv": "0-1-5",
+   "pnt": 1,
+   "dv": 7,
+   "dt": 16,
    "ds": -9,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "16-08-2026: VV Goes - EVV: 3 - 2"
-    },
     {
      "uitslag": "v",
      "wat": "23-08-2026: EVV - VV Dongen: 2 - 3"
@@ -590,6 +586,10 @@
     {
      "uitslag": "v",
      "wat": "13-09-2026: UDI '19 - EVV: 4 - 1"
+    },
+    {
+     "uitslag": "g",
+     "wat": "19-09-2026: EVV - RKSV Groene Ster: 1 - 1"
     }
    ]
   }
@@ -684,24 +684,24 @@
     },
     {
      "pos": 13,
+     "club": "RKSV Groene Ster",
+     "wed": 6,
+     "pnt": 6,
+     "ds": -3
+    },
+    {
+     "pos": 14,
      "club": "RBC",
      "wed": 6,
      "pnt": 6,
      "ds": -4
     },
     {
-     "pos": 14,
+     "pos": 15,
      "club": "Blauw Geel '38",
      "wed": 5,
      "pnt": 5,
      "ds": -1
-    },
-    {
-     "pos": 15,
-     "club": "RKSV Groene Ster",
-     "wed": 5,
-     "pnt": 5,
-     "ds": -3
     },
     {
      "pos": 16,
@@ -720,8 +720,8 @@
     {
      "pos": 18,
      "club": "EVV",
-     "wed": 5,
-     "pnt": 0,
+     "wed": 6,
+     "pnt": 1,
      "ds": -9
     }
    ]
@@ -991,12 +991,6 @@
  ],
  "programma": [
   {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "EVV",
-   "uit": "RKSV Groene Ster",
-   "tijd": "19:00"
-  },
-  {
    "datum": "zondag 20 september 2026",
    "thuis": "Blauw Geel '38",
    "uit": "VV Dongen",
@@ -1050,9 +1044,22 @@
    "uit": "VV Achilles Veen",
    "thuis_doelpunten": 2,
    "uit_doelpunten": 1
+  },
+  {
+   "datum": "zaterdag 19 september 2026",
+   "thuis": "EVV",
+   "uit": "RKSV Groene Ster",
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 1
   }
  ],
  "nieuws": [
+  {
+   "datum": "19-09-2026",
+   "titel": "RBC leidt grote nederlaag bij Excelsior Maassluis",
+   "url": "https://www.rbcvoetbal.nl/SVS/nieuws/3287",
+   "tekst": "MAASSLUIS - RBC heeft een zware nederlaag geleden op bezoek bij Excelsior Maassluis. De degradant uit de Tweede Divisie was met 5-0 te sterk. In de eerste helft leek er nog geen vuiltje aan de lucht, in de tweede helft trok de thuisploeg door en had het nog kansen op meer doelpunten. RBC produceerde geen enkele doelkans. Dat het een moeilijk duel zou gaan worden was al duidelijk door de vele blessures. Daar kwam in de warming up ook nog Timo Regouin bij. Dat had alles te maken dat RBC in de file terecht kwam en de buschauffeur een verkeerde afslag nam. De vraag om later te starten werd"
+  },
   {
    "datum": "16-09-2026",
    "titel": "Voorbeschouwing: RBC wacht zware klus in Maassluis",
@@ -1094,12 +1101,6 @@
    "titel": "RBC naar zaterdagavond",
    "url": "https://www.rbcvoetbal.nl/SVS/nieuws/3280",
    "tekst": "ROOSENDAAL - RBC speelt vanaf het seizoen 2027-2028 al haar wedstrijden op zaterdagavond om 19:30 uur. Dat is vanavond besloten tijdens de buitengewone ledenvergadering. Naar aanleiding van het besluit van de KNVB om het aanvangstijdstip op zaterdag te verruimen van 18:00 naar uiterlijk 20:00 uur, wilde het bestuur de leden meenemen in haar wens om de zondagmiddag als speeldag in te wisselen voor de zaterdagavond. Ten eerste is de technische staf voorstander van het spelen op zaterdag omdat dit beter inpasbaar is in het trainingsschema van drie keer per week trainen. Daarnaast is de afgelopen"
-  },
-  {
-   "datum": "05-09-2026",
-   "titel": "RBC is na eerste helft al klaar met Achilles Veen",
-   "url": "https://www.rbcvoetbal.nl/SVS/nieuws/3279",
-   "tekst": "Amr Limouri schiet RBC in de vijfde minuut op voorsprong (foto: Thymen Stolk Fotografie) ROOSENDAAL - RBC heeft de eerste driepunter in het Atik Stadion binnen gehaald. De Roosendaalse formatie was na één helft al klaar met Achilles Veen, al had het vooral in de eerste helft ook anders kunnen lopen. Bij RBC was er één wijziging toegepast. Oussama Bouyaghlafen kon weer in de basis beginnen ten faveure van Lloyd Hendriks. RBC opende sterk. Na twee minuten was Jelte Pal al dichtbij, maar hij kon net niet bij de bal. Even later was het wel raak toen Amr Limouri een voorzet van Pal binnen kon"
   }
  ]
 }
