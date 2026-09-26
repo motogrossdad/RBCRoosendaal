@@ -1,18 +1,35 @@
 {
-  "name": "RBC Roosendaal — Het Bord",
+  "name": "RBC Roosendaal",
   "short_name": "RBC",
-  "description": "De app voor op de tribune: wie is welk rugnummer, houd de stand zelf bij en stuur hem door. Werkt zonder bereik.",
+  "description": "Wie is welk rugnummer? Tik het in. Plus de selectie, de stand en het clubnieuws. Werkt zonder bereik.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0908",
-  "theme_color": "#14110f",
+  "background_color": "#faf6f1",
+  "theme_color": "#ff6a13",
   "lang": "nl",
-  "categories": ["sports"],
+  "categories": [
+    "sports"
+  ],
   "icons": [
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
