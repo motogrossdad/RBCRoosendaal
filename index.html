@@ -6,6 +6,13 @@
 <meta name="theme-color" content="#16120f">
 <meta name="description" content="Supporterssite van RBC Roosendaal: het laatste nieuws, de volgende wedstrijd, de stand in de Derde Divisie B, de selectie en wie is welk rugnummer.">
 <title>RBC Roosendaal</title>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RBC Roosendaal">
+<meta property="og:title" content="RBC Roosendaal — nieuws, wedstrijden en wie is nummer …?">
+<meta property="og:description" content="Het laatste nieuws, de volgende wedstrijd, de stand in de Derde Divisie B en elke speler op rugnummer.">
+<meta property="og:image" content="https://rbcroosendaal.com/atik.jpg">
+<meta property="og:url" content="https://rbcroosendaal.com/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/rbc-klein.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
@@ -290,6 +297,16 @@ section.blok{ padding:56px 0 8px }
 .speler b{ display:block; font:800 21px/1 var(--kop); text-transform:uppercase; overflow-wrap:anywhere }
 .speler span{ display:block; font-size:12px; opacity:.75; margin-top:3px }
 
+/* staf */
+.staf{ display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr)); margin-top:6px }
+.staf div{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); padding:14px 16px }
+.staf span{ display:block; font:800 13px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:var(--oranje-d); margin-bottom:6px }
+.staf b{ display:block; font-weight:700; line-height:1.35 }
+.verslag{ display:inline-block; margin-left:8px; font:700 13px/1 var(--tekst); color:var(--oranje-d); text-decoration:none; vertical-align:middle }
+.verslag:hover{ text-decoration:underline }
+.kaart .verslag{ margin:10px 0 0 }
+.scheids{ text-align:center; font-size:13px; color:#a39888; margin:-6px 0 12px }
+
 /* ── voet ─────────────────────────────────────────────────── */
 footer{ margin-top:64px; background:var(--nacht); color:#cfc5b8; padding:40px 0 calc(28px + env(safe-area-inset-bottom)); font-size:14px }
 footer .kolommen{ display:grid; gap:28px; grid-template-columns:1.4fr 1fr 1fr }
@@ -405,6 +422,10 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
     <div class="wrap">
         <div class="kop"><h2 id="team-kop">Het <em>team</em></h2><small id="sel-meta"></small></div>
         <div id="linies"><p class="leeg">Selectie laden…</p></div>
+        <div id="staf-blok" hidden>
+            <div class="linie"><h3>Technische staf &amp; training</h3></div>
+            <div class="staf" id="staf"></div>
+        </div>
     </div>
 </section>
 </main>
@@ -467,6 +488,8 @@ const STADION = { naam: 'Atik Stadion', adres: 'Borchwerf 4, 4704 RG Roosendaal'
 const X_URL = 'https://x.com/RBCvoetbal';
 let TICKETS = $('tickets-kop').href;
 let LOGOS = {};
+let TEAM = { wedstrijden: {} };
+const verslagVan = d => ((TEAM.wedstrijden || {})[d.datum] || {}).verslag || '';
 
 const DAGEN = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
 const MAANDEN = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
@@ -643,6 +666,14 @@ $('linies').addEventListener('click', e => {
     $('wie').scrollIntoView();
 });
 
+function tekenStaf() {
+    const staf = TEAM.staf || [], training = TEAM.training || [];
+    if (!staf.length && !training.length) return;
+    $('staf').innerHTML = staf.map(s => '<div><span>' + esc(s.rol) + '</span><b>' + s.namen.map(esc).join('<br>') + '</b></div>').join('') +
+        (training.length ? '<div><span>Training</span><b>' + training.map(t => esc(t.dag) + ' ' + esc(t.tijd.replace('-', '–'))).join('<br>') + '</b></div>' : '');
+    $('staf-blok').hidden = false;
+}
+
 /* ═══ openingsverhaal & nieuws ══════════════════════════════ */
 function tekenNieuws(C) {
     const nieuws = C.nieuws || [];
@@ -719,7 +750,9 @@ function tekenStrook(C) {
             '<div class="duo">' + clubBlok(laatste.thuis) +
                 '<div class="midden">' + laatste.thuis_doelpunten + '–' + laatste.uit_doelpunten + '</div>' +
                 clubBlok(laatste.uit) + '</div>' +
-            '<div class="k-voet"><span class="uitslag-chip ' + u + '">' + UITSLAG[u] + '</span></div></div>';
+            '<div class="k-voet"><span class="uitslag-chip ' + u + '">' + UITSLAG[u] + '</span>' +
+                (verslagVan(laatste) ? '<br><a class="verslag" href="' + esc(verslagVan(laatste)) + '" target="_blank" rel="noopener">Lees het verslag →</a>' : '') +
+            '</div></div>';
     }
 
     if (volgende) {
@@ -731,6 +764,8 @@ function tekenStrook(C) {
             '<div class="duo">' + clubBlok(volgende.thuis) +
                 '<div class="midden">' + esc(volgende.tijd || 'vs') + '<small>' + kortDatum(dt) + '</small></div>' +
                 clubBlok(volgende.uit) + '</div>' +
+            (((TEAM.wedstrijden || {})[volgende.datum] || {}).scheidsrechter
+                ? '<p class="scheids">Scheidsrechter: ' + esc(TEAM.wedstrijden[volgende.datum].scheidsrechter) + '</p>' : '') +
             '<div id="klok" class="klok"></div>' +
             '<div class="acties">' +
                 (thuis ? '<a class="actie vol" href="' + esc(TICKETS) + '" target="_blank" rel="noopener">🎟️ Tickets</a>' : '') +
@@ -804,7 +839,8 @@ function tekenProgramma(C) {
         const thuis = isRBC(d.thuis), tegen = thuis ? d.uit : d.thuis;
         const rechts = gespeeld(d)
             ? '<span class="s">' + (thuis ? d.thuis_doelpunten + '–' + d.uit_doelpunten : d.uit_doelpunten + '–' + d.thuis_doelpunten) +
-              '<span class="uitslag-chip ' + uitslagVan(d) + '">' + uitslagVan(d).toUpperCase() + '</span></span>'
+              '<span class="uitslag-chip ' + uitslagVan(d) + '">' + uitslagVan(d).toUpperCase() + '</span>' +
+              (verslagVan(d) ? '<a class="verslag" href="' + esc(verslagVan(d)) + '" target="_blank" rel="noopener" title="Verslag">verslag</a>' : '') + '</span>'
             : '<span class="s tijd">' + esc(d.tijd || '—') + '</span>';
         return '<div class="rij' + (d === volgende ? ' nu' : '') + (i >= 5 ? ' meer' : '') + '">' +
             '<span class="dt">' + kortDatum(alsDatum(d.datum)) + '</span>' + logo(tegen) +
@@ -868,6 +904,8 @@ haal('data.json').then(D => {
 haal('competitie.json').then(C => {
     LOGOS = C.logos || {};
     if (C.tickets) TICKETS = C.tickets;
+    if (C.team) TEAM = C.team;
+    tekenStaf();
     tekenNieuws(C); tekenStrook(C); tekenStand(C); tekenProgramma(C);
     if (C.bijgewerkt) {
         const d = new Date(C.bijgewerkt);

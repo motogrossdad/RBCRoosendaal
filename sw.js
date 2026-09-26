@@ -7,30 +7,12 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v24';
+const CACHE = 'rbc-app-v25';
 
 const SCHIL = [
     '/', '/index.html', '/data.json', '/competitie.json',
     '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
     '/rbc-klein.png', '/atik.jpg', '/manifest.json',
-    // Portretten mee offline: op de tribune is juist dan de vraag
-    // "welke van die elf is nummer 14".
-    '/players/akram-tourki.jpg',
-    '/players/daan-van-reeuwijk.jpg',
-    '/players/desley-ubbink.jpg',
-    '/players/glaucio-ventura-tiago.jpg',
-    '/players/jelte-pal.jpg',
-    '/players/jens-verschuren.jpg',
-    '/players/jesper-troost.jpg',
-    '/players/jordi-ewanena.jpg',
-    '/players/leonardo-rocha-de-almeida.jpg',
-    '/players/lloyd-hendriks.jpg',
-    '/players/luque-casas-diaz.jpg',
-    '/players/marwin-reuvers.jpg',
-    '/players/oussama-bouyaghlafen.jpg',
-    '/players/timo-townsend.jpg',
-    '/players/wai-ming-yu.jpg',
-    '/players/wesley-spieringhs.jpg'
 ];
 
 self.addEventListener('install', e => {
@@ -38,7 +20,13 @@ self.addEventListener('install', e => {
         caches.open(CACHE)
             // Losse verzoeken: één ontbrekend bestand mag de hele
             // installatie niet laten mislukken.
-            .then(c => Promise.allSettled(SCHIL.map(u => c.add(u))))
+            .then(c => Promise.allSettled(SCHIL.map(u => c.add(u)))
+                // Portretten mee offline: op de tribune is juist dan de vraag
+                // "welke van die elf is nummer 14". Welke dat zijn staat in
+                // data.json, want de selectie werkt zichzelf bij.
+                .then(() => fetch('/data.json').then(r => r.json()))
+                .then(d => Promise.allSettled((d.squad || []).filter(p => p.photo).map(p => c.add('/' + p.photo))))
+                .catch(() => {}))
             .then(() => self.skipWaiting())
     );
 });

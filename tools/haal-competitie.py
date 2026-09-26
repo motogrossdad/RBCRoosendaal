@@ -264,6 +264,125 @@ def schrijf_agenda(duels):
 
 
 CLUB = 'https://www.rbcvoetbal.nl'
+TEAM_PAGINA = CLUB + '/SVS/team/1'
+DATA = os.path.join(os.path.dirname(UIT), 'data.json')
+SPELERS_MAP = os.path.join(os.path.dirname(UIT), 'players')
+
+
+def naam_slug(naam):
+    import unicodedata
+    plat = unicodedata.normalize('NFD', naam).encode('ascii', 'ignore').decode()
+    return re.sub(r'[^a-z0-9]+', '-', plat.lower()).strip('-')
+
+
+def bewaar_foto(url, pad):
+    """Clubportret ophalen en klein maken: 3:4, bovenkant blijft staan
+    (daar zit het hoofd), zo'n 50 KB in plaats van 600."""
+    from io import BytesIO
+    from PIL import Image
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        ctx = ssl.create_default_context()
+    with urllib.request.urlopen(urllib.request.Request(url, headers=KOP), timeout=30, context=ctx) as r:
+        beeld = Image.open(BytesIO(r.read())).convert('RGB')
+    b, h = beeld.size
+    doel_h = round(b * 4 / 3)
+    if h > doel_h:
+        beeld = beeld.crop((0, 0, b, doel_h))
+    beeld.thumbnail((480, 640))
+    beeld.save(pad, 'JPEG', quality=80, optimize=True, progressive=True)
+
+
+def lees_team(oud_team):
+    """De teampagina van de club: wie er in de selectie zit met welk
+    rugnummer en officiële foto, de staf, de trainingstijden, en per
+    wedstrijd de scheidsrechter en het verslag."""
+    soep = BeautifulSoup(haal(TEAM_PAGINA), 'html.parser')
+    spelers = []
+    for blok in soep.select('div.player'):
+        m = re.match(r'^(.+?)\s*\((\d{1,2})\)$', schoon(blok.find('p')))
+        if not m:
+            continue
+        img = blok.find('img', src=True)
+        foto = img['src'] if img and 'category=members' in img['src'] else ''
+        spelers.append({'naam': m.group(1), 'nummer': int(m.group(2)), 'foto_bron': foto})
+
+    info, staf, training = soep.select_one('div.info'), [], []
+    for p in (info.find_all('p') if info else []):
+        kop = schoon(p.find('b'))
+        rest = re.sub(r'\s+', ' ', p.get_text(' ', strip=True))[len(kop):].strip()
+        if kop in ('Trainer', 'Assistent Trainer', 'Teammanager', 'Verzorger', 'Keeperstrainer', 'Fysiotherapeut'):
+            staf.append({'rol': kop, 'namen': [n.strip() for n in rest.split(',') if n.strip()]})
+        elif kop == 'Training':
+            training = re.findall(r'(\w+dag):\s*([\d:]+\s*-\s*[\d:]+)', rest)
+            training = [{'dag': d, 'tijd': t.replace(' ', '')} for d, t in training]
+
+    wedstrijden = {}
+    for tr in soep.select('table tr'):
+        cellen = tr.find_all('td')
+        if len(cellen) != 5:
+            continue
+        d = re.match(r'^(\d\d)-(\d\d)-(\d{4})$', schoon(cellen[0]))
+        if not d:
+            continue
+        link = cellen[4].find('a', href=True)
+        wedstrijden[f'{d.group(3)}-{d.group(2)}-{d.group(1)}'] = {
+            'scheidsrechter': schoon(cellen[3]),
+            'verslag': ('https:' + link['href'] if link['href'].startswith('//') else link['href']) if link else ''
+        }
+    return {'spelers': spelers, 'staf': staf or (oud_team or {}).get('staf', []),
+            'training': training or (oud_team or {}).get('training', []), 'wedstrijden': wedstrijden}
+
+
+def werk_selectie_bij(team):
+    """De teampagina van de club is leidend voor wie er in de selectie
+    zit en met welk nummer. Leeftijd, positie en nationaliteit die we al
+    hadden blijven staan. Een halve pagina (storing) negeren we."""
+    spelers = team.get('spelers') or []
+    if len(spelers) < 15:
+        return False
+    with open(DATA, encoding='utf-8') as f:
+        data = json.load(f)
+    oud = data.get('squad', [])
+    per_nr = {p['number']: p for p in oud}
+    per_naam = {naam_slug(p['name']): p for p in oud}
+    bronnen = data.setdefault('photo_sources', {})
+    nieuw = []
+    for s in sorted(spelers, key=lambda x: x['nummer']):
+        # Eerst op naam (nummers wisselen weleens), dan op nummer met een
+        # achternaam die klopt ("Amr" op de clubsite, "Amir" elders).
+        p = per_naam.get(naam_slug(s['naam']))
+        if not p:
+            k = per_nr.get(s['nummer'])
+            if k and naam_slug(k['name']).split('-')[-1] == naam_slug(s['naam']).split('-')[-1]:
+                p = k
+        p = dict(p) if p else {'name': s['naam'], 'nationality': None, 'photo': None}
+        p['number'] = s['nummer']
+        if s['foto_bron']:
+            pad = f"players/{naam_slug(p['name'])}.jpg"
+            if bronnen.get(p['name']) != s['foto_bron'] or not os.path.exists(os.path.join(os.path.dirname(UIT), pad)):
+                try:
+                    os.makedirs(SPELERS_MAP, exist_ok=True)
+                    bewaar_foto(s['foto_bron'], os.path.join(os.path.dirname(UIT), pad))
+                    bronnen[p['name']] = s['foto_bron']
+                except Exception as fout:
+                    print(f"foto {p['name']} niet gehaald: {fout}", file=sys.stderr)
+            if bronnen.get(p['name']) == s['foto_bron']:
+                p['photo'] = pad
+        nieuw.append(p)
+    if nieuw == oud:
+        return False
+    data['squad'] = nieuw
+    data['squad_bijgewerkt'] = datetime.now(timezone.utc).date().isoformat()
+    data['squad_bron'] = 'rbcvoetbal.nl'
+    data['photos'] = {p['name']: p['photo'] for p in nieuw if p.get('photo')}
+    with open(DATA, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=1)
+        f.write('\n')
+    print(f'selectie bijgewerkt: {len(nieuw)} spelers')
+    return True
 
 
 def lees_nieuws(oud_nieuws):
@@ -351,6 +470,13 @@ def main():
         except Exception:
             oud_bestand = {}
     nieuws = lees_nieuws(oud_bestand.get('nieuws'))
+    try:
+        team = lees_team(oud_bestand.get('team'))
+        werk_selectie_bij(team)
+        team.pop('spelers', None)
+    except Exception as fout:
+        print(f'teampagina niet gelezen: {fout}', file=sys.stderr)
+        team = oud_bestand.get('team', {})
     # De clubpagina mag wegvallen zonder dat de stand mislukt:
     # dan houden we het seizoen van de vorige keer.
     try:
@@ -394,6 +520,7 @@ def main():
         'nieuws': nieuws,
         'rbc_seizoen': seizoen,
         'logos': LOGOS or oud_bestand.get('logos', {}),
+        'team': team,
         'tickets': 'https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3',
     }
 
