@@ -7,12 +7,12 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v25';
+const CACHE = 'rbc-app-v26';
 
 const SCHIL = [
     '/', '/index.html', '/data.json', '/competitie.json',
     '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
-    '/rbc-klein.png', '/atik.jpg', '/manifest.json',
+    '/rbc-klein.png', '/rbc.png', '/atik.jpg', '/manifest.json',
 ];
 
 self.addEventListener('install', e => {

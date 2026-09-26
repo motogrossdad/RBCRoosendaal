@@ -307,6 +307,60 @@ section.blok{ padding:56px 0 8px }
 .kaart .verslag{ margin:10px 0 0 }
 .scheids{ text-align:center; font-size:13px; color:#a39888; margin:-6px 0 12px }
 
+/* ── holografische spelerskaart ─────────────────────────── */
+.kaartlaag{ position:fixed; inset:0; z-index:60; background:rgba(10,8,6,.84); backdrop-filter:blur(10px);
+            -webkit-backdrop-filter:blur(10px); display:grid; place-items:center; padding:16px; animation:in .25s ease-out }
+.kaartlaag[hidden]{ display:none }
+@keyframes in{ from{ opacity:0 } }
+.kaartlaag-in{ perspective:1000px; display:grid; justify-items:center; gap:18px; touch-action:pan-y }
+.holo{ width:min(80vw,340px); aspect-ratio:5/7; position:relative; border-radius:22px; transform-style:preserve-3d;
+       transition:transform .12s ease-out; will-change:transform; animation:opkomst .5s cubic-bezier(.2,1.3,.4,1) }
+@keyframes opkomst{ from{ transform:translateY(40px) rotateY(-25deg) scale(.85); opacity:0 } }
+.holo-in{ position:absolute; inset:0; border-radius:22px; overflow:hidden; color:#fff;
+          background:linear-gradient(160deg,#ffa05c 0%,#ff6a13 38%,#c44700 100%);
+          box-shadow:0 30px 60px rgba(0,0,0,.5), inset 0 0 0 3px rgba(255,255,255,.55), inset 0 0 0 9px rgba(0,0,0,.08) }
+.holo-in::before{ content:""; position:absolute; inset:0; opacity:.14;
+    background:repeating-linear-gradient(90deg,#fff 0 26px,transparent 26px 78px) }
+.holo-foto{ position:absolute; left:8%; right:0; top:4%; height:66%; background:center top/cover no-repeat;
+            -webkit-mask-image:linear-gradient(180deg,#000 70%,transparent); mask-image:linear-gradient(180deg,#000 70%,transparent) }
+.holo-foto.zonder{ background:none; display:grid; place-items:center } .holo-foto.zonder svg{ width:60%; opacity:.5 }
+.holo-nr{ position:absolute; left:7%; top:5%; font:900 76px/.85 var(--kop); text-shadow:0 3px 12px rgba(0,0,0,.3) }
+.holo-pos{ position:absolute; left:7%; top:calc(5% + 70px); font:900 22px/1 var(--kop); letter-spacing:.08em }
+.holo-vlag{ position:absolute; left:7%; top:calc(5% + 100px); font-size:24px; line-height:1.3; display:grid }
+.holo-onder{ position:absolute; left:0; right:0; bottom:0; padding:0 7% 7%; text-align:center }
+.holo-naam{ font:900 34px/.9 var(--kop); text-transform:uppercase; text-shadow:0 2px 10px rgba(0,0,0,.35);
+            border-bottom:2px solid rgba(255,255,255,.5); padding-bottom:10px; margin-bottom:10px; overflow-wrap:anywhere }
+.holo-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px }
+.holo-stats b{ display:block; font:900 24px/1 var(--kop) }
+.holo-stats span{ font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.85 }
+.holo-merk{ position:absolute; right:6%; top:5%; width:40px }
+.glans{ position:absolute; inset:0; border-radius:22px; pointer-events:none; mix-blend-mode:color-dodge; opacity:.75;
+    background:
+      radial-gradient(circle at var(--gx,50%) var(--gy,30%), rgba(255,255,255,.65), transparent 38%),
+      linear-gradient(115deg, transparent 25%, rgba(255,0,170,.35) 38%, rgba(0,210,255,.35) 50%, rgba(255,240,0,.35) 62%, transparent 75%);
+    background-size:100% 100%, 250% 250%; background-position:center, var(--hx,50%) var(--hy,50%) }
+.holo-acties{ display:flex; gap:10px; align-items:center }
+.rond{ width:48px; height:48px; border-radius:50%; background:rgba(255,255,255,.12); color:#fff; font-size:22px; font-weight:700 }
+.rond:hover{ background:rgba(255,255,255,.22) }
+.sluit-x{ position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:61 }
+.knop-wit{ background:#fff; color:var(--nacht); font:900 17px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em;
+           padding:14px 20px; border-radius:999px }
+.knop-wit:hover{ background:var(--oranje); color:#fff }
+.antwoord .kaart-knop{ margin-top:12px; background:#1b0f06; color:#fff; font:800 15px/1 var(--kop); text-transform:uppercase;
+                       letter-spacing:.08em; padding:10px 14px; border-radius:999px }
+
+/* ── deelknoppen, weer, installeren ───────────────────────── */
+.deel{ display:inline-flex; align-items:center; gap:6px; font:700 13px/1 var(--tekst); color:var(--oranje-d);
+       border:1px solid var(--lijn); border-radius:999px; padding:7px 12px; margin-top:10px }
+.deel:hover{ border-color:var(--oranje) }
+.volgende .deel{ color:#f4ece1; border-color:var(--nacht-lijn) }
+.weer{ display:flex; justify-content:center; align-items:center; gap:10px; flex-wrap:wrap; font-size:14px; color:#cfc5b8;
+       margin:-4px 0 12px }
+.weer b{ font:900 22px/1 var(--kop); color:#fff }
+.weer i{ font-style:normal; font-size:22px }
+.app-knop{ margin-top:14px; background:#1b0f06; color:#fff; border-radius:999px; padding:10px 16px; font-weight:700; font-size:14px }
+.app-uitleg{ font-size:13px; font-weight:600; margin-top:8px; max-width:40ch }
+
 /* ── voet ─────────────────────────────────────────────────── */
 footer{ margin-top:64px; background:var(--nacht); color:#cfc5b8; padding:40px 0 calc(28px + env(safe-area-inset-bottom)); font-size:14px }
 footer .kolommen{ display:grid; gap:28px; grid-template-columns:1.4fr 1fr 1fr }
@@ -412,6 +466,8 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
                 <div class="antwoord" id="antwoord" aria-live="polite"></div>
             </div>
             <p class="veeg">← Veeg of tik op het shirt: de volgende speler →</p>
+            <button type="button" class="app-knop" id="installeer" hidden>📲 Zet RBC op je beginscherm</button>
+            <p class="app-uitleg" id="ios-uitleg" hidden>Tik in Safari op <b>Deel</b> ⎋ en kies <b>Zet op beginscherm</b>. Dan werkt dit ook zonder bereik op de tribune.</p>
         </div>
         <div class="toetsen" id="toetsen" role="group" aria-label="Rugnummer intikken"></div>
     </div>
@@ -470,6 +526,18 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
         </div>
     </div>
 </footer>
+
+<div class="kaartlaag" id="kaartlaag" hidden role="dialog" aria-modal="true" aria-label="Spelerskaart">
+    <button type="button" class="rond sluit-x" id="holo-sluit" aria-label="Sluiten">×</button>
+    <div class="kaartlaag-in" id="kaartlaag-in">
+        <div class="holo" id="holo"><div class="holo-in" id="holo-in"></div><div class="glans"></div></div>
+        <div class="holo-acties">
+            <button type="button" class="rond" id="holo-vorige" aria-label="Vorige speler">←</button>
+            <button type="button" class="knop-wit" id="holo-deel">Deel kaart</button>
+            <button type="button" class="rond" id="holo-volgende" aria-label="Volgende speler">→</button>
+        </div>
+    </div>
+</div>
 
 <canvas id="confetti" hidden></canvas>
 <script>
@@ -582,7 +650,8 @@ function toon(nr, animeer) {
             (p.photo ? '<img class="foto" src="' + esc(p.photo) + '" alt="">' : '') +
             '<div class="naam">' + esc(p.name) + '</div>' +
             '<div class="rol">#' + esc(p.number) + ' · ' + esc(positie(p)) + '</div>' +
-            (extra.length ? '<div class="extra">' + extra.map(x => '<span>' + esc(x) + '</span>').join('') + '</div>' : '');
+            (extra.length ? '<div class="extra">' + extra.map(x => '<span>' + esc(x) + '</span>').join('') + '</div>' : '') +
+            '<button type="button" class="kaart-knop" data-kaart="' + p.number + '">✨ Spelerskaart</button>';
     }
     /* Het nummer in de link, zodat je "wie is 14" kunt doorsturen. */
     if (SQUAD.length) {
@@ -661,9 +730,11 @@ function tekenTeam(D) {
 }
 $('linies').addEventListener('click', e => {
     const b = e.target.closest('.speler');
-    if (!b) return;
-    toon(b.dataset.nr, true);
-    $('wie').scrollIntoView();
+    if (b) openKaart(+b.dataset.nr);
+});
+$('antwoord').addEventListener('click', e => {
+    const b = e.target.closest('[data-kaart]');
+    if (b) openKaart(+b.dataset.kaart);
 });
 
 function tekenStaf() {
@@ -752,6 +823,7 @@ function tekenStrook(C) {
                 clubBlok(laatste.uit) + '</div>' +
             '<div class="k-voet"><span class="uitslag-chip ' + u + '">' + UITSLAG[u] + '</span>' +
                 (verslagVan(laatste) ? '<br><a class="verslag" href="' + esc(verslagVan(laatste)) + '" target="_blank" rel="noopener">Lees het verslag →</a>' : '') +
+                '<br><button type="button" class="deel" data-poster="uitslag">📸 Deel de uitslag</button>' +
             '</div></div>';
     }
 
@@ -759,7 +831,7 @@ function tekenStrook(C) {
         const thuis = isRBC(volgende.thuis), tegen = thuis ? volgende.uit : volgende.thuis;
         const dt = alsDatum(volgende.datum);
         const route = 'https://www.google.com/maps/search/?api=1&query=' +
-            encodeURIComponent(thuis ? STADION.naam + ', ' + STADION.adres : tegen + ' voetbal sportpark');
+            encodeURIComponent(thuis ? STADION.naam + ', ' + STADION.adres : tegen + ' voetbal ' + ((PLAATS[tegen] || [''])[0]));
         html += '<div class="kaart volgende"><div class="k-lbl"><span>Volgende wedstrijd</span><b>' + (thuis ? 'Thuis' : 'Uit') + '</b></div>' +
             '<div class="duo">' + clubBlok(volgende.thuis) +
                 '<div class="midden">' + esc(volgende.tijd || 'vs') + '<small>' + kortDatum(dt) + '</small></div>' +
@@ -767,13 +839,16 @@ function tekenStrook(C) {
             (((TEAM.wedstrijden || {})[volgende.datum] || {}).scheidsrechter
                 ? '<p class="scheids">Scheidsrechter: ' + esc(TEAM.wedstrijden[volgende.datum].scheidsrechter) + '</p>' : '') +
             '<div id="klok" class="klok"></div>' +
+            '<div class="weer" id="weer" hidden></div>' +
             '<div class="acties">' +
                 (thuis ? '<a class="actie vol" href="' + esc(TICKETS) + '" target="_blank" rel="noopener">🎟️ Tickets</a>' : '') +
                 '<a class="actie' + (thuis ? '' : ' vol') + '" href="' + esc(route) + '" target="_blank" rel="noopener">📍 Route</a>' +
                 '<a class="actie" href="' + esc(agendaLink()) + '">📅 Agenda</a>' +
                 '<a class="actie" href="' + X_URL + '" target="_blank" rel="noopener">⚡ Live</a>' +
+                '<button type="button" class="actie" data-poster="volgende">📸 Deel</button>' +
             '</div></div>';
         const ko = aftrapVan(volgende);
+        haalWeer(thuis ? 'RBC' : tegen, ko);
         clearInterval(klokTimer);
         setTimeout(() => tikKlok(ko));
         klokTimer = setInterval(() => tikKlok(ko), 1000);
@@ -790,6 +865,7 @@ function tekenStrook(C) {
             }).join('') + '</div></div>';
     }
     $('kaarten').innerHTML = html;
+    POSTER.laatste = laatste; POSTER.volgende = volgende;
 
     /* Gewonnen, en nog geen vier dagen geleden: één keer confetti. */
     if (laatste && uitslagVan(laatste) === 'w' && (nu - alsDatum(laatste.datum)) / 864e5 <= 4) {
@@ -885,6 +961,268 @@ function confetti() {
         if (dt < duur) requestAnimationFrame(stap); else { x.clearRect(0, 0, W, H); c.hidden = true; }
     })(t0);
 }
+
+/* ═══ weer op de wedstrijddag ═══════════════════════════════
+   Open-Meteo, zonder sleutel. Per club de plaats van het veld. */
+const PLAATS = {
+    'RBC': ['Roosendaal', 51.531, 4.465], 'TOGB': ['Berkel en Rodenrijs', 51.990, 4.476],
+    'VV Zwaluwen': ['Vlaardingen', 51.912, 4.341], 'EVV': ['Echt', 51.103, 5.873],
+    'VV Gemert': ['Gemert', 51.555, 5.690], 'FC Rijnvogels': ['Katwijk', 52.203, 4.418],
+    'VV Goes': ['Goes', 51.504, 3.889], 'VV Dongen': ['Dongen', 51.626, 4.939],
+    'VV UNA': ['Veldhoven', 51.418, 5.403], 'SV Poortugaal': ['Poortugaal', 51.860, 4.395],
+    "UDI '19": ['Uden', 51.661, 5.619], 'RKSV Groene Ster': ['Heerlerheide', 50.905, 5.955],
+    'FC Lisse': ['Lisse', 52.258, 4.557], 'VV Noordwijk': ['Noordwijk', 52.240, 4.447],
+    'VV Achilles Veen': ['Veen', 51.771, 5.100], "Blauw Geel '38": ['Veghel', 51.617, 5.549],
+    'Excelsior Maassluis': ['Maassluis', 51.923, 4.250], 'VVSB': ['Noordwijkerhout', 52.263, 4.493]
+};
+function weerBeeld(c) {
+    if (c === 0) return ['☀️', 'zonnig'];
+    if (c <= 2) return ['🌤️', 'half bewolkt'];
+    if (c === 3) return ['☁️', 'bewolkt'];
+    if (c === 45 || c === 48) return ['🌫️', 'mist'];
+    if (c >= 51 && c <= 57) return ['🌦️', 'motregen'];
+    if (c >= 61 && c <= 67) return ['🌧️', 'regen'];
+    if (c >= 71 && c <= 77) return ['🌨️', 'sneeuw'];
+    if (c >= 80 && c <= 82) return ['🌧️', 'buien'];
+    if (c >= 95) return ['⛈️', 'onweer'];
+    return ['🌥️', ''];
+}
+async function haalWeer(club, ko) {
+    const p = PLAATS[club];
+    const dagen = (ko - Date.now()) / 864e5;
+    if (!p || dagen > 15 || dagen < -0.2) return;
+    const dag = ko.getFullYear() + '-' + String(ko.getMonth() + 1).padStart(2, '0') + '-' + String(ko.getDate()).padStart(2, '0');
+    try {
+        const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + p[1] + '&longitude=' + p[2] +
+            '&hourly=temperature_2m,precipitation_probability,weather_code,wind_speed_10m&timezone=Europe%2FAmsterdam' +
+            '&start_date=' + dag + '&end_date=' + dag);
+        const w = (await r.json()).hourly;
+        const i = Math.min(ko.getHours(), w.time.length - 1);
+        const [ico, wat] = weerBeeld(w.weather_code[i]);
+        const el = $('weer');
+        if (!el) return;
+        el.innerHTML = '<i>' + ico + '</i><b>' + Math.round(w.temperature_2m[i]) + '°</b><span>' + wat +
+            (w.precipitation_probability[i] != null ? ' · ' + w.precipitation_probability[i] + '% kans op regen' : '') +
+            ' · wind ' + Math.round(w.wind_speed_10m[i]) + ' km/u · ' + esc(p[0]) + '</span>';
+        el.hidden = false;
+    } catch (e) {}
+}
+
+/* ═══ delen ═════════════════════════════════════════════════ */
+const laadBeeld = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+async function deelBlob(blob, naam, tekst) {
+    const bestand = new File([blob], naam, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [bestand] })) {
+        try { await navigator.share({ files: [bestand], text: tekst }); } catch (e) {}
+        return;
+    }
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = naam; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+function dekVlak(x, img, w, h) {
+    const s = Math.max(w / img.width, h / img.height);
+    x.drawImage(img, (w - img.width * s) / 2, (h - img.height * s) / 2, img.width * s, img.height * s);
+}
+const F = (g, n) => g + ' ' + n + 'px "Big Shoulders Display", Impact, "Arial Narrow", sans-serif';
+function passend(x, tekst, max, g, n) { let s = n; x.font = F(g, s); while (x.measureText(tekst).width > max && s > 20) x.font = F(g, --s); }
+
+/* Een story voor Instagram of WhatsApp: 1080×1920. */
+const POSTER = {};
+async function maakPoster(soort) {
+    const d = soort === 'uitslag' ? POSTER.laatste : POSTER.volgende;
+    if (!d) return;
+    try { await document.fonts.load('900 40px "Big Shoulders Display"'); } catch (e) {}
+    const B = 1080, H = 1920, c = document.createElement('canvas'); c.width = B; c.height = H;
+    const x = c.getContext('2d');
+    const [stadion, crest, thuisLogo, uitLogo] = await Promise.all([
+        laadBeeld('atik.jpg'), laadBeeld('rbc.png'),
+        laadBeeld(isRBC(d.thuis) ? 'rbc.png' : (LOGOS[d.thuis] || '')), laadBeeld(isRBC(d.uit) ? 'rbc.png' : (LOGOS[d.uit] || ''))]);
+    x.fillStyle = '#16120f'; x.fillRect(0, 0, B, H);
+    if (stadion) { x.globalAlpha = .55; dekVlak(x, stadion, B, H); x.globalAlpha = 1; }
+    let g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, 'rgba(22,18,15,.7)'); g.addColorStop(.3, 'rgba(22,18,15,.6)'); g.addColorStop(.5, 'rgba(22,18,15,.78)'); g.addColorStop(1, 'rgba(22,18,15,.97)');
+    x.fillStyle = g; x.fillRect(0, 0, B, H);
+    x.fillStyle = '#ff6a13'; x.fillRect(0, 0, B, 14); x.fillRect(0, H - 14, B, 14);
+
+    x.textAlign = 'center';
+    if (crest) x.drawImage(crest, B / 2 - 60, 110, 120, 120 * crest.height / crest.width);
+    x.fillStyle = '#fff'; x.font = F(900, 54); x.fillText('RBC ROOSENDAAL', B / 2, 330);
+    const u = soort === 'uitslag' ? uitslagVan(d) : null;
+    const kop = soort === 'uitslag' ? { w: 'GEWONNEN!', g: 'GELIJKSPEL', v: 'UITSLAG' }[u] : 'WEDSTRIJDDAG';
+    x.fillStyle = '#ff6a13'; passend(x, kop, 980, 900, 170); x.fillText(kop, B / 2, 560);
+
+    const dt = alsDatum(d.datum);
+    x.fillStyle = '#cfc5b8'; x.font = F(800, 44);
+    x.fillText((DAGEN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MAANDEN[dt.getMonth()]).toUpperCase() + '  ·  DERDE DIVISIE B', B / 2, 650);
+
+    const logoY = 800, maat = 260;
+    [[thuisLogo, B * .25], [uitLogo, B * .75]].forEach(([img, cx]) => {
+        x.save(); x.shadowColor = 'rgba(0,0,0,.5)'; x.shadowBlur = 40;
+        if (img) {
+            const s = maat / Math.max(img.width, img.height);
+            x.imageSmoothingQuality = 'high';
+            x.drawImage(img, cx - img.width * s / 2, logoY + (maat - img.height * s) / 2, img.width * s, img.height * s);
+        } else { x.fillStyle = '#332c26'; x.beginPath(); x.arc(cx, logoY + maat / 2, maat / 2, 0, 7); x.fill(); }
+        x.restore();
+    });
+    x.fillStyle = '#fff';
+    passend(x, d.thuis.toUpperCase(), 440, 900, 58); x.fillText(d.thuis.toUpperCase(), B * .25, logoY + maat + 90);
+    passend(x, d.uit.toUpperCase(), 440, 900, 58); x.fillText(d.uit.toUpperCase(), B * .75, logoY + maat + 90);
+
+    const mid = soort === 'uitslag' ? d.thuis_doelpunten + ' – ' + d.uit_doelpunten : (d.tijd || '');
+    x.fillStyle = '#fff'; x.font = F(900, soort === 'uitslag' ? 300 : 240); x.fillText(mid, B / 2, 1530);
+    x.fillStyle = '#cfc5b8'; x.font = F(800, 46);
+    x.fillText(soort === 'uitslag' ? 'EINDSTAND' : (isRBC(d.thuis) ? 'ATIK STADION, ROOSENDAAL' : 'UIT BIJ ' + d.thuis.toUpperCase()), B / 2, 1620);
+    x.fillStyle = '#ff6a13'; x.font = F(900, 48); x.fillText('RBCROOSENDAAL.COM', B / 2, 1810);
+
+    const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
+    if (blob) deelBlob(blob, 'rbc-' + soort + '.png',
+        soort === 'uitslag' ? d.thuis + ' ' + d.thuis_doelpunten + '-' + d.uit_doelpunten + ' ' + d.uit + ' · rbcroosendaal.com'
+                            : d.thuis + ' - ' + d.uit + ', ' + kortDatum(dt) + ' ' + (d.tijd || '') + ' · rbcroosendaal.com');
+}
+$('kaarten').addEventListener('click', e => { const b = e.target.closest('[data-poster]'); if (b) maakPoster(b.dataset.poster); });
+
+/* ═══ holografische spelerskaart ════════════════════════════ */
+const AFK = { K: 'KEE', V: 'VER', M: 'MID', A: 'AAN', '?': 'RBC' };
+let kaartNr = null;
+function tekenKaart(p) {
+    const vlaggen = (p.nationaliteiten || []).map(l => LAND[l] ? LAND[l][0] : '').filter(Boolean).slice(0, 2);
+    const land = (p.nationaliteiten || [])[0];
+    $('holo-in').innerHTML =
+        (p.photo ? '<div class="holo-foto" style="background-image:url(\'' + esc(p.photo) + '\')"></div>'
+                 : '<div class="holo-foto zonder">' + SILHOUET + '</div>') +
+        '<img class="holo-merk" src="rbc-klein.png" alt="">' +
+        '<div class="holo-nr">' + p.number + '</div><div class="holo-pos">' + AFK[linie(p)] + '</div>' +
+        '<div class="holo-vlag">' + vlaggen.map(v => '<span>' + v + '</span>').join('') + '</div>' +
+        '<div class="holo-onder"><div class="holo-naam">' + esc(p.name) + '</div><div class="holo-stats">' +
+            '<div><b>' + esc(p.leeftijd || '–') + '</b><span>leeftijd</span></div>' +
+            '<div><b>' + esc(AFK[linie(p)]) + '</b><span>' + esc(positie(p).split(' ').pop()) + '</span></div>' +
+            '<div><b>' + esc(land && LAND[land] ? LAND[land][1].slice(0, 3).toUpperCase() : '–') + '</b><span>land</span></div>' +
+        '</div></div>';
+    const holo = $('holo'); holo.style.animation = 'none'; void holo.offsetWidth; holo.style.animation = '';
+}
+function openKaart(nr) {
+    const p = vind(nr); if (!p) return;
+    kaartNr = p.number; tekenKaart(p);
+    $('kaartlaag').hidden = false; document.body.style.overflow = 'hidden';
+    /* iPhone vraagt toestemming voor de bewegingssensor, en alleen na een tik. */
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function')
+        DeviceOrientationEvent.requestPermission().catch(() => {});
+}
+function sluitKaart() { $('kaartlaag').hidden = true; document.body.style.overflow = ''; kaartNr = null; }
+function bladerKaart(stap) {
+    const lijst = SQUAD.slice().sort((a, b) => a.number - b.number);
+    const i = lijst.findIndex(p => p.number === kaartNr);
+    const p = lijst[(i + stap + lijst.length) % lijst.length];
+    kaartNr = p.number; tekenKaart(p);
+}
+function kantel(rx, ry) {
+    $('holo').style.transform = 'rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+    const g = $('holo').querySelector('.glans').style;
+    g.setProperty('--gx', (50 + ry * 2.4) + '%'); g.setProperty('--gy', (40 - rx * 2.4) + '%');
+    g.setProperty('--hx', (50 + ry * 3) + '%'); g.setProperty('--hy', (50 + rx * 3) + '%');
+}
+(function kaartBediening() {
+    const holo = $('holo');
+    holo.addEventListener('pointermove', e => {
+        const r = holo.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width - .5, py = (e.clientY - r.top) / r.height - .5;
+        kantel(-py * 24, px * 24);
+    });
+    holo.addEventListener('pointerleave', () => kantel(0, 0));
+    addEventListener('deviceorientation', e => {
+        if (kaartNr == null || e.beta == null) return;
+        kantel(Math.max(-18, Math.min(18, (e.beta - 45) * .5)), Math.max(-18, Math.min(18, e.gamma * .6)));
+    });
+    /* Zonder muis of sensor: de kaart wiegt zachtjes, zodat de glans leeft. */
+    let t0 = performance.now();
+    (function wieg(t) {
+        if (kaartNr != null && !holo.matches(':hover') && !matchMedia('(prefers-reduced-motion: reduce)').matches && !window.__sensor)
+            kantel(Math.sin((t - t0) / 1400) * 5, Math.cos((t - t0) / 1800) * 9);
+        requestAnimationFrame(wieg);
+    })(t0);
+    addEventListener('deviceorientation', e => { if (e.gamma != null) window.__sensor = true; }, { once: true });
+    $('holo-sluit').onclick = sluitKaart;
+    $('holo-vorige').onclick = () => bladerKaart(-1);
+    $('holo-volgende').onclick = () => bladerKaart(1);
+    $('kaartlaag').addEventListener('click', e => { if (e.target === $('kaartlaag')) sluitKaart(); });
+    let x0 = null;
+    $('kaartlaag-in').addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+    $('kaartlaag-in').addEventListener('touchend', e => {
+        if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null;
+        if (Math.abs(dx) > 50) bladerKaart(dx < 0 ? 1 : -1);
+    });
+    document.addEventListener('keydown', e => {
+        if (kaartNr == null) return;
+        if (e.key === 'Escape') sluitKaart();
+        else if (e.key === 'ArrowRight') bladerKaart(1);
+        else if (e.key === 'ArrowLeft') bladerKaart(-1);
+        e.stopImmediatePropagation();
+    }, true);
+    $('holo-deel').onclick = deelKaart;
+})();
+
+async function deelKaart() {
+    const p = vind(kaartNr); if (!p) return;
+    try { await document.fonts.load('900 40px "Big Shoulders Display"'); } catch (e) {}
+    const B = 1080, H = 1512, c = document.createElement('canvas'); c.width = B; c.height = H;
+    const x = c.getContext('2d');
+    const [foto, crest] = await Promise.all([p.photo ? laadBeeld(p.photo) : null, laadBeeld('rbc-klein.png')]);
+    const rond = (r) => { x.beginPath(); x.roundRect ? x.roundRect(20, 20, B - 40, H - 40, r) : x.rect(20, 20, B - 40, H - 40); };
+    x.fillStyle = '#16120f'; x.fillRect(0, 0, B, H);
+    let g = x.createLinearGradient(0, 0, B, H);
+    g.addColorStop(0, '#ffa05c'); g.addColorStop(.38, '#ff6a13'); g.addColorStop(1, '#c44700');
+    rond(64); x.fillStyle = g; x.fill();
+    x.save(); rond(64); x.clip();
+    x.globalAlpha = .14; x.fillStyle = '#fff';
+    for (let i = 0; i < B; i += 234) x.fillRect(i, 0, 78, H);
+    x.globalAlpha = 1;
+    if (foto) {
+        const w = B * .92, h = H * .68, s = Math.max(w / foto.width, h / foto.height);
+        const fc = document.createElement('canvas'); fc.width = w; fc.height = h;
+        const fx = fc.getContext('2d');
+        fx.drawImage(foto, (w - foto.width * s) / 2, 0, foto.width * s, foto.height * s);
+        fx.globalCompositeOperation = 'destination-in';
+        const m = fx.createLinearGradient(0, 0, 0, h); m.addColorStop(.7, '#000'); m.addColorStop(1, 'rgba(0,0,0,0)');
+        fx.fillStyle = m; fx.fillRect(0, 0, w, h);
+        x.drawImage(fc, B * .08, H * .04);
+    }
+    x.restore();
+    x.fillStyle = '#fff'; x.textAlign = 'left'; x.shadowColor = 'rgba(0,0,0,.35)'; x.shadowBlur = 20;
+    x.font = F(900, 230); x.fillText(String(p.number), 76, 270);
+    x.font = F(900, 64); x.fillText(AFK[linie(p)], 84, 350);
+    x.font = '70px system-ui, "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
+    (p.nationaliteiten || []).map(l => LAND[l] ? LAND[l][0] : '').filter(Boolean).slice(0, 2).forEach((v, i) => x.fillText(v, 84, 450 + i * 90));
+    if (crest) x.drawImage(crest, B - 170, 70, 100, 100 * crest.height / crest.width);
+    x.textAlign = 'center';
+    passend(x, p.name.toUpperCase(), B - 160, 900, 110); x.fillText(p.name.toUpperCase(), B / 2, H - 290);
+    x.shadowBlur = 0; x.fillStyle = 'rgba(255,255,255,.6)'; x.fillRect(120, H - 255, B - 240, 4);
+    x.fillStyle = '#fff';
+    const land = (p.nationaliteiten || [])[0];
+    [[p.leeftijd || '–', 'LEEFTIJD'], [AFK[linie(p)], positie(p).split(' ').pop().toUpperCase()],
+     [land && LAND[land] ? LAND[land][1].slice(0, 3).toUpperCase() : '–', 'LAND']].forEach(([w, l], i) => {
+        const cx = B / 2 + (i - 1) * 290;
+        x.font = F(900, 84); x.fillText(String(w), cx, H - 150);
+        x.font = '700 28px system-ui, sans-serif'; x.fillText(l, cx, H - 100);
+    });
+    x.font = F(900, 34); x.fillStyle = 'rgba(255,255,255,.85)'; x.fillText('RBCROOSENDAAL.COM', B / 2, H - 44);
+    const blob = await new Promise(ok => c.toBlob(ok, 'image/png'));
+    if (blob) deelBlob(blob, 'rbc-' + p.number + '.png', p.name + ' · #' + p.number + ' RBC Roosendaal · rbcroosendaal.com');
+}
+
+/* ═══ als app installeren ═══════════════════════════════════ */
+(function installeren() {
+    const alsApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+    if (alsApp) return;
+    let vraag = null;
+    addEventListener('beforeinstallprompt', e => { e.preventDefault(); vraag = e; $('installeer').hidden = false; });
+    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('installeer').hidden = false;
+    $('installeer').onclick = async () => {
+        if (vraag) { vraag.prompt(); try { await vraag.userChoice; } catch (e) {} vraag = null; $('installeer').hidden = true; }
+        else $('ios-uitleg').hidden = !$('ios-uitleg').hidden;
+    };
+})();
 
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });

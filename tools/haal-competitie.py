@@ -193,6 +193,23 @@ def haal_logos(soep):
         LOGOS[naam] = 'logos/' + slug + '.webp'
 
 
+THUIS_AFTRAP = '19:00'
+
+
+def thuis_tijd_regels(seizoen, nieuws):
+    verzet = {}
+    for n in nieuws or []:
+        m = re.search(r'RBC\s*[-–]\s*(.+?)\s+naar\s+(\d{1,2})[:.](\d\d)', n.get('titel', ''), re.I)
+        if m:
+            verzet[naam_slug(m.group(1)).split('-')[-1]] = f'{int(m.group(2)):02d}:{m.group(3)}'
+    for d in seizoen:
+        if not d['thuis'].strip().upper().startswith('RBC') or 'thuis_doelpunten' in d:
+            continue
+        tegen = naam_slug(d['uit']).split('-')[-1]
+        bron = d.get('tijd') or ''
+        d['tijd'] = verzet.pop(tegen, None) or (bron if bron >= THUIS_AFTRAP else THUIS_AFTRAP)
+
+
 def lees_seizoen():
     """Alle wedstrijden van RBC dit seizoen, gespeeld en nog te spelen.
     De competitiepagina toont alleen de huidige ronde; de clubpagina het
@@ -524,6 +541,12 @@ def main():
         'tickets': 'https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3',
     }
 
+    # Aftrap thuis: de bronnen zetten er vaak de standaardtijd van de bond
+    # (14:00, 18:00) bij, maar RBC speelt thuis om 19:00, en 19:30 zodra
+    # dat is aangekondigd. Verzet de club een wedstrijd, dan staat dat in
+    # het nieuws ("RBC - Zwaluwen naar 19:30 uur") en gaat dat voor.
+    thuis_tijd_regels(seizoen, nieuws)
+    data['rbc_seizoen'] = seizoen
     schrijf_agenda(seizoen)
 
     oud = None
