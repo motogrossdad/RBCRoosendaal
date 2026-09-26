@@ -61,7 +61,7 @@ img{ display:block; max-width:100% }
 .balk nav a{ font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:.06em;
              text-decoration:none; padding:10px 10px; border-radius:8px; white-space:nowrap }
 .balk nav a:hover{ background:rgba(0,0,0,.12) }
-@media (max-width:520px){ .merk b{ display:none } .balk nav a{ padding:10px 8px; font-size:14px } }
+@media (max-width:520px){ .merk b{ display:none } .balk nav a{ padding:10px 7px; font-size:14px } .balk nav a:first-child{ display:none } }
 
 /* ── koppen ───────────────────────────────────────────────── */
 section{ padding:40px 0 8px }
@@ -110,17 +110,92 @@ section{ padding:40px 0 8px }
 .toets.stil{ background:rgba(255,255,255,.18); color:#fff; font-size:22px; box-shadow:none }
 .toets:focus-visible{ outline:3px solid var(--inkt); outline-offset:2px }
 
-/* ── volgende wedstrijd ──────────────────────────────────── */
-.volgende{ background:var(--inkt); color:var(--papier); padding:0 }
-.volgende .wrap{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; padding-top:16px; padding-bottom:16px }
-.volgende .lbl{ font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:var(--oranje) }
-.volgende .duel-k{ font:900 clamp(24px,5vw,34px)/1 var(--kop); text-transform:uppercase }
-.volgende .duel-k .tg{ color:var(--oranje) }
-.volgende .wanneer{ font-weight:600; opacity:.8; font-size:15px }
-.volgende .aftel{ margin-left:auto; text-align:right }
-.volgende .aftel b{ display:block; font:900 clamp(30px,6vw,40px)/1 var(--kop); color:var(--oranje); font-variant-numeric:tabular-nums }
-.volgende .aftel span{ font-size:13px; opacity:.7; font-weight:600 }
-@media (max-width:560px){ .volgende .aftel{ margin-left:0; text-align:left; display:flex; align-items:baseline; gap:8px } }
+/* ── wedstrijdcentrum ──────────────────────────────────── */
+.centrum{ background:var(--inkt); color:#f4ece1; padding:26px 0 30px }
+:root[data-theme="dark"] .centrum{ background:#0a0908 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .centrum{ background:#0a0908 } }
+.centrum .wrap{ display:grid; gap:22px; grid-template-columns:1fr }
+@media (min-width:900px){ .centrum .wrap{ grid-template-columns:1.2fr 1fr; align-items:start } }
+.juich{ grid-column:1/-1; display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+        background:var(--oranje); color:#fff; border-radius:var(--r); padding:14px 18px }
+.juich b{ font:900 clamp(30px,6vw,44px)/1 var(--kop); text-transform:uppercase; letter-spacing:.01em }
+.juich span{ font-weight:700 }
+.juich button{ margin-left:auto; background:rgba(0,0,0,.18); border-radius:999px; padding:8px 14px; font-weight:700; font-size:14px }
+.c-lbl{ font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:var(--oranje) }
+.c-duel{ font:900 clamp(38px,8vw,64px)/.9 var(--kop); text-transform:uppercase; margin:8px 0 6px }
+.c-duel .tg{ color:var(--oranje) }
+.c-wanneer{ font-weight:600; opacity:.75 }
+.klok{ display:flex; gap:8px; margin:18px 0 18px }
+.klok div{ background:#26211d; border-radius:12px; padding:10px 0 8px; min-width:68px; text-align:center }
+.klok b{ display:block; font:900 38px/1 var(--kop); font-variant-numeric:tabular-nums; color:#fff }
+.klok span{ font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.12em; opacity:.6 }
+.live{ display:flex; align-items:center; gap:14px; margin:18px 0; flex-wrap:wrap }
+.live .pil{ display:inline-flex; align-items:center; gap:8px; background:#c8352b; color:#fff; border-radius:999px;
+            padding:7px 14px; font:900 18px/1 var(--kop); letter-spacing:.1em }
+.live .pil i{ width:9px; height:9px; border-radius:50%; background:#fff; animation:puls 1.2s infinite }
+@keyframes puls{ 50%{ opacity:.25 } }
+.live .min{ font:900 52px/1 var(--kop); font-variant-numeric:tabular-nums; color:var(--oranje) }
+.live small{ opacity:.6; font-size:13px; flex-basis:100% }
+.acties{ display:flex; flex-wrap:wrap; gap:8px }
+.actie{ display:inline-flex; align-items:center; gap:7px; border:1px solid #3a332d; border-radius:999px; padding:9px 15px;
+        font-weight:700; font-size:14px; text-decoration:none; color:#f4ece1 }
+.actie:hover{ border-color:var(--oranje); color:var(--oranje) }
+.actie.vol{ background:var(--oranje); border-color:var(--oranje); color:#fff }
+.actie.vol:hover{ background:var(--oranje-d); color:#fff }
+.scout{ background:#1d1916; border:1px solid #2e2925; border-radius:var(--r); padding:16px 18px }
+.scout h3{ font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:#a39888; margin-bottom:12px }
+.vs{ display:grid; grid-template-columns:1fr auto 1fr; gap:10px; align-items:start }
+.vs .team b{ display:block; font:900 24px/1 var(--kop); text-transform:uppercase; margin-bottom:8px }
+.vs .team.wij b{ color:var(--oranje) }
+.vs .team:last-child{ text-align:right }
+.vs .team:last-child .dots{ justify-content:flex-end }
+.vs .mid{ font:900 18px/1 var(--kop); color:#6f655c; padding-top:6px }
+.regel{ display:flex; justify-content:space-between; gap:8px; font-size:14px; padding:6px 0; border-top:1px solid #2e2925 }
+.vs .team:last-child .regel{ flex-direction:row-reverse }
+.regel span{ opacity:.6 } .regel b{ font:800 18px/1 var(--kop); text-transform:none; display:inline; margin:0; color:inherit!important }
+.dots{ display:flex; gap:4px; margin-top:8px }
+.dots i{ width:22px; height:22px; border-radius:6px; display:grid; place-items:center; font:900 12px/1 var(--kop); font-style:normal; color:#fff }
+.dots i.w{ background:#1f8a4c } .dots i.g{ background:#6f655c } .dots i.v{ background:#c8352b }
+.vorige{ margin-top:14px; font-size:14px; opacity:.8 }
+.vorige b{ color:var(--oranje) }
+
+/* confetti */
+#confetti{ position:fixed; inset:0; pointer-events:none; z-index:50 }
+
+/* ── quiz ─────────────────────────────────────────────────── */
+.quiz{ background:var(--vlak); border:1px solid var(--lijn); border-radius:20px; padding:22px; max-width:640px;
+       margin:0 auto; position:relative; overflow:hidden }
+.q-top{ display:flex; justify-content:space-between; align-items:center; font:800 16px/1 var(--kop);
+        text-transform:uppercase; letter-spacing:.1em; color:var(--dim) }
+.q-top b{ color:var(--oranje); font-size:22px }
+.q-tijd{ height:6px; background:var(--lijn); border-radius:3px; margin:14px 0 18px; overflow:hidden }
+.q-tijd i{ display:block; height:100%; background:var(--oranje); transform-origin:left; transition:transform linear }
+.q-vraag{ font:900 clamp(28px,6vw,40px)/1 var(--kop); text-transform:uppercase; text-align:center; margin-bottom:16px }
+.q-vraag em{ font-style:normal; color:var(--oranje) }
+.q-foto{ width:120px; height:160px; object-fit:cover; border-radius:14px; margin:0 auto 16px; box-shadow:0 0 0 4px var(--oranje) }
+.q-opties{ display:grid; grid-template-columns:1fr 1fr; gap:10px }
+.q-optie{ background:var(--papier); border:2px solid var(--lijn); border-radius:14px; padding:14px 10px; font-weight:700;
+          font-size:16px; min-height:64px; transition:transform .08s, border-color .15s }
+.q-optie.getal{ font:900 34px/1 var(--kop); color:var(--oranje) }
+.q-optie:hover:not(:disabled){ border-color:var(--oranje) }
+.q-optie:active:not(:disabled){ transform:scale(.97) }
+.q-optie.goed{ background:#1f8a4c; border-color:#1f8a4c; color:#fff }
+.q-optie.fout{ background:#c8352b; border-color:#c8352b; color:#fff }
+.q-optie:disabled{ cursor:default }
+.q-start{ text-align:center; padding:10px 0 }
+.q-start .groot{ font:900 clamp(64px,16vw,110px)/.9 var(--kop); color:var(--oranje) }
+.q-start p{ color:var(--dim); margin:8px 0 18px }
+.q-start .titel{ font:900 30px/1 var(--kop); text-transform:uppercase; margin-top:6px }
+.q-start .knoppen{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap }
+.knop.licht{ background:transparent; color:var(--oranje-d); box-shadow:inset 0 0 0 2px var(--oranje) }
+.knop.licht:hover{ background:var(--oranje-zacht) }
+.q-plus{ position:absolute; top:16px; left:50%; transform:translateX(-50%); font:900 28px/1 var(--kop); color:#1f8a4c;
+         animation:plus .9s ease-out forwards; pointer-events:none }
+@keyframes plus{ from{ opacity:1; transform:translate(-50%,10px) } to{ opacity:0; transform:translate(-50%,-30px) } }
+
+/* shirt vegen */
+.veeg{ font-size:13px; font-weight:600; opacity:.75; margin-top:10px }
+.onthul{ touch-action:pan-y }
 
 /* ── selectie ─────────────────────────────────────────────── */
 .linie{ margin-bottom:22px }
@@ -248,6 +323,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
         <nav aria-label="Onderdelen">
             <a href="#wie">Wie is</a>
             <a href="#selectie">Selectie</a>
+            <a href="#quiz">Quiz</a>
             <a href="#stand">Stand</a>
             <a href="#seizoen">Seizoen</a>
             <a href="#nieuws">Nieuws</a>
@@ -274,19 +350,28 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
                 </div>
                 <div class="antwoord" id="antwoord" aria-live="polite"></div>
             </div>
+            <p class="veeg" id="veeg">← Veeg of tik op het shirt: de volgende speler →</p>
         </div>
         <div class="toetsen" id="toetsen" role="group" aria-label="Rugnummer intikken"></div>
     </div>
 </section>
 
 <!-- ═══ volgende wedstrijd ═══════════════════════════════ -->
-<section class="volgende" id="volgende" hidden aria-label="Volgende wedstrijd"></section>
+<section class="centrum" id="centrum" hidden aria-label="Wedstrijdcentrum"><div class="wrap" id="centrum-in"></div></section>
 
 <!-- ═══ selectie ════════════════════════════════════════════ -->
 <section id="selectie" aria-labelledby="sel-kop">
     <div class="wrap">
         <div class="kop"><h2 id="sel-kop">De <em>selectie</em></h2><small id="sel-meta"></small></div>
         <div id="linies"><p class="leeg">Selectie laden…</p></div>
+    </div>
+</section>
+
+<!-- ═══ quiz ══════════════════════════════════════════════ -->
+<section id="quiz" aria-labelledby="quiz-kop">
+    <div class="wrap">
+        <div class="kop"><h2 id="quiz-kop">Ken jij de <em>selectie</em>?</h2></div>
+        <div class="quiz" id="quizvak" aria-live="polite"></div>
     </div>
 </section>
 
@@ -337,6 +422,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
     </div>
 </footer>
 
+<canvas id="confetti" hidden></canvas>
 <script>
 'use strict';
 const $ = id => document.getElementById(id);
@@ -454,7 +540,32 @@ document.addEventListener('keydown', e => {
     if (/^[0-9]$/.test(e.key)) { tik(e.key); e.preventDefault(); }
     else if (e.key === 'Backspace') { tik('wis'); e.preventDefault(); }
     else if (e.key === 'Escape') tik('leeg');
+    else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        if (document.getElementById('wie').getBoundingClientRect().bottom > 0) bladerSpeler(e.key === 'ArrowRight' ? 1 : -1);
+    }
 });
+
+/* Door de selectie bladeren: vegen, op het shirt tikken of pijltjes. */
+function bladerSpeler(stap) {
+    const lijst = SQUAD.slice().sort((a, b) => a.number - b.number);
+    if (!lijst.length) return;
+    let i = lijst.findIndex(p => String(p.number) === String(+getikt));
+    i = i < 0 ? (stap > 0 ? 0 : lijst.length - 1) : (i + stap + lijst.length) % lijst.length;
+    toon(String(lijst[i].number), true);
+}
+(function vegen() {
+    const vlak = document.querySelector('.onthul');
+    let x0 = null, y0 = null;
+    vlak.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+    vlak.addEventListener('touchend', e => {
+        if (x0 == null) return;
+        const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+        x0 = null;
+        if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) bladerSpeler(dx < 0 ? 1 : -1);
+    });
+    $('shirt').addEventListener('click', () => bladerSpeler(1));
+    $('shirt').style.cursor = 'pointer';
+})();
 
 /* ═══ selectie ══════════════════════════════════════════════ */
 function tekenSelectie(D) {
@@ -575,23 +686,7 @@ function tekenSeizoen(C) {
     const nu = vandaag();
     const volgende = duels.find(d => !gespeeld(d) && alsDatum(d.datum) >= nu);
 
-    /* de strook onder "wie is nummer" */
-    if (volgende) {
-        const dt = alsDatum(volgende.datum), thuis = isRBC(volgende.thuis);
-        const tegen = thuis ? volgende.uit : volgende.thuis;
-        const dagen = Math.round((dt - nu) / 864e5);
-        const aftel = dagen === 0 ? 'Vandaag!' : dagen === 1 ? 'Morgen' : 'nog ' + dagen + ' dagen';
-        const v = $('volgende');
-        v.hidden = false;
-        v.innerHTML = '<div class="wrap">' +
-            '<span class="lbl">Volgende wedstrijd</span>' +
-            '<div><div class="duel-k">' + (thuis ? 'RBC – <span class="tg">' + esc(tegen) + '</span>'
-                                                 : '<span class="tg">' + esc(tegen) + '</span> – RBC') + '</div>' +
-            '<div class="wanneer">' + DAGEN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MAANDEN[dt.getMonth()] +
-                (volgende.tijd ? ' · ' + esc(volgende.tijd) : '') + ' · ' + (thuis ? 'thuis, Atik Stadion' : 'uit') + '</div></div>' +
-            '<div class="aftel"><b>' + aftel + '</b><span>' + (thuis ? 'kom kijken' : 'reis mee') + '</span></div>' +
-            '</div>';
-    }
+    tekenCentrum(C, duels, volgende);
 
     /* het hele seizoen */
     const al = duels.filter(gespeeld), nog = duels.filter(d => !gespeeld(d));
@@ -622,6 +717,234 @@ $('alles').addEventListener('click', () => {
     const open = $('lijst').classList.toggle('alles');
     $('alles').textContent = open ? 'Minder tonen ↑' : 'Toon het hele seizoen ↓';
 });
+
+/* ═══ wedstrijdcentrum ══════════════════════════════════════
+   Geen live bron beschikbaar (de X-tijdlijn laat zich niet meer
+   insluiten), dus de klok loopt op de aftrap: aftellen, dan een
+   geschatte minuut met rust erin, dan "uitslag volgt". Voor het
+   echte verloop verwijzen we naar de club zelf op X. */
+const STADION = { naam: 'Atik Stadion', adres: 'Borchwerf 4, 4704 RG Roosendaal' };
+const X_URL = 'https://x.com/RBCvoetbal';
+let klokTimer = null;
+
+function aftrapVan(d) {
+    const dt = alsDatum(d.datum);
+    const [u, m] = (d.tijd || '14:30').split(':').map(Number);
+    dt.setHours(u, m, 0, 0);
+    return dt;
+}
+const vormDots = r => '<div class="dots">' + ((r && r.vorm) || []).map(v =>
+    '<i class="' + esc(v.uitslag) + '" title="' + esc(v.wat) + '">' + esc(String(v.uitslag).toUpperCase()) + '</i>').join('') + '</div>';
+const teamBlok = (naam, r) => '<div class="team' + (isRBC(naam) ? ' wij' : '') + '"><b>' + esc(naam) + '</b>' + (r ?
+    '<div class="regel"><span>Plek</span><b>' + r.pos + 'e</b></div>' +
+    '<div class="regel"><span>Punten</span><b>' + r.pnt + '</b></div>' +
+    '<div class="regel"><span>Doelsaldo</span><b>' + (r.ds > 0 ? '+' : '') + r.ds + '</b></div>' + vormDots(r) : '') + '</div>';
+
+function tikKlok(ko) {
+    const el = $('klok');
+    if (!el) return;
+    const nu = Date.now(), ms = ko - nu;
+    if (ms > 0) {
+        const delen = [[Math.floor(ms / 864e5), 'dagen'], [Math.floor(ms / 36e5) % 24, 'uur'],
+                       [Math.floor(ms / 6e4) % 60, 'min'], [Math.floor(ms / 1e3) % 60, 'sec']];
+        el.className = 'klok'; el.dataset.staat = 'af';
+        el.innerHTML = delen.map(([w, l]) => '<div><b>' + String(w).padStart(2, '0') + '</b><span>' + l + '</span></div>').join('');
+        return;
+    }
+    const min = (nu - ko) / 6e4;
+    let staat = 'live', tekst;
+    if (min < 47) tekst = min >= 45 ? "45+'" : Math.floor(min) + 1 + "'";
+    else if (min < 62) tekst = 'RUST';
+    else if (min < 110) { const t = 46 + Math.floor(min - 62); tekst = t > 90 ? "90+'" : t + "'"; }
+    else staat = 'klaar';
+    if (el.dataset.staat !== staat) {
+        el.className = 'live'; el.dataset.staat = staat;
+        el.innerHTML = staat === 'live'
+            ? '<span class="pil"><i></i>LIVE</span><span class="min" id="minuut"></span>' +
+              '<small>Geschatte minuut vanaf de aftrap. Doelpunten en verloop: live bij de club op X.</small>'
+            : '<span class="pil" style="background:#6f655c">AFGELOPEN</span><small>De uitslag verschijnt hier zodra hij binnen is.</small>';
+    }
+    if (staat === 'live') $('minuut').textContent = tekst;
+    else clearInterval(klokTimer);
+}
+
+function tekenCentrum(C, duels, volgende) {
+    const al = duels.filter(gespeeld), laatste = al[al.length - 1];
+    let html = '';
+
+    /* Gewonnen, en nog geen vier dagen geleden: dat mag gevierd worden. */
+    const juichen = laatste && uitslagVan(laatste) === 'w' && (vandaag() - alsDatum(laatste.datum)) / 864e5 <= 4;
+    if (juichen) {
+        const thuis = isRBC(laatste.thuis);
+        html += '<div class="juich"><b>Gewonnen!</b><span>' + esc(laatste.thuis) + ' ' + laatste.thuis_doelpunten + '–' +
+            laatste.uit_doelpunten + ' ' + esc(laatste.uit) + (thuis ? ' · thuis' : ' · uit') + '</span>' +
+            '<button type="button" id="nog-eens">Nog een keer 🎉</button></div>';
+    }
+
+    if (volgende) {
+        const thuis = isRBC(volgende.thuis), tegen = thuis ? volgende.uit : volgende.thuis;
+        const dt = alsDatum(volgende.datum), ko = aftrapVan(volgende);
+        const route = 'https://www.google.com/maps/search/?api=1&query=' +
+            encodeURIComponent(thuis ? STADION.naam + ', ' + STADION.adres : tegen + ' voetbal sportpark');
+        const agenda = location.protocol === 'https:' ? 'webcal://' + location.host + '/rbc.ics' : '/rbc.ics';
+        const stand = C.stand || [];
+        const eerder = al.filter(d => d.thuis === tegen || d.uit === tegen).pop();
+        html +=
+            '<div>' +
+                '<span class="c-lbl">Volgende wedstrijd · ' + (thuis ? 'thuis' : 'uit') + '</span>' +
+                '<div class="c-duel">' + (thuis ? 'RBC – <span class="tg">' + esc(tegen) + '</span>' : '<span class="tg">' + esc(tegen) + '</span> – RBC') + '</div>' +
+                '<div class="c-wanneer">' + DAGEN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MAANDEN[dt.getMonth()] +
+                    (volgende.tijd ? ' · aftrap ' + esc(volgende.tijd) : '') + ' · ' + (thuis ? STADION.naam : 'bij ' + esc(tegen)) + '</div>' +
+                '<div id="klok" class="klok"></div>' +
+                '<div class="acties">' +
+                    '<a class="actie vol" href="' + esc(route) + '" target="_blank" rel="noopener">📍 Route</a>' +
+                    '<a class="actie" href="' + esc(agenda) + '">📅 In je agenda</a>' +
+                    '<a class="actie" href="' + X_URL + '" target="_blank" rel="noopener">⚡ Live op X</a>' +
+                '</div>' +
+            '</div>' +
+            '<div class="scout"><h3>Zo staan ze ervoor</h3><div class="vs">' +
+                teamBlok(volgende.thuis, stand.find(r => r.club === volgende.thuis)) +
+                '<div class="mid">vs</div>' +
+                teamBlok(volgende.uit, stand.find(r => r.club === volgende.uit)) +
+            '</div>' +
+            (eerder ? '<p class="vorige">Eerder dit seizoen: ' + esc(eerder.thuis) + ' – ' + esc(eerder.uit) + ' <b>' +
+                eerder.thuis_doelpunten + '–' + eerder.uit_doelpunten + '</b></p>'
+                    : '<p class="vorige">De eerste ontmoeting van dit seizoen.</p>') +
+            '</div>';
+        clearInterval(klokTimer);
+        setTimeout(() => tikKlok(ko));
+        klokTimer = setInterval(() => tikKlok(ko), 1000);
+    }
+
+    if (!html) return;
+    $('centrum-in').innerHTML = html;
+    $('centrum').hidden = false;
+
+    if (juichen) {
+        $('nog-eens').addEventListener('click', confetti);
+        const sleutel = 'rbc-gevierd-' + laatste.datum;
+        if (!OPSLAG.lees(sleutel)) { OPSLAG.schrijf(sleutel, '1'); setTimeout(confetti, 600); }
+    }
+}
+
+/* ═══ confetti ══════════════════════════════════════════════ */
+function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const c = $('confetti'), x = c.getContext('2d'), r = devicePixelRatio || 1;
+    c.hidden = false;
+    const W = c.width = innerWidth * r, H = c.height = innerHeight * r;
+    c.style.width = innerWidth + 'px'; c.style.height = innerHeight + 'px';
+    const kleuren = ['#ff6a13', '#ffffff', '#d94f06', '#ffb07a', '#16120f'];
+    const stukjes = Array.from({ length: 180 }, () => ({
+        x: W * (.15 + Math.random() * .7), y: H * .4,
+        vx: (Math.random() - .5) * W * .025, vy: -(Math.random() * H * .028 + H * .008),
+        z: (Math.random() * 6 + 5) * r, k: kleuren[Math.floor(Math.random() * kleuren.length)],
+        a: Math.random() * 6, va: (Math.random() - .5) * .35
+    }));
+    const t0 = performance.now(), duur = 3400;
+    (function stap(t) {
+        const dt = t - t0;
+        x.clearRect(0, 0, W, H);
+        x.globalAlpha = Math.max(0, 1 - Math.max(0, dt - duur * .6) / (duur * .4));
+        stukjes.forEach(d => {
+            d.vy += H * .0008; d.vx *= .99; d.x += d.vx; d.y += d.vy; d.a += d.va;
+            x.save(); x.translate(d.x, d.y); x.rotate(d.a);
+            x.fillStyle = d.k; x.fillRect(-d.z / 2, -d.z / 4, d.z, d.z / 2);
+            x.restore();
+        });
+        if (dt < duur) requestAnimationFrame(stap); else { x.clearRect(0, 0, W, H); c.hidden = true; }
+    })(t0);
+}
+
+/* ═══ quiz ══════════════════════════════════════════════════ */
+const QUIZ_N = 10, QUIZ_TIJD = 10000;
+const Q = { ronde: 0, score: 0, goed: 0, vragen: [], timer: null, start: 0 };
+function schud(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function maakVragen() {
+    return schud(SQUAD).slice(0, QUIZ_N).map(p => {
+        const soorten = ['wie', 'nummer'].concat(p.photo ? ['foto', 'foto'] : []);
+        const soort = soorten[Math.floor(Math.random() * soorten.length)];
+        if (soort === 'nummer') {
+            /* Nummers die dicht bij het goede liggen: dan moet je het echt weten. */
+            const buren = SQUAD.filter(q => q !== p).sort((a, b) => Math.abs(a.number - p.number) - Math.abs(b.number - p.number)).slice(0, 5);
+            return { soort, p, opties: schud([p].concat(schud(buren).slice(0, 3))), tekst: 'Welk nummer heeft <em>' + esc(p.name) + '</em>?' };
+        }
+        return { soort, p, opties: schud([p].concat(schud(SQUAD.filter(q => q !== p)).slice(0, 3))),
+                 tekst: soort === 'foto' ? 'Wie is <em>dit</em>?' : 'Wie draagt <em>nummer ' + p.number + '</em>?' };
+    });
+}
+
+function quizStart() {
+    const best = +OPSLAG.lees('rbc-quiz-best') || 0;
+    $('quizvak').innerHTML = '<div class="q-start"><div class="groot">10</div><div class="titel">vragen · 10 seconden per vraag</div>' +
+        '<p>Nummers, namen en gezichten. Hoe sneller je antwoordt, hoe meer punten.' + (best ? '<br>Jouw record: <b>' + best + '</b> punten.' : '') + '</p>' +
+        '<div class="knoppen"><button type="button" class="knop" id="q-go">Start de quiz</button></div></div>';
+    $('q-go').onclick = quizBegin;
+}
+function quizBegin() {
+    if (SQUAD.length < 4) return;
+    Object.assign(Q, { ronde: 0, score: 0, goed: 0, vragen: maakVragen() });
+    quizVraag();
+}
+function quizVraag() {
+    const v = Q.vragen[Q.ronde], getal = v.soort === 'nummer';
+    $('quizvak').innerHTML =
+        '<div class="q-top"><span>Vraag ' + (Q.ronde + 1) + '/' + Q.vragen.length + '</span><span>Score <b id="q-score">' + Q.score + '</b></span></div>' +
+        '<div class="q-tijd"><i id="q-balk"></i></div>' +
+        (v.soort === 'foto' ? '<img class="q-foto" src="' + esc(v.p.photo) + '" alt="Foto van een speler">' : '') +
+        '<div class="q-vraag">' + v.tekst + '</div><div class="q-opties">' +
+        v.opties.map((o, i) => '<button type="button" class="q-optie' + (getal ? ' getal' : '') + '" data-i="' + i + '">' +
+            (getal ? o.number : esc(o.name)) + '</button>').join('') + '</div>';
+    $('quizvak').querySelectorAll('.q-optie').forEach(b => b.onclick = () => quizAntwoord(+b.dataset.i));
+    const balk = $('q-balk');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        balk.style.transitionDuration = QUIZ_TIJD + 'ms'; balk.style.transform = 'scaleX(0)';
+    }));
+    Q.start = performance.now();
+    clearTimeout(Q.timer);
+    Q.timer = setTimeout(() => quizAntwoord(-1), QUIZ_TIJD);
+}
+function quizAntwoord(i) {
+    const knoppen = $('quizvak').querySelectorAll('.q-optie');
+    if (!knoppen.length || knoppen[0].disabled) return;
+    clearTimeout(Q.timer);
+    const v = Q.vragen[Q.ronde], juist = v.opties.indexOf(v.p);
+    knoppen.forEach((b, k) => { b.disabled = true; if (k === juist) b.classList.add('goed'); else if (k === i) b.classList.add('fout'); });
+    const balk = $('q-balk'), nu = getComputedStyle(balk).transform;
+    balk.style.transitionDuration = '0ms'; balk.style.transform = nu;
+    if (i === juist) {
+        const over = Math.max(0, QUIZ_TIJD - (performance.now() - Q.start));
+        const punten = 100 + Math.round(over / QUIZ_TIJD * 100);
+        Q.score += punten; Q.goed++;
+        $('q-score').textContent = Q.score;
+        const plus = document.createElement('div');
+        plus.className = 'q-plus'; plus.textContent = '+' + punten;
+        $('quizvak').appendChild(plus);
+    }
+    setTimeout(() => { Q.ronde++; Q.ronde < Q.vragen.length ? quizVraag() : quizEinde(); }, i === juist ? 900 : 1700);
+}
+function quizEinde() {
+    const best = +OPSLAG.lees('rbc-quiz-best') || 0, record = Q.score > best;
+    if (record) OPSLAG.schrijf('rbc-quiz-best', String(Q.score));
+    const titel = Q.goed === QUIZ_N ? 'Clubicoon' : Q.goed >= 8 ? 'Tribunekoning' : Q.goed >= 5 ? 'Vaste bezoeker'
+                : Q.goed >= 3 ? 'Nieuw op de tribune' : 'Even oefenen met het shirt ↑';
+    $('quizvak').innerHTML = '<div class="q-start"><div class="groot">' + Q.goed + '/' + Q.vragen.length + '</div>' +
+        '<div class="titel">' + titel + '</div>' +
+        '<p>' + Q.score + ' punten' + (record ? ' · 🏆 nieuw record!' : best ? ' · jouw record: ' + best : '') + '</p>' +
+        '<div class="knoppen"><button type="button" class="knop" id="q-deel">Daag iemand uit</button>' +
+        '<button type="button" class="knop licht" id="q-weer">Nog een keer</button></div></div>';
+    $('q-weer').onclick = quizBegin;
+    const goed = Q.goed, score = Q.score;
+    $('q-deel').onclick = async () => {
+        const tekst = 'Ik had ' + goed + '/' + QUIZ_N + ' (' + score + ' punten) in de RBC-quiz. Ken jij de selectie beter?';
+        const url = 'https://rbcroosendaal.com/#quiz';
+        if (navigator.share) { try { await navigator.share({ text: tekst, url }); } catch (e) {} return; }
+        try { await navigator.clipboard.writeText(tekst + ' ' + url); $('q-deel').textContent = 'Gekopieerd!'; } catch (e) {}
+    };
+    if (Q.goed >= 8) confetti();
+}
+quizStart();
 
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
