@@ -13,15 +13,28 @@
 <meta property="og:image" content="https://rbcroosendaal.com/atik.jpg">
 <meta property="og:url" content="https://rbcroosendaal.com/">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://rbcroosendaal.com/">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SportsTeam","name":"RBC Roosendaal","sport":"Voetbal",
+ "alternateName":"Roosendaalse Boys Combinatie","foundingDate":"1912","url":"https://www.rbcvoetbal.nl/",
+ "logo":"https://rbcroosendaal.com/rbc.png","memberOf":{"@type":"SportsOrganization","name":"Derde Divisie B"},
+ "location":{"@type":"StadiumOrArena","name":"Atik Stadion","address":{"@type":"PostalAddress","streetAddress":"Borchwerf 4","postalCode":"4704 RG","addressLocality":"Roosendaal","addressCountry":"NL"}},
+ "sameAs":["https://www.instagram.com/rbcvoetbal.rsd/","https://www.facebook.com/RBCvoetbal","https://x.com/RBCvoetbal","https://www.tiktok.com/@rbcvoetbal"]}
+</script>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/rbc-klein.png">
 <link rel="apple-touch-icon" href="/icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="/fonts/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/barlow-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="/held-800.webp" imagesrcset="/held-800.webp 800w, /held.webp 1400w" imagesizes="100vw" fetchpriority="high">
 <style>
+@font-face{ font-family:"Big Shoulders Display"; font-style:normal; font-weight:700 900; font-display:swap;
+    src:url(/fonts/big-shoulders-display.woff2) format("woff2"); unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD }
+@font-face{ font-family:Barlow; font-style:normal; font-weight:500; font-display:swap; src:url(/fonts/barlow-500.woff2) format("woff2"); unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD }
+@font-face{ font-family:Barlow; font-style:normal; font-weight:600; font-display:swap; src:url(/fonts/barlow-600.woff2) format("woff2"); unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD }
+@font-face{ font-family:Barlow; font-style:normal; font-weight:700; font-display:swap; src:url(/fonts/barlow-700.woff2) format("woff2"); unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD }
 /* ══════════════════════════════════════════════════════════════
    RBC ROOSENDAAL — supporterssite
    Opgebouwd zoals de grote clubsites het doen: bovenaan het laatste
@@ -30,9 +43,9 @@
    "Wie is nummer …?" heeft een eigen plek bij het team.
    ══════════════════════════════════════════════════════════════ */
 :root{
-    --oranje:#ff6a13; --oranje-d:#d94f06; --oranje-zacht:#fff0e6;
+    --oranje:#ff6a13; --oranje-d:#c24600; --oranje-zacht:#fff0e6; --op-oranje:#1b0f06;
     --papier:#f6f2ec; --vlak:#ffffff; --inkt:#16120f; --dim:#6f655c;
-    --lijn:#e5dcd1; --groen:#1f8a4c; --rood:#c8352b; --grijs:#8f857b;
+    --lijn:#e5dcd1; --groen:#1a7a43; --rood:#c8352b; --grijs:#6f655c;
     --nacht:#16120f; --nacht-2:#221d19; --nacht-lijn:#332c26;
     --kop:"Big Shoulders Display", Impact, "Arial Narrow", sans-serif;
     --tekst:Barlow, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -40,13 +53,13 @@
 }
 @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-        --papier:#110f0d; --vlak:#1b1815; --inkt:#f4ece1; --dim:#a39888;
+        --papier:#110f0d; --oranje-d:#ff7a2a; --vlak:#1b1815; --inkt:#f4ece1; --dim:#a39888;
         --lijn:#2e2925; --oranje-zacht:#2a1a10; --groen:#3fbf74; --rood:#ef6a5e;
         --nacht:#0a0908; --nacht-2:#1b1815; --nacht-lijn:#2e2925;
     }
 }
 :root[data-theme="dark"]{
-    --papier:#110f0d; --vlak:#1b1815; --inkt:#f4ece1; --dim:#a39888;
+    --papier:#110f0d; --oranje-d:#ff7a2a; --vlak:#1b1815; --inkt:#f4ece1; --dim:#a39888;
     --lijn:#2e2925; --oranje-zacht:#2a1a10; --groen:#3fbf74; --rood:#ef6a5e;
     --nacht:#0a0908; --nacht-2:#1b1815; --nacht-lijn:#2e2925;
 }
@@ -62,21 +75,42 @@ img{ display:block; max-width:100% }
 .wrap{ max-width:1200px; margin:0 auto; padding:0 16px }
 .leeg{ color:var(--dim); font-size:14px; padding:12px 0 }
 
+/* ── toegankelijkheid & afwerking ─────────────────────────── */
+.naar-inhoud{ position:absolute; left:12px; top:-60px; z-index:100; background:var(--oranje); color:var(--op-oranje);
+              padding:10px 16px; border-radius:8px; font-weight:700; text-decoration:none }
+.naar-inhoud:focus{ top:12px }
+:focus-visible{ outline:3px solid var(--oranje); outline-offset:3px; border-radius:6px }
+.site-kop.gescrold{ box-shadow:0 8px 24px rgba(0,0,0,.35) }
+.menu a[aria-current="true"]{ color:#fff; background:rgba(255,255,255,.1); box-shadow:inset 0 -3px 0 var(--oranje) }
+/* laadbalkjes in plaats van "laden…" */
+.schim{ border-radius:var(--r); background:linear-gradient(90deg,var(--lijn) 0%,var(--vlak) 50%,var(--lijn) 100%);
+        background-size:200% 100%; animation:schim 1.3s ease-in-out infinite }
+@keyframes schim{ from{ background-position:100% 0 } to{ background-position:-100% 0 } }
+/* rustig inschuiven bij het scrollen, alleen als dat mag */
+@media (prefers-reduced-motion: no-preference){
+    .verschijn{ opacity:0; transform:translateY(18px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1) }
+    .verschijn.zichtbaar{ opacity:1; transform:none }
+}
+.offline{ position:fixed; left:50%; bottom:calc(16px + env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:40;
+          background:var(--nacht); color:#f4ece1; border:1px solid var(--nacht-lijn); border-radius:999px; padding:10px 16px;
+          font-size:14px; font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:calc(100% - 32px); text-align:center }
+.offline[hidden]{ display:none }
+
 /* ── kop van de site ──────────────────────────────────────── */
 .site-kop{ position:sticky; top:0; z-index:30; background:var(--nacht); color:#fff; padding-top:env(safe-area-inset-top);
            border-bottom:3px solid var(--oranje) }
 .site-kop .wrap{ display:flex; align-items:center; gap:18px; height:66px }
 .merk{ display:flex; align-items:center; gap:10px; text-decoration:none; flex:none }
-.merk img{ width:40px; height:40px; object-fit:contain }
+.merk img{ width:auto; height:40px }
 .merk b{ font:900 24px/.9 var(--kop); text-transform:uppercase; letter-spacing:.02em }
 .merk b small{ display:block; font-size:13px; letter-spacing:.2em; color:var(--oranje) }
 .menu{ display:flex; gap:2px; margin-left:auto }
 .menu a{ font:800 16px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em; text-decoration:none;
          padding:10px 12px; border-radius:8px; white-space:nowrap; color:#e9e1d6 }
 .menu a:hover{ color:#fff; background:rgba(255,255,255,.08) }
-.tickets{ flex:none; background:var(--oranje); color:#fff; text-decoration:none; font:900 17px/1 var(--kop);
+.tickets{ flex:none; background:var(--oranje); color:var(--op-oranje); text-decoration:none; font:900 17px/1 var(--kop);
           text-transform:uppercase; letter-spacing:.08em; padding:12px 18px; border-radius:999px }
-.tickets:hover{ background:var(--oranje-d) }
+.tickets:hover{ background:#fff }
 @media (max-width:860px){
     .site-kop .wrap{ flex-wrap:wrap; height:auto; gap:0 12px; padding-top:10px }
     .tickets{ margin-left:auto; padding:10px 15px; font-size:15px }
@@ -87,19 +121,20 @@ img{ display:block; max-width:100% }
 
 /* ── openingsverhaal ──────────────────────────────────────── */
 .held{ position:relative; min-height:min(72vh,620px); display:flex; align-items:flex-end; color:#fff;
-       background:#000 center/cover no-repeat; overflow:hidden }
+       background:#0a0908; overflow:hidden }
+.held-img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover }
 .held::after{ content:""; position:absolute; inset:0;
     background:linear-gradient(180deg,rgba(0,0,0,.05) 20%,rgba(10,8,6,.55) 55%,rgba(10,8,6,.92) 100%) }
 .held .wrap{ position:relative; z-index:1; width:100%; padding-top:120px; padding-bottom:120px }
 .held .label{ display:inline-flex; gap:10px; align-items:center; font:800 15px/1 var(--kop); text-transform:uppercase;
               letter-spacing:.14em }
-.held .label b{ background:var(--oranje); padding:6px 10px; border-radius:4px }
+.held .label b{ background:var(--oranje); color:var(--op-oranje); padding:6px 10px; border-radius:4px }
 .held h1{ font:900 clamp(40px,7.5vw,84px)/.9 var(--kop); text-transform:uppercase; max-width:18ch; margin:14px 0 12px;
           text-wrap:balance }
 .held p{ max-width:60ch; opacity:.85; font-size:17px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden }
 .held .lees{ display:inline-flex; margin-top:18px; background:#fff; color:var(--nacht); text-decoration:none;
              font:900 17px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em; padding:13px 20px; border-radius:999px }
-.held .lees:hover{ background:var(--oranje); color:#fff }
+.held .lees:hover{ background:var(--oranje); color:var(--op-oranje) }
 @media (max-width:600px){ .held .wrap{ padding-top:90px; padding-bottom:80px } .held p{ font-size:15px } }
 
 /* ── wedstrijdstrook ──────────────────────────────────────── */
@@ -118,7 +153,8 @@ img{ display:block; max-width:100% }
 .duo{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px; margin:16px 0 10px; text-align:center }
 .duo .club{ display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0 }
 .duo .club span{ font:800 16px/1.05 var(--kop); text-transform:uppercase; letter-spacing:.02em; overflow-wrap:anywhere }
-.duo .club.wij span{ color:var(--oranje) }
+.duo .club.wij span{ color:var(--oranje-d) }
+.volgende .duo .club.wij span{ color:var(--oranje) }
 .duo .midden{ font:900 40px/1 var(--kop); font-variant-numeric:tabular-nums; white-space:nowrap }
 .duo .midden small{ display:block; font:700 13px/1.2 var(--tekst); color:var(--dim); margin-top:4px; letter-spacing:0 }
 .volgende .duo .midden{ font-size:30px; color:var(--oranje) }
@@ -147,8 +183,8 @@ img{ display:block; max-width:100% }
 .actie{ display:inline-flex; align-items:center; gap:6px; border:1px solid var(--nacht-lijn); border-radius:999px; padding:9px 14px;
         font-weight:700; font-size:14px; text-decoration:none; color:#f4ece1 }
 .actie:hover{ border-color:var(--oranje); color:var(--oranje) }
-.actie.vol{ background:var(--oranje); border-color:var(--oranje); color:#fff }
-.actie.vol:hover{ background:var(--oranje-d); color:#fff }
+.actie.vol{ background:var(--oranje); border-color:var(--oranje); color:var(--op-oranje) }
+.actie.vol:hover{ background:#fff; border-color:#fff; color:var(--op-oranje) }
 
 .daarna{ display:grid; gap:0; margin-top:12px }
 .daarna .r{ display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:10px 0;
@@ -164,7 +200,7 @@ img{ display:block; max-width:100% }
 section.blok{ padding:56px 0 8px }
 .kop{ display:flex; align-items:flex-end; gap:12px; margin-bottom:20px; flex-wrap:wrap }
 .kop h2{ font:900 clamp(34px,6vw,54px)/.9 var(--kop); text-transform:uppercase; letter-spacing:.005em }
-.kop h2 em{ font-style:normal; color:var(--oranje) }
+.kop h2 em{ font-style:normal; color:var(--oranje-d) }
 .kop .meer{ margin-left:auto; font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:.1em; color:var(--oranje-d);
             text-decoration:none; padding:6px 0 }
 .kop small{ margin-left:auto; color:var(--dim); font-size:14px }
@@ -178,7 +214,7 @@ section.blok{ padding:56px 0 8px }
 .bericht:hover{ transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,.12) }
 .bericht .beeld{ aspect-ratio:16/9; background:var(--nacht) center top/cover no-repeat; position:relative }
 .bericht .beeld.stadion::after{ content:""; position:absolute; inset:0; background:rgba(10,8,6,.45) }
-.bericht .beeld .merkje{ position:absolute; left:14px; bottom:12px; z-index:1; width:34px }
+.bericht .beeld .merkje{ position:absolute; left:14px; bottom:12px; z-index:1; width:34px; height:auto }
 .bericht .tekst{ padding:16px 18px 18px; display:flex; flex-direction:column; flex:1 }
 .bericht time{ font:800 14px/1 var(--kop); color:var(--oranje-d); letter-spacing:.1em; text-transform:uppercase }
 .bericht h3{ font:800 24px/1.02 var(--kop); text-transform:uppercase; margin:8px 0 8px }
@@ -195,7 +231,7 @@ section.blok{ padding:56px 0 8px }
 @media (max-width:600px){ .cijfers{ grid-template-columns:repeat(2,1fr) } }
 .cijfer{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); padding:14px 16px }
 .cijfer .w{ font:900 44px/1 var(--kop); font-variant-numeric:tabular-nums }
-.cijfer .w.o{ color:var(--oranje) }
+.cijfer .w.o{ color:var(--oranje-d) }
 .cijfer .l{ font-size:13px; color:var(--dim); font-weight:600; margin-top:4px }
 .twee{ display:grid; gap:24px; grid-template-columns:1fr }
 @media (min-width:960px){ .twee{ grid-template-columns:1.15fr 1fr; align-items:start } }
@@ -242,14 +278,14 @@ section.blok{ padding:56px 0 8px }
 .volgende .agenda-knop{ color:var(--oranje) }
 
 /* ── wie is nummer ────────────────────────────────────────── */
-.wie{ background:var(--oranje); color:#fff; padding:44px 0; margin-top:56px; position:relative; overflow:hidden }
+.wie{ background:var(--oranje); color:var(--op-oranje); padding:44px 0; margin-top:56px; position:relative; overflow:hidden }
 .wie::before{ content:""; position:absolute; inset:0; opacity:.10; pointer-events:none;
     background:repeating-linear-gradient(90deg,#fff 0 36px,transparent 36px 108px) }
 .wie .wrap{ position:relative; display:grid; gap:26px; grid-template-columns:1fr; align-items:center }
 @media (min-width:860px){ .wie .wrap{ grid-template-columns:1.1fr .9fr; gap:48px } }
 .wie .boven{ font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:.16em; color:#1b0f06; opacity:.8 }
 .wie h2{ font:900 clamp(42px,8vw,76px)/.86 var(--kop); text-transform:uppercase; margin-top:8px }
-.wie h2 span{ color:#1b0f06 }
+.wie h2 span{ display:inline-block; transform:skewX(-9deg) }
 .wie .uitleg{ font-weight:600; opacity:.92; margin-top:8px; max-width:40ch }
 .onthul{ display:grid; grid-template-columns:auto 1fr; gap:18px; align-items:center; margin-top:22px; touch-action:pan-y }
 .shirt{ width:150px; aspect-ratio:1/1.05; position:relative; cursor:pointer }
@@ -258,7 +294,7 @@ section.blok{ padding:56px 0 8px }
 .shirt .nr{ font:900 88px/1 var(--kop); fill:var(--oranje) }
 .shirt .rugnaam{ font:800 20px/1 var(--kop); fill:#1b0f06; letter-spacing:.06em }
 .shirt.leeg .nr{ fill:#e8d9cc }
-.shirt.mis .romp{ fill:rgba(255,255,255,.35) } .shirt.mis .nr{ fill:#fff }
+.shirt.mis .romp{ fill:rgba(255,255,255,.4) } .shirt.mis .nr{ fill:var(--op-oranje) }
 .shirt.pop{ animation:pop .28s cubic-bezier(.3,1.6,.5,1) }
 @keyframes pop{ from{ transform:scale(.9) rotate(-3deg) } to{ transform:none } }
 .antwoord{ min-height:150px }
@@ -266,14 +302,14 @@ section.blok{ padding:56px 0 8px }
 .antwoord .rol{ font-weight:700; margin-top:6px }
 .antwoord .extra{ font-size:14px; font-weight:600; opacity:.9; margin-top:6px; display:flex; flex-wrap:wrap; gap:4px 12px }
 .antwoord .hint{ font:800 22px/1.15 var(--kop); text-transform:uppercase; opacity:.9 }
-.antwoord .foto{ width:64px; height:84px; border-radius:10px; object-fit:cover; margin-bottom:10px; box-shadow:0 0 0 3px #fff }
+.antwoord .foto{ width:64px; height:84px; border-radius:10px; object-fit:cover; margin-bottom:10px; box-shadow:0 0 0 3px var(--op-oranje) }
 .veeg{ font-size:13px; font-weight:600; opacity:.8; margin-top:10px }
 .toetsen{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:420px; width:100%; justify-self:center }
 @media (min-width:860px){ .toetsen{ justify-self:end } }
 .toets{ height:62px; border-radius:var(--r); background:#fff; color:var(--oranje-d);
         font:900 34px/1 var(--kop); box-shadow:0 3px 0 rgba(0,0,0,.18); transition:transform .06s, box-shadow .06s }
 .toets:active{ transform:translateY(3px); box-shadow:none }
-.toets.stil{ background:rgba(255,255,255,.18); color:#fff; font-size:22px; box-shadow:none }
+.toets.stil{ background:rgba(0,0,0,.14); color:var(--op-oranje); font-size:22px; box-shadow:none }
 .toets:focus-visible{ outline:3px solid var(--nacht); outline-offset:2px }
 
 /* ── het team ─────────────────────────────────────────────── */
@@ -333,7 +369,7 @@ section.blok{ padding:56px 0 8px }
 .holo-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px }
 .holo-stats b{ display:block; font:900 24px/1 var(--kop) }
 .holo-stats span{ font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; opacity:.85 }
-.holo-merk{ position:absolute; right:6%; top:5%; width:40px }
+.holo-merk{ position:absolute; right:6%; top:5%; width:40px; height:auto }
 .glans{ position:absolute; inset:0; border-radius:22px; pointer-events:none; mix-blend-mode:color-dodge; opacity:.75;
     background:
       radial-gradient(circle at var(--gx,50%) var(--gy,30%), rgba(255,255,255,.65), transparent 38%),
@@ -345,7 +381,7 @@ section.blok{ padding:56px 0 8px }
 .sluit-x{ position:fixed; top:calc(14px + env(safe-area-inset-top)); right:14px; z-index:61 }
 .knop-wit{ background:#fff; color:var(--nacht); font:900 17px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em;
            padding:14px 20px; border-radius:999px }
-.knop-wit:hover{ background:var(--oranje); color:#fff }
+.knop-wit:hover{ background:var(--oranje); color:var(--op-oranje) }
 .antwoord .kaart-knop{ margin-top:12px; background:#1b0f06; color:#fff; font:800 15px/1 var(--kop); text-transform:uppercase;
                        letter-spacing:.08em; padding:10px 14px; border-radius:999px }
 
@@ -369,7 +405,7 @@ footer h4{ font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:
 footer a{ text-decoration:none } footer a:hover{ color:#fff }
 footer ul{ list-style:none; display:grid; gap:7px }
 footer .club{ display:flex; gap:14px; align-items:center; margin-bottom:12px }
-footer .club img{ width:52px }
+footer .club img{ width:52px; height:auto }
 footer .club b{ font:900 26px/1 var(--kop); color:#fff; text-transform:uppercase }
 .sociaal{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px }
 .sociaal a{ border:1px solid var(--nacht-lijn); border-radius:999px; padding:7px 13px; font-weight:700; font-size:13px }
@@ -381,10 +417,11 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
 </style>
 </head>
 <body>
+<a class="naar-inhoud" href="#inhoud">Naar de inhoud</a>
 
 <header class="site-kop">
     <div class="wrap">
-        <a class="merk" href="#top"><img src="rbc-klein.png" alt=""><b>RBC<small>Roosendaal</small></b></a>
+        <a class="merk" href="#top"><img src="rbc-klein.png" alt="" width="143" height="192"><b>RBC <small>Roosendaal</small></b></a>
         <nav class="menu" aria-label="Hoofdmenu">
             <a href="#nieuws">Nieuws</a>
             <a href="#wedstrijden">Wedstrijden</a>
@@ -397,8 +434,11 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
 </header>
 
 <main id="top">
+<span id="inhoud" tabindex="-1"></span>
 <!-- ═══ openingsverhaal ════════════════════════════════════ -->
-<section class="held" id="held" style="background-image:url('atik.jpg')">
+<section class="held" id="held">
+    <img class="held-img" src="/held-800.webp" srcset="/held-800.webp 800w, /held.webp 1400w" sizes="100vw"
+         width="1400" height="1128" alt="" fetchpriority="high">
     <div class="wrap">
         <span class="label"><b>Nieuws</b><span id="held-datum"></span></span>
         <h1 id="held-titel">RBC Roosendaal</h1>
@@ -409,7 +449,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
 
 <!-- ═══ wedstrijdstrook ════════════════════════════════════ -->
 <div class="strook" id="wedstrijden">
-    <div class="wrap"><div class="kaarten" id="kaarten"></div></div>
+    <div class="wrap"><div class="kaarten" id="kaarten"><div class="kaart schim" style="height:220px"></div><div class="kaart schim volgende" style="height:220px"></div><div class="kaart schim" style="height:220px"></div></div></div>
 </div>
 
 <!-- ═══ nieuws ═════════════════════════════════════════════ -->
@@ -417,7 +457,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
     <div class="wrap">
         <div class="kop"><h2 id="nieuws-kop">Laatste <em>nieuws</em></h2>
             <a class="meer" href="https://www.rbcvoetbal.nl/nieuws" target="_blank" rel="noopener">Alle nieuws →</a></div>
-        <div class="berichten" id="berichten"><p class="leeg">Nieuws laden…</p></div>
+        <div class="berichten" id="berichten" aria-busy="true"><div class="schim" style="height:320px"></div><div class="schim" style="height:320px"></div><div class="schim" style="height:320px"></div></div>
     </div>
 </section>
 
@@ -429,7 +469,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
         <div class="twee">
             <div>
                 <div class="paneel-kop">Stand</div>
-                <div id="tabel"><p class="leeg">Stand laden…</p></div>
+                <div id="tabel"><div class="schim" style="height:560px"></div></div>
                 <div class="legenda">
                     <span><i style="background:var(--groen)"></i>kampioen</span>
                     <span><i style="background:#3a7bd5"></i>nacompetitie</span>
@@ -439,7 +479,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
             <div>
                 <div class="paneel-kop">Programma &amp; uitslagen
                     <a class="agenda-knop" id="abonneer" href="/rbc.ics">📅 In je agenda</a></div>
-                <div class="lijst" id="lijst"><p class="leeg" style="padding:12px 14px">Programma laden…</p></div>
+                <div class="lijst" id="lijst"><div class="schim" style="height:400px;border-radius:0"></div></div>
                 <button type="button" class="tekstknop" id="alles" hidden>Toon het hele seizoen ↓</button>
             </div>
         </div>
@@ -477,7 +517,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
 <section class="blok" id="team" aria-labelledby="team-kop">
     <div class="wrap">
         <div class="kop"><h2 id="team-kop">Het <em>team</em></h2><small id="sel-meta"></small></div>
-        <div id="linies"><p class="leeg">Selectie laden…</p></div>
+        <div id="linies"><div class="spelers"><div class="schim" style="aspect-ratio:3/4"></div><div class="schim" style="aspect-ratio:3/4"></div><div class="schim" style="aspect-ratio:3/4"></div><div class="schim" style="aspect-ratio:3/4"></div></div></div>
         <div id="staf-blok" hidden>
             <div class="linie"><h3>Technische staf &amp; training</h3></div>
             <div class="staf" id="staf"></div>
@@ -490,7 +530,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
     <div class="wrap">
         <div class="kolommen">
             <div>
-                <div class="club"><img src="rbc-klein.png" alt=""><b>RBC Roosendaal</b></div>
+                <div class="club"><img src="rbc-klein.png" alt="" width="143" height="192"><b>RBC Roosendaal</b></div>
                 <p>Atik Stadion · Borchwerf 4, 4704 RG Roosendaal</p>
                 <div class="sociaal">
                     <a href="https://www.instagram.com/rbcvoetbal.rsd/" target="_blank" rel="noopener">Instagram</a>
@@ -539,6 +579,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
     </div>
 </div>
 
+<div class="offline" id="offline" role="status" hidden></div>
 <canvas id="confetti" hidden></canvas>
 <script>
 'use strict';
@@ -573,7 +614,7 @@ function uitslagVan(d) {
 const UITSLAG = { w: 'Gewonnen', g: 'Gelijk', v: 'Verloren' };
 function logo(club) {
     const src = LOGOS[club];
-    if (src) return '<img class="logo" src="' + esc(src) + '" alt="" loading="lazy">';
+    if (src) return '<img class="logo" src="' + esc(src) + '" alt="" loading="lazy" width="64" height="64">';
     const letters = String(club).replace(/^(VV|SV|FC|RKSV)\s+/i, '').slice(0, 2).toUpperCase();
     return '<span class="logo-leeg" aria-hidden="true">' + esc(letters) + '</span>';
 }
@@ -675,10 +716,13 @@ function tik(c) {
         b.className = 'toets' + (c.length > 1 ? ' stil' : '');
         b.textContent = c === 'wis' ? '⌫' : c === 'leeg' ? 'C' : c;
         b.setAttribute('aria-label', c === 'wis' ? 'Laatste cijfer wissen' : c === 'leeg' ? 'Leegmaken' : c);
-        b.addEventListener('click', () => tik(c));
+        b.addEventListener('click', () => { tik(c); tril(); });
         k.appendChild(b);
     });
 })();
+
+/* Een tikje trilling op Android, zoals een echte toets. */
+const tril = (ms = 8) => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} };
 
 /* Door de selectie bladeren: vegen, op het shirt tikken of pijltjes. */
 function bladerSpeler(stap) {
@@ -720,8 +764,8 @@ function tekenTeam(D) {
     $('linies').innerHTML = LINIES.filter(([k]) => per[k]).map(([k, titel]) =>
         '<div class="linie"><h3>' + titel + '</h3><div class="spelers">' +
         per[k].map(p =>
-            '<button type="button" class="speler" data-nr="' + p.number + '" aria-label="' + esc(p.name) + ', nummer ' + p.number + '">' +
-                (p.photo ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy">' : '<span class="zonder">' + SILHOUET + '</span>') +
+            '<button type="button" class="speler" data-nr="' + p.number + '">' +
+                (p.photo ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy" decoding="async" width="480" height="640">' : '<span class="zonder">' + SILHOUET + '</span>') +
                 '<span class="n">' + p.number + '</span>' +
                 '<span class="t"><b>' + esc(p.name) + '</b><span>' + esc(positie(p)) + '</span></span>' +
             '</button>').join('') +
@@ -750,7 +794,6 @@ function tekenNieuws(C) {
     const nieuws = C.nieuws || [];
     if (!nieuws.length) { $('berichten').innerHTML = '<p class="leeg">Nog geen nieuws.</p>'; return; }
     const [eerste, ...rest] = nieuws;
-    $('held').style.backgroundImage = 'url("' + (eerste.beeld || 'atik.jpg').replace(/"/g, '') + '")';
     $('held-datum').textContent = eerste.datum;
     $('held-titel').textContent = eerste.titel;
     $('held-tekst').textContent = eerste.tekst || '';
@@ -758,8 +801,8 @@ function tekenNieuws(C) {
 
     $('berichten').innerHTML = rest.slice(0, 5).map((n, i) =>
         '<a class="bericht' + (i === 0 ? ' breed' : '') + '" href="' + esc(n.url) + '" target="_blank" rel="noopener">' +
-            '<div class="beeld' + (n.beeld ? '' : ' stadion') + '" style="background-image:url(\'' + esc(n.beeld || 'atik.jpg') + '\')">' +
-                (n.beeld ? '' : '<img class="merkje" src="rbc-klein.png" alt="">') + '</div>' +
+            '<div class="beeld' + (n.beeld ? '' : ' stadion') + '" style="background-image:url(\'' + esc(n.beeld || 'atik-800.webp') + '\')">' +
+                (n.beeld ? '' : '<img class="merkje" src="rbc-klein.png" alt="" width="143" height="192">') + '</div>' +
             '<div class="tekst"><time>' + esc(n.datum) + '</time><h3>' + esc(n.titel) + '</h3>' +
             '<p>' + esc(n.tekst) + '</p></div></a>').join('');
 }
@@ -866,6 +909,7 @@ function tekenStrook(C) {
     }
     $('kaarten').innerHTML = html;
     POSTER.laatste = laatste; POSTER.volgende = volgende;
+    wedstrijdVoorZoekmachines(volgende);
 
     /* Gewonnen, en nog geen vier dagen geleden: één keer confetti. */
     if (laatste && uitslagVan(laatste) === 'w' && (nu - alsDatum(laatste.datum)) / 864e5 <= 4) {
@@ -1092,7 +1136,7 @@ function tekenKaart(p) {
     $('holo-in').innerHTML =
         (p.photo ? '<div class="holo-foto" style="background-image:url(\'' + esc(p.photo) + '\')"></div>'
                  : '<div class="holo-foto zonder">' + SILHOUET + '</div>') +
-        '<img class="holo-merk" src="rbc-klein.png" alt="">' +
+        '<img class="holo-merk" src="rbc-klein.png" alt="" width="143" height="192">' +
         '<div class="holo-nr">' + p.number + '</div><div class="holo-pos">' + AFK[linie(p)] + '</div>' +
         '<div class="holo-vlag">' + vlaggen.map(v => '<span>' + v + '</span>').join('') + '</div>' +
         '<div class="holo-onder"><div class="holo-naam">' + esc(p.name) + '</div><div class="holo-stats">' +
@@ -1104,14 +1148,20 @@ function tekenKaart(p) {
 }
 function openKaart(nr) {
     const p = vind(nr); if (!p) return;
-    kaartNr = p.number; tekenKaart(p);
+    kaartNr = p.number; tekenKaart(p); tril(12);
     $('kaartlaag').hidden = false; document.body.style.overflow = 'hidden';
+    setTimeout(() => $('holo-sluit').focus({ preventScroll: true }), 50);
     /* iPhone vraagt toestemming voor de bewegingssensor, en alleen na een tik. */
     if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function')
         DeviceOrientationEvent.requestPermission().catch(() => {});
 }
-function sluitKaart() { $('kaartlaag').hidden = true; document.body.style.overflow = ''; kaartNr = null; }
+function sluitKaart() {
+    const terug = document.querySelector('.speler[data-nr="' + kaartNr + '"]');
+    $('kaartlaag').hidden = true; document.body.style.overflow = ''; kaartNr = null;
+    if (terug) terug.focus({ preventScroll: true });
+}
 function bladerKaart(stap) {
+    tril();
     const lijst = SQUAD.slice().sort((a, b) => a.number - b.number);
     const i = lijst.findIndex(p => p.number === kaartNr);
     const p = lijst[(i + stap + lijst.length) % lijst.length];
@@ -1223,6 +1273,69 @@ async function deelKaart() {
         else $('ios-uitleg').hidden = !$('ios-uitleg').hidden;
     };
 })();
+
+/* ═══ afwerking ═════════════════════════════════════════════ */
+(function afwerking() {
+    const kop = document.querySelector('.site-kop');
+    addEventListener('scroll', () => kop.classList.toggle('gescrold', scrollY > 8), { passive: true });
+
+    /* Het menu laat zien waar je bent. */
+    const links = [...document.querySelectorAll('.menu a')];
+    const secties = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    if ('IntersectionObserver' in window) {
+        const spion = new IntersectionObserver(items => items.forEach(it => {
+            if (!it.isIntersecting) return;
+            links.forEach(a => a.getAttribute('href') === '#' + it.target.id
+                ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'));
+        }), { rootMargin: '-45% 0px -50% 0px' });
+        secties.forEach(el => spion.observe(el));
+
+        /* Blokken schuiven rustig in beeld; wat al zichtbaar is blijft staan. */
+        const kijk = new IntersectionObserver(items => items.forEach(it => {
+            if (it.isIntersecting) { it.target.classList.add('zichtbaar'); kijk.unobserve(it.target); }
+        }), { rootMargin: '0px 0px -8% 0px' });
+        document.querySelectorAll('section.blok .wrap > *, .wie .wrap > *').forEach(el => {
+            if (el.getBoundingClientRect().top > innerHeight) { el.classList.add('verschijn'); kijk.observe(el); }
+        });
+    }
+
+    /* Geen bereik op de tribune: zeggen wat je ziet en van wanneer. */
+    const meld = () => {
+        const b = $('offline');
+        if (navigator.onLine) { b.hidden = true; return; }
+        b.textContent = '📡 Geen bereik — je ziet de laatst opgehaalde stand' + ($('bijgewerkt').textContent ? ' (' + $('bijgewerkt').textContent.replace('Bijgewerkt ', '') + ')' : '') + '.';
+        b.hidden = false;
+    };
+    addEventListener('online', meld); addEventListener('offline', meld); setTimeout(meld, 1500);
+})();
+
+/* Zomer- of wintertijd op die dag in Amsterdam, los van waar de bezoeker
+   (of Google) zit: "+02:00" of "+01:00". */
+function amsterdamOffset(iso) {
+    try {
+        const deel = new Intl.DateTimeFormat('en', { timeZone: 'Europe/Amsterdam', timeZoneName: 'shortOffset' })
+            .formatToParts(new Date(iso + 'T12:00:00Z')).find(p => p.type === 'timeZoneName').value;
+        const m = /GMT([+-])(\d+)/.exec(deel);
+        return m ? m[1] + m[2].padStart(2, '0') + ':00' : '+01:00';
+    } catch (e) { return '+01:00'; }
+}
+
+/* De volgende wedstrijd ook voor zoekmachines, als SportsEvent. */
+function wedstrijdVoorZoekmachines(d) {
+    if (!d) return;
+    const [u, m] = (d.tijd || '19:00').split(':');
+    const el = document.createElement('script');
+    el.type = 'application/ld+json';
+    el.textContent = JSON.stringify({
+        '@context': 'https://schema.org', '@type': 'SportsEvent',
+        name: d.thuis + ' - ' + d.uit, sport: 'Voetbal', startDate: d.datum + 'T' + u + ':' + m + ':00' + amsterdamOffset(d.datum),
+        eventStatus: 'https://schema.org/EventScheduled',
+        homeTeam: { '@type': 'SportsTeam', name: d.thuis }, awayTeam: { '@type': 'SportsTeam', name: d.uit },
+        location: isRBC(d.thuis) ? { '@type': 'Place', name: STADION.naam, address: STADION.adres } : { '@type': 'Place', name: d.thuis },
+        organizer: { '@type': 'SportsOrganization', name: 'KNVB' }
+    });
+    document.head.appendChild(el);
+}
 
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });

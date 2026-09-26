@@ -312,6 +312,70 @@ def bewaar_foto(url, pad):
     beeld.save(pad, 'JPEG', quality=80, optimize=True, progressive=True)
 
 
+NIEUWS_MAP = os.path.join(os.path.dirname(UIT), 'nieuws')
+HELD = os.path.join(os.path.dirname(UIT), 'held.webp')
+
+
+def open_beeld(url):
+    from io import BytesIO
+    from PIL import Image
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        ctx = ssl.create_default_context()
+    if url.startswith('http'):
+        with urllib.request.urlopen(urllib.request.Request(url, headers=KOP), timeout=30, context=ctx) as r:
+            return Image.open(BytesIO(r.read())).convert('RGB')
+    return Image.open(url).convert('RGB')
+
+
+def bewaar_nieuwsbeelden(nieuws):
+    """Nieuwsfoto's één keer ophalen en als kleine WebP bewaren: sneller
+    dan de grote JPEG's van de club, en ze werken ook zonder bereik.
+    Het beeld van het bovenste bericht wordt held.webp, zodat de browser
+    het al kan laden voordat de rest van de pagina er is."""
+    os.makedirs(NIEUWS_MAP, exist_ok=True)
+    gebruikt = set()
+    for n in nieuws:
+        bron = n.get('beeld_bron') or (n.get('beeld') if str(n.get('beeld', '')).startswith('http') else '')
+        if not bron:
+            n['beeld'] = ''
+            continue
+        n['beeld_bron'] = bron
+        naam = naam_slug(os.path.splitext(bron.rsplit('/', 1)[-1])[0])[:60] + '.webp'
+        pad = os.path.join(NIEUWS_MAP, naam)
+        if not os.path.exists(pad):
+            try:
+                beeld = open_beeld(bron)
+                beeld.thumbnail((1200, 1200))
+                beeld.save(pad, 'WEBP', quality=72, method=6)
+            except Exception as fout:
+                print(f'nieuwsbeeld niet gehaald: {fout}', file=sys.stderr)
+                n['beeld'] = ''
+                continue
+        n['beeld'] = 'nieuws/' + naam
+        gebruikt.add(naam)
+    for oud in os.listdir(NIEUWS_MAP):
+        if oud not in gebruikt:
+            os.remove(os.path.join(NIEUWS_MAP, oud))
+    # Openingsbeeld: foto van het bovenste bericht, anders het stadion.
+    eerste = nieuws[0].get('beeld') if nieuws else ''
+    bron = os.path.join(os.path.dirname(UIT), eerste) if eerste else os.path.join(os.path.dirname(UIT), 'atik.png')
+    try:
+        from io import BytesIO
+        origineel = open_beeld(bron)
+        # Twee maten: telefoon en groot scherm. Alleen schrijven als het
+        # beeld echt anders is, anders commit de bot elk uur een plaatje.
+        for pad, maat, kwaliteit in ((HELD, 1400, 52), (HELD.replace('.webp', '-800.webp'), 800, 60)):
+            beeld = origineel.copy(); beeld.thumbnail((maat, maat))
+            buf = BytesIO(); beeld.save(buf, 'WEBP', quality=kwaliteit, method=6)
+            if not os.path.exists(pad) or open(pad, 'rb').read() != buf.getvalue():
+                open(pad, 'wb').write(buf.getvalue())
+    except Exception as fout:
+        print(f'openingsbeeld niet gemaakt: {fout}', file=sys.stderr)
+
+
 def lees_team(oud_team):
     """De teampagina van de club: wie er in de selectie zit met welk
     rugnummer en officiële foto, de staf, de trainingstijden, en per
@@ -444,6 +508,8 @@ def lees_nieuws(oud_nieuws):
         oud = bekend.get(n['url'])
         if oud and oud.get('tekst') and 'beeld' in oud:
             n['tekst'], n['beeld'] = oud['tekst'], oud['beeld']
+            if oud.get('beeld_bron'):
+                n['beeld_bron'] = oud['beeld_bron']
             continue
         try:
             art = BeautifulSoup(haal(n['url']), 'html.parser')
@@ -487,6 +553,7 @@ def main():
         except Exception:
             oud_bestand = {}
     nieuws = lees_nieuws(oud_bestand.get('nieuws'))
+    bewaar_nieuwsbeelden(nieuws)
     try:
         team = lees_team(oud_bestand.get('team'))
         werk_selectie_bij(team)
