@@ -25,6 +25,7 @@ from bs4 import BeautifulSoup
 SEIZOEN = os.environ.get('SEIZOEN', '2026-2027')
 BRON = f'https://www.hollandsevelden.nl/competities/{SEIZOEN}/landelijk/derde-divisie-b/'
 UIT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'competitie.json')
+AGENDA = os.path.join(os.path.dirname(UIT), 'rbc.ics')
 
 # Netjes: wie we zijn en waarvoor. robots.txt van hollandsevelden staat
 # dit toe (Allow: /, alleen /cookies/ is dicht).
@@ -158,6 +159,78 @@ def lees_duels(soep):
     return gespeeld, komt
 
 
+RBC_PAGINA = 'https://www.hollandsevelden.nl/clubs/r/rbc/'
+
+
+def lees_seizoen():
+    """Alle wedstrijden van RBC dit seizoen, gespeeld en nog te spelen.
+    De competitiepagina toont alleen de huidige ronde; de clubpagina het
+    hele seizoen, en daar komt 'volgende wedstrijd' vandaan."""
+    soep = BeautifulSoup(haal(RBC_PAGINA), 'html.parser')
+    duels = []
+    for tabel in soep.select('table.match'):
+        if 'RBC' not in schoon(tabel.find('caption')) and 'RBC' not in schoon(tabel.find('thead')):
+            continue
+        for tr in tabel.select('tbody tr'):
+            datum, clubs, uitslag = tr.select_one('td.date'), tr.select('td.club'), tr.select_one('td.result')
+            d = re.match(r'^(\d\d)-(\d\d)-(\d{4})$', schoon(datum))
+            if not d or len(clubs) != 2:
+                continue
+            duel = {'datum': f'{d.group(3)}-{d.group(2)}-{d.group(1)}',
+                    'thuis': clubnaam(clubs[0]), 'uit': clubnaam(clubs[1])}
+            laatste = schoon(uitslag)
+            u = re.match(r'^(\d+)\s*-\s*(\d+)$', laatste)
+            t = re.match(r'^(\d{1,2})[.:](\d\d)', laatste)
+            if u:
+                duel['thuis_doelpunten'], duel['uit_doelpunten'] = int(u.group(1)), int(u.group(2))
+            elif t:
+                duel['tijd'] = f'{int(t.group(1)):02d}:{t.group(2)}'
+            duels.append(duel)
+    return sorted(duels, key=lambda x: x['datum'])
+
+
+def schrijf_agenda(duels):
+    """Het seizoen als agenda om op te abonneren: wie hem één keer
+    toevoegt, krijgt verzette aftraptijden vanzelf mee. Alles vast
+    (ook DTSTAMP), zodat het bestand alleen verandert als er echt
+    iets verandert en de bot niet elk uur commit."""
+    def tekst(s):
+        return s.replace('\\', '\\\\').replace(',', '\\,').replace(';', '\\;')
+    r = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//rbcroosendaal.com//seizoen//NL',
+         'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:RBC Roosendaal',
+         'X-WR-TIMEZONE:Europe/Amsterdam', 'REFRESH-INTERVAL;VALUE=DURATION:PT6H',
+         'X-PUBLISHED-TTL:PT6H',
+         'BEGIN:VTIMEZONE', 'TZID:Europe/Amsterdam',
+         'BEGIN:DAYLIGHT', 'TZOFFSETFROM:+0100', 'TZOFFSETTO:+0200', 'TZNAME:CEST',
+         'DTSTART:19700329T020000', 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU', 'END:DAYLIGHT',
+         'BEGIN:STANDARD', 'TZOFFSETFROM:+0200', 'TZOFFSETTO:+0100', 'TZNAME:CET',
+         'DTSTART:19701025T030000', 'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU', 'END:STANDARD',
+         'END:VTIMEZONE']
+    for d in duels:
+        dag = d['datum'].replace('-', '')
+        naam = f"{d['thuis']} - {d['uit']}"
+        if 'thuis_doelpunten' in d:
+            naam += f" {d['thuis_doelpunten']}-{d['uit_doelpunten']}"
+        thuis = d['thuis'].strip().upper().startswith('RBC')
+        r += ['BEGIN:VEVENT',
+              f"UID:{dag}-{re.sub(r'[^a-z0-9]+', '-', naam.lower().split(' - ')[0])}@rbcroosendaal.com",
+              'DTSTAMP:20260101T000000Z',
+              f'SUMMARY:{tekst(naam)}']
+        if d.get('tijd'):
+            u, m = d['tijd'].split(':')
+            eind = f'{(int(u) + 2) % 24:02d}{m}00'
+            r += [f'DTSTART;TZID=Europe/Amsterdam:{dag}T{u}{m}00',
+                  f'DTEND;TZID=Europe/Amsterdam:{dag}T{eind}']
+        else:
+            r += [f'DTSTART;VALUE=DATE:{dag}']
+        r += [f"LOCATION:{tekst('Atik Stadion, Roosendaal' if thuis else 'Uit bij ' + d['thuis'])}",
+              'DESCRIPTION:Derde Divisie B · rbcroosendaal.com',
+              'END:VEVENT']
+    r.append('END:VCALENDAR')
+    with open(AGENDA, 'w', encoding='utf-8', newline='') as f:
+        f.write('\r\n'.join(r) + '\r\n')
+
+
 CLUB = 'https://www.rbcvoetbal.nl'
 
 
@@ -237,6 +310,20 @@ def main():
         except Exception:
             oud_bestand = {}
     nieuws = lees_nieuws(oud_bestand.get('nieuws'))
+    # De clubpagina mag wegvallen zonder dat de stand mislukt:
+    # dan houden we het seizoen van de vorige keer.
+    try:
+        seizoen = lees_seizoen() or oud_bestand.get('rbc_seizoen', [])
+        # Na het fluitsignaal toont de bron de uitslag in plaats van de
+        # aftrap; de tijd van eerder bewaren we, voor de agenda.
+        tijden = {(d['datum'], d['thuis']): d['tijd']
+                  for d in oud_bestand.get('rbc_seizoen', []) if d.get('tijd')}
+        for d in seizoen:
+            if not d.get('tijd') and (d['datum'], d['thuis']) in tijden:
+                d['tijd'] = tijden[(d['datum'], d['thuis'])]
+    except Exception as fout:
+        print(f'seizoen niet gelezen: {fout}', file=sys.stderr)
+        seizoen = oud_bestand.get('rbc_seizoen', [])
 
     # In welke periode zitten we? De eerste periode die nog niet vol is.
     gespeeld = max((r['wed'] for r in stand), default=0)
@@ -264,7 +351,10 @@ def main():
         'programma': programma[:40],
         'uitslagen': uitslagen[-40:],
         'nieuws': nieuws,
+        'rbc_seizoen': seizoen,
     }
+
+    schrijf_agenda(seizoen)
 
     oud = None
     if os.path.exists(UIT):
@@ -287,7 +377,7 @@ def main():
         f.write('\n')
     print(f'geschreven: {len(stand)} clubs, {len(periodes)} periodes, '
           f'{len(programma)} te spelen, {len(uitslagen)} gespeeld, '
-          f'{len(nieuws)} nieuwsberichten, periode {huidige}, ronde {gespeeld}')
+          f'{len(nieuws)} nieuwsberichten, {len(seizoen)} RBC-duels, periode {huidige}, ronde {gespeeld}')
     return 0
 
 

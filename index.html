@@ -110,6 +110,18 @@ section{ padding:40px 0 8px }
 .toets.stil{ background:rgba(255,255,255,.18); color:#fff; font-size:22px; box-shadow:none }
 .toets:focus-visible{ outline:3px solid var(--inkt); outline-offset:2px }
 
+/* ── volgende wedstrijd ──────────────────────────────────── */
+.volgende{ background:var(--inkt); color:var(--papier); padding:0 }
+.volgende .wrap{ display:flex; flex-wrap:wrap; align-items:center; gap:10px 22px; padding-top:16px; padding-bottom:16px }
+.volgende .lbl{ font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:var(--oranje) }
+.volgende .duel-k{ font:900 clamp(24px,5vw,34px)/1 var(--kop); text-transform:uppercase }
+.volgende .duel-k .tg{ color:var(--oranje) }
+.volgende .wanneer{ font-weight:600; opacity:.8; font-size:15px }
+.volgende .aftel{ margin-left:auto; text-align:right }
+.volgende .aftel b{ display:block; font:900 clamp(30px,6vw,40px)/1 var(--kop); color:var(--oranje); font-variant-numeric:tabular-nums }
+.volgende .aftel span{ font-size:13px; opacity:.7; font-weight:600 }
+@media (max-width:560px){ .volgende .aftel{ margin-left:0; text-align:left; display:flex; align-items:baseline; gap:8px } }
+
 /* ── selectie ─────────────────────────────────────────────── */
 .linie{ margin-bottom:22px }
 .linie h3{ font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:.12em; color:var(--dim);
@@ -179,6 +191,31 @@ section{ padding:40px 0 8px }
 .wed.rbc{ font-weight:800 }
 .wed .dag{ grid-column:1/-1; font-size:12px; color:var(--dim); margin-bottom:-6px; text-align:center }
 
+/* ── seizoen ──────────────────────────────────────────────── */
+.agenda{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:16px }
+.knop{ display:inline-flex; align-items:center; gap:8px; background:var(--oranje); color:#fff; text-decoration:none;
+       font:800 18px/1 var(--kop); text-transform:uppercase; letter-spacing:.06em; padding:13px 18px; border-radius:999px }
+.knop:hover{ background:var(--oranje-d) }
+.agenda small{ color:var(--dim); font-size:13px }
+.agenda small a{ color:var(--oranje-d) }
+.lijst{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); overflow:hidden }
+.lijst .rij{ display:grid; grid-template-columns:62px 28px 1fr auto; gap:12px; align-items:center;
+             padding:10px 16px; border-top:1px solid var(--lijn); font-size:15px }
+.lijst .rij:first-child{ border-top:0 }
+.lijst .rij .dt{ font:800 15px/1.1 var(--kop); text-transform:uppercase; color:var(--dim); letter-spacing:.04em }
+.lijst .rij .ha{ font:800 13px/1 var(--kop); color:var(--dim); text-align:center; border:1px solid var(--lijn);
+                 border-radius:6px; padding:6px 0 }
+.lijst .rij .s{ font:800 20px/1 var(--kop); font-variant-numeric:tabular-nums; text-align:right }
+.lijst .rij .s.tijd{ color:var(--dim); font-size:17px }
+.lijst .rij .s .chip{ display:inline-grid; margin-left:8px; width:24px; height:24px; font-size:14px; vertical-align:-3px }
+.lijst .rij.nu{ background:var(--oranje-zacht); box-shadow:inset 4px 0 var(--oranje) }
+.lijst .rij.nu .dt{ color:var(--oranje-d) }
+.lijst .kop-rij{ padding:10px 16px; font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em;
+                 color:var(--dim); background:var(--papier); border-top:1px solid var(--lijn) }
+.lijst .kop-rij:first-child{ border-top:0 }
+.lijst:not(.alles) .rij.meer{ display:none }
+.alles-knop{ margin-top:10px; font-weight:700; font-size:14px; color:var(--oranje-d); padding:8px 0 }
+
 /* ── nieuws ───────────────────────────────────────────────── */
 .berichten{ display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)) }
 .bericht{ display:flex; flex-direction:column; background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r);
@@ -212,6 +249,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
             <a href="#wie">Wie is</a>
             <a href="#selectie">Selectie</a>
             <a href="#stand">Stand</a>
+            <a href="#seizoen">Seizoen</a>
             <a href="#nieuws">Nieuws</a>
         </nav>
     </div>
@@ -241,6 +279,9 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
     </div>
 </section>
 
+<!-- ═══ volgende wedstrijd ═══════════════════════════════ -->
+<section class="volgende" id="volgende" hidden aria-label="Volgende wedstrijd"></section>
+
 <!-- ═══ selectie ════════════════════════════════════════════ -->
 <section id="selectie" aria-labelledby="sel-kop">
     <div class="wrap">
@@ -262,6 +303,19 @@ footer .thema{ margin-left:auto; border:1px solid var(--lijn); border-radius:999
             </div>
             <div id="rondes"></div>
         </div>
+    </div>
+</section>
+
+<!-- ═══ seizoen ═══════════════════════════════════════════ -->
+<section id="seizoen" aria-labelledby="seizoen-kop" hidden>
+    <div class="wrap">
+        <div class="kop"><h2 id="seizoen-kop">Ons <em>seizoen</em></h2><small id="seizoen-meta"></small></div>
+        <div class="agenda">
+            <a class="knop" id="abonneer" href="webcal://rbcroosendaal.com/rbc.ics">📅 Zet in je agenda</a>
+            <small>Tijden die verschuiven, worden vanzelf bijgewerkt. Lukt het niet? <a href="/rbc.ics" download>Download het bestand</a>.</small>
+        </div>
+        <div class="lijst" id="lijst"></div>
+        <button type="button" class="alles-knop" id="alles">Toon het hele seizoen ↓</button>
     </div>
 </section>
 
@@ -503,6 +557,72 @@ function tekenCompetitie(C) {
         : '<p class="leeg">Nog geen nieuws.</p>';
 }
 
+/* ═══ seizoen & volgende wedstrijd ══════════════════════════ */
+const DAGEN = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+const MAANDEN = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
+const alsDatum = iso => { const [j, m, d] = iso.split('-').map(Number); return new Date(j, m - 1, d); };
+const vandaag = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+const gespeeld = d => d.thuis_doelpunten != null;
+function uitslagVan(d) {
+    const wij = isRBC(d.thuis) ? d.thuis_doelpunten : d.uit_doelpunten;
+    const zij = isRBC(d.thuis) ? d.uit_doelpunten : d.thuis_doelpunten;
+    return wij > zij ? 'w' : wij < zij ? 'v' : 'g';
+}
+
+function tekenSeizoen(C) {
+    const duels = C.rbc_seizoen || [];
+    if (!duels.length) return;
+    const nu = vandaag();
+    const volgende = duels.find(d => !gespeeld(d) && alsDatum(d.datum) >= nu);
+
+    /* de strook onder "wie is nummer" */
+    if (volgende) {
+        const dt = alsDatum(volgende.datum), thuis = isRBC(volgende.thuis);
+        const tegen = thuis ? volgende.uit : volgende.thuis;
+        const dagen = Math.round((dt - nu) / 864e5);
+        const aftel = dagen === 0 ? 'Vandaag!' : dagen === 1 ? 'Morgen' : 'nog ' + dagen + ' dagen';
+        const v = $('volgende');
+        v.hidden = false;
+        v.innerHTML = '<div class="wrap">' +
+            '<span class="lbl">Volgende wedstrijd</span>' +
+            '<div><div class="duel-k">' + (thuis ? 'RBC – <span class="tg">' + esc(tegen) + '</span>'
+                                                 : '<span class="tg">' + esc(tegen) + '</span> – RBC') + '</div>' +
+            '<div class="wanneer">' + DAGEN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MAANDEN[dt.getMonth()] +
+                (volgende.tijd ? ' · ' + esc(volgende.tijd) : '') + ' · ' + (thuis ? 'thuis, Atik Stadion' : 'uit') + '</div></div>' +
+            '<div class="aftel"><b>' + aftel + '</b><span>' + (thuis ? 'kom kijken' : 'reis mee') + '</span></div>' +
+            '</div>';
+    }
+
+    /* het hele seizoen */
+    const al = duels.filter(gespeeld), nog = duels.filter(d => !gespeeld(d));
+    const rij = (d, i) => {
+        const dt = alsDatum(d.datum), thuis = isRBC(d.thuis);
+        const tegen = thuis ? d.uit : d.thuis;
+        const rechts = gespeeld(d)
+            ? '<span class="s">' + (thuis ? d.thuis_doelpunten + '–' + d.uit_doelpunten : d.uit_doelpunten + '–' + d.thuis_doelpunten) +
+              '<span class="chip ' + uitslagVan(d) + '">' + uitslagVan(d).toUpperCase() + '</span></span>'
+            : '<span class="s tijd">' + esc(d.tijd || '—') + '</span>';
+        return '<div class="rij' + (d === volgende ? ' nu' : '') + (i >= 5 ? ' meer' : '') + '">' +
+            '<span class="dt">' + DAGEN[dt.getDay()] + ' ' + dt.getDate() + ' ' + MAANDEN[dt.getMonth()] + '</span>' +
+            '<span class="ha" title="' + (thuis ? 'thuis' : 'uit') + '">' + (thuis ? 'T' : 'U') + '</span>' +
+            '<span>' + (thuis ? '' : 'bij ') + '<b>' + esc(tegen) + '</b></span>' + rechts + '</div>';
+    };
+    $('lijst').innerHTML =
+        (nog.length ? '<div class="kop-rij">Nog te spelen · ' + nog.length + '</div>' + nog.map(rij).join('') : '') +
+        (al.length ? '<div class="kop-rij">Gespeeld · ' + al.length + '</div>' + al.slice().reverse().map(rij).join('') : '');
+    const w = al.filter(d => uitslagVan(d) === 'w').length, g = al.filter(d => uitslagVan(d) === 'g').length;
+    $('seizoen-meta').textContent = duels.length + ' wedstrijden · ' + w + ' gewonnen, ' + g + ' gelijk, ' + (al.length - w - g) + ' verloren';
+    /* webcal:// voor abonneren; op een lokale preview gewoon het bestand */
+    if (location.protocol !== 'https:') $('abonneer').href = '/rbc.ics';
+    else $('abonneer').href = 'webcal://' + location.host + '/rbc.ics';
+    $('alles').hidden = nog.length <= 5 && al.length <= 5;
+    $('seizoen').hidden = false;
+}
+$('alles').addEventListener('click', () => {
+    const open = $('lijst').classList.toggle('alles');
+    $('alles').textContent = open ? 'Minder tonen ↑' : 'Toon het hele seizoen ↓';
+});
+
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
 
@@ -515,7 +635,7 @@ haal('data.json').then(D => {
 /* Een link naar #stand of #nieuws: pas na het laden staat alles op zijn plek. */
 const naarAnker = () => { const el = /^#[a-z]+$/.test(location.hash) && document.querySelector(location.hash); if (el) el.scrollIntoView(); };
 
-haal('competitie.json').then(C => { tekenCompetitie(C); naarAnker(); }).catch(() => {
+haal('competitie.json').then(C => { tekenCompetitie(C); tekenSeizoen(C); naarAnker(); }).catch(() => {
     $('tabel').innerHTML = '<p class="leeg">De stand kon niet geladen worden.</p>';
     $('berichten').innerHTML = '<p class="leeg">Het nieuws kon niet geladen worden.</p>';
 });
