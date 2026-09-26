@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-25T22:20:34+00:00",
+ "bijgewerkt": "2026-09-26T17:10:41+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -14,23 +14,19 @@
   11
  ],
  "periode_nu": 1,
- "periode_resterend": 6,
- "speelronde": 6,
+ "periode_resterend": 5,
+ "speelronde": 7,
  "stand": [
   {
    "pos": 1,
    "club": "VV Noordwijk",
-   "wed": 6,
-   "wgv": "5-1-0",
+   "wed": 7,
+   "wgv": "5-1-1",
    "pnt": 16,
-   "dv": 12,
-   "dt": 0,
-   "ds": 12,
+   "dv": 13,
+   "dt": 2,
+   "ds": 11,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "22-08-2026: VV Achilles Veen - VV Noordwijk: 0 - 4"
-    },
     {
      "uitslag": "w",
      "wat": "29-08-2026: VV Noordwijk - RBC: 1 - 0"
@@ -46,23 +42,23 @@
     {
      "uitslag": "w",
      "wat": "19-09-2026: TOGB - VV Noordwijk: 0 - 3"
+    },
+    {
+     "uitslag": "v",
+     "wat": "26-09-2026: VV Noordwijk - VV Zwaluwen: 1 - 2"
     }
    ]
   },
   {
    "pos": 2,
    "club": "FC Lisse",
-   "wed": 6,
-   "wgv": "5-0-1",
-   "pnt": 15,
-   "dv": 11,
-   "dt": 5,
+   "wed": 7,
+   "wgv": "5-1-1",
+   "pnt": 16,
+   "dv": 12,
+   "dt": 6,
    "ds": 6,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "22-08-2026: RBC - FC Lisse: 0 - 1"
-    },
     {
      "uitslag": "w",
      "wat": "29-08-2026: FC Lisse - Excelsior Maassluis: 1 - 0"
@@ -78,6 +74,10 @@
     {
      "uitslag": "v",
      "wat": "19-09-2026: VV Zwaluwen - FC Lisse: 1 - 0"
+    },
+    {
+     "uitslag": "g",
+     "wat": "26-09-2026: FC Lisse - EVV: 1 - 1"
     }
    ]
   },
@@ -116,17 +116,13 @@
   {
    "pos": 4,
    "club": "Excelsior Maassluis",
-   "wed": 6,
-   "wgv": "3-2-1",
-   "pnt": 11,
-   "dv": 12,
+   "wed": 7,
+   "wgv": "4-2-1",
+   "pnt": 14,
+   "dv": 13,
    "dt": 5,
-   "ds": 7,
+   "ds": 8,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
-    },
     {
      "uitslag": "v",
      "wat": "29-08-2026: FC Lisse - Excelsior Maassluis: 1 - 0"
@@ -142,11 +138,47 @@
     {
      "uitslag": "w",
      "wat": "19-09-2026: Excelsior Maassluis - RBC: 5 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "26-09-2026: Excelsior Maassluis - Blauw Geel '38: 1 - 0"
     }
    ]
   },
   {
    "pos": 5,
+   "club": "VV Goes",
+   "wed": 7,
+   "wgv": "4-2-1",
+   "pnt": 14,
+   "dv": 16,
+   "dt": 13,
+   "ds": 3,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "30-08-2026: VV Goes - FC Rijnvogels: 1 - 4"
+    },
+    {
+     "uitslag": "g",
+     "wat": "06-09-2026: Blauw Geel '38 - VV Goes: 2 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "13-09-2026: VV Dongen - VV Goes: 2 - 3"
+    },
+    {
+     "uitslag": "w",
+     "wat": "20-09-2026: VV Goes - VV UNA: 2 - 1"
+    },
+    {
+     "uitslag": "w",
+     "wat": "26-09-2026: SV Poortugaal - VV Goes: 0 - 3"
+    }
+   ]
+  },
+  {
+   "pos": 6,
    "club": "UDI '19",
    "wed": 6,
    "wgv": "3-2-1",
@@ -178,66 +210,34 @@
    ]
   },
   {
-   "pos": 6,
-   "club": "VV Goes",
-   "wed": 6,
-   "wgv": "3-2-1",
-   "pnt": 11,
-   "dv": 13,
-   "dt": 13,
-   "ds": 0,
+   "pos": 7,
+   "club": "VV Zwaluwen",
+   "wed": 7,
+   "wgv": "3-1-3",
+   "pnt": 10,
+   "dv": 6,
+   "dt": 10,
+   "ds": -4,
    "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "23-08-2026: VV Gemert - VV Goes: 2 - 2"
-    },
     {
      "uitslag": "v",
-     "wat": "30-08-2026: VV Goes - FC Rijnvogels: 1 - 4"
-    },
-    {
-     "uitslag": "g",
-     "wat": "06-09-2026: Blauw Geel '38 - VV Goes: 2 - 2"
-    },
-    {
-     "uitslag": "w",
-     "wat": "13-09-2026: VV Dongen - VV Goes: 2 - 3"
-    },
-    {
-     "uitslag": "w",
-     "wat": "20-09-2026: VV Goes - VV UNA: 2 - 1"
-    }
-   ]
-  },
-  {
-   "pos": 7,
-   "club": "SV Poortugaal",
-   "wed": 6,
-   "wgv": "3-0-3",
-   "pnt": 9,
-   "dv": 8,
-   "dt": 6,
-   "ds": 2,
-   "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "22-08-2026: TOGB - SV Poortugaal: 1 - 3"
-    },
-    {
-     "uitslag": "w",
      "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
     },
     {
      "uitslag": "w",
-     "wat": "05-09-2026: EVV - SV Poortugaal: 0 - 1"
+     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
     },
     {
      "uitslag": "v",
-     "wat": "12-09-2026: SV Poortugaal - VV Gemert: 1 - 2"
+     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
     },
     {
-     "uitslag": "v",
-     "wat": "19-09-2026: FC Rijnvogels - SV Poortugaal: 1 - 0"
+     "uitslag": "w",
+     "wat": "19-09-2026: VV Zwaluwen - FC Lisse: 1 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "26-09-2026: VV Noordwijk - VV Zwaluwen: 1 - 2"
     }
    ]
   },
@@ -275,18 +275,46 @@
   },
   {
    "pos": 9,
-   "club": "Blauw Geel '38",
-   "wed": 6,
-   "wgv": "2-2-2",
-   "pnt": 8,
-   "dv": 10,
+   "club": "SV Poortugaal",
+   "wed": 7,
+   "wgv": "3-0-4",
+   "pnt": 9,
+   "dv": 8,
    "dt": 9,
-   "ds": 1,
+   "ds": -1,
    "vorm": [
     {
-     "uitslag": "g",
-     "wat": "23-08-2026: Blauw Geel '38 - FC Rijnvogels: 0 - 0"
+     "uitslag": "w",
+     "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
     },
+    {
+     "uitslag": "w",
+     "wat": "05-09-2026: EVV - SV Poortugaal: 0 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "12-09-2026: SV Poortugaal - VV Gemert: 1 - 2"
+    },
+    {
+     "uitslag": "v",
+     "wat": "19-09-2026: FC Rijnvogels - SV Poortugaal: 1 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "26-09-2026: SV Poortugaal - VV Goes: 0 - 3"
+    }
+   ]
+  },
+  {
+   "pos": 10,
+   "club": "Blauw Geel '38",
+   "wed": 7,
+   "wgv": "2-2-3",
+   "pnt": 8,
+   "dv": 10,
+   "dt": 10,
+   "ds": 0,
+   "vorm": [
     {
      "uitslag": "v",
      "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
@@ -302,11 +330,15 @@
     {
      "uitslag": "w",
      "wat": "20-09-2026: Blauw Geel '38 - VV Dongen: 3 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "26-09-2026: Excelsior Maassluis - Blauw Geel '38: 1 - 0"
     }
    ]
   },
   {
-   "pos": 10,
+   "pos": 11,
    "club": "VV Gemert",
    "wed": 6,
    "wgv": "1-4-1",
@@ -338,7 +370,7 @@
    ]
   },
   {
-   "pos": 11,
+   "pos": 12,
    "club": "VVSB",
    "wed": 6,
    "wgv": "2-1-3",
@@ -366,38 +398,6 @@
     {
      "uitslag": "w",
      "wat": "19-09-2026: VVSB - VV Achilles Veen: 2 - 1"
-    }
-   ]
-  },
-  {
-   "pos": 12,
-   "club": "VV Zwaluwen",
-   "wed": 6,
-   "wgv": "2-1-3",
-   "pnt": 7,
-   "dv": 4,
-   "dt": 9,
-   "ds": -5,
-   "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "22-08-2026: VV Zwaluwen - VV UNA: 1 - 1"
-    },
-    {
-     "uitslag": "v",
-     "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
-    },
-    {
-     "uitslag": "w",
-     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
-    },
-    {
-     "uitslag": "w",
-     "wat": "19-09-2026: VV Zwaluwen - FC Lisse: 1 - 0"
     }
    ]
   },
@@ -499,50 +499,14 @@
   },
   {
    "pos": 16,
-   "club": "VV Achilles Veen",
-   "wed": 6,
-   "wgv": "1-0-5",
-   "pnt": 3,
-   "dv": 7,
-   "dt": 18,
-   "ds": -11,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "22-08-2026: VV Achilles Veen - VV Noordwijk: 0 - 4"
-    },
-    {
-     "uitslag": "w",
-     "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
-    },
-    {
-     "uitslag": "v",
-     "wat": "05-09-2026: RBC - VV Achilles Veen: 3 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "12-09-2026: VV Achilles Veen - Excelsior Maassluis: 2 - 3"
-    },
-    {
-     "uitslag": "v",
-     "wat": "19-09-2026: VVSB - VV Achilles Veen: 2 - 1"
-    }
-   ]
-  },
-  {
-   "pos": 17,
    "club": "TOGB",
-   "wed": 6,
-   "wgv": "0-2-4",
-   "pnt": 2,
-   "dv": 8,
+   "wed": 7,
+   "wgv": "1-2-4",
+   "pnt": 5,
+   "dv": 9,
    "dt": 15,
-   "ds": -7,
+   "ds": -6,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "22-08-2026: TOGB - SV Poortugaal: 1 - 3"
-    },
     {
      "uitslag": "v",
      "wat": "30-08-2026: UDI '19 - TOGB: 2 - 1"
@@ -558,23 +522,55 @@
     {
      "uitslag": "v",
      "wat": "19-09-2026: TOGB - VV Noordwijk: 0 - 3"
+    },
+    {
+     "uitslag": "w",
+     "wat": "26-09-2026: VV Achilles Veen - TOGB: 0 - 1"
+    }
+   ]
+  },
+  {
+   "pos": 17,
+   "club": "VV Achilles Veen",
+   "wed": 7,
+   "wgv": "1-0-6",
+   "pnt": 3,
+   "dv": 7,
+   "dt": 19,
+   "ds": -12,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
+    },
+    {
+     "uitslag": "v",
+     "wat": "05-09-2026: RBC - VV Achilles Veen: 3 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "12-09-2026: VV Achilles Veen - Excelsior Maassluis: 2 - 3"
+    },
+    {
+     "uitslag": "v",
+     "wat": "19-09-2026: VVSB - VV Achilles Veen: 2 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "26-09-2026: VV Achilles Veen - TOGB: 0 - 1"
     }
    ]
   },
   {
    "pos": 18,
    "club": "EVV",
-   "wed": 6,
-   "wgv": "0-1-5",
-   "pnt": 1,
-   "dv": 7,
-   "dt": 16,
+   "wed": 7,
+   "wgv": "0-2-5",
+   "pnt": 2,
+   "dv": 8,
+   "dt": 17,
    "ds": -9,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "23-08-2026: EVV - VV Dongen: 2 - 3"
-    },
     {
      "uitslag": "v",
      "wat": "30-08-2026: VV UNA - EVV: 4 - 1"
@@ -590,6 +586,10 @@
     {
      "uitslag": "g",
      "wat": "19-09-2026: EVV - RKSV Groene Ster: 1 - 1"
+    },
+    {
+     "uitslag": "g",
+     "wat": "26-09-2026: FC Lisse - EVV: 1 - 1"
     }
    ]
   }
@@ -601,15 +601,15 @@
     {
      "pos": 1,
      "club": "VV Noordwijk",
-     "wed": 6,
+     "wed": 7,
      "pnt": 16,
-     "ds": 12
+     "ds": 11
     },
     {
      "pos": 2,
      "club": "FC Lisse",
-     "wed": 6,
-     "pnt": 15,
+     "wed": 7,
+     "pnt": 16,
      "ds": 6
     },
     {
@@ -622,30 +622,30 @@
     {
      "pos": 4,
      "club": "Excelsior Maassluis",
-     "wed": 6,
-     "pnt": 11,
-     "ds": 7
+     "wed": 7,
+     "pnt": 14,
+     "ds": 8
     },
     {
      "pos": 5,
+     "club": "VV Goes",
+     "wed": 7,
+     "pnt": 14,
+     "ds": 3
+    },
+    {
+     "pos": 6,
      "club": "UDI '19",
      "wed": 6,
      "pnt": 11,
      "ds": 5
     },
     {
-     "pos": 6,
-     "club": "VV Goes",
-     "wed": 6,
-     "pnt": 11,
-     "ds": 0
-    },
-    {
      "pos": 7,
-     "club": "SV Poortugaal",
-     "wed": 6,
-     "pnt": 9,
-     "ds": 2
+     "club": "VV Zwaluwen",
+     "wed": 7,
+     "pnt": 10,
+     "ds": -4
     },
     {
      "pos": 8,
@@ -656,31 +656,31 @@
     },
     {
      "pos": 9,
-     "club": "Blauw Geel '38",
-     "wed": 6,
-     "pnt": 8,
-     "ds": 1
+     "club": "SV Poortugaal",
+     "wed": 7,
+     "pnt": 9,
+     "ds": -1
     },
     {
      "pos": 10,
+     "club": "Blauw Geel '38",
+     "wed": 7,
+     "pnt": 8,
+     "ds": 0
+    },
+    {
+     "pos": 11,
      "club": "VV Gemert",
      "wed": 6,
      "pnt": 7,
      "ds": 0
     },
     {
-     "pos": 11,
+     "pos": 12,
      "club": "VVSB",
      "wed": 6,
      "pnt": 7,
      "ds": -3
-    },
-    {
-     "pos": 12,
-     "club": "VV Zwaluwen",
-     "wed": 6,
-     "pnt": 7,
-     "ds": -5
     },
     {
      "pos": 13,
@@ -705,23 +705,23 @@
     },
     {
      "pos": 16,
-     "club": "VV Achilles Veen",
-     "wed": 6,
-     "pnt": 3,
-     "ds": -11
+     "club": "TOGB",
+     "wed": 7,
+     "pnt": 5,
+     "ds": -6
     },
     {
      "pos": 17,
-     "club": "TOGB",
-     "wed": 6,
-     "pnt": 2,
-     "ds": -7
+     "club": "VV Achilles Veen",
+     "wed": 7,
+     "pnt": 3,
+     "ds": -12
     },
     {
      "pos": 18,
      "club": "EVV",
-     "wed": 6,
-     "pnt": 1,
+     "wed": 7,
+     "pnt": 2,
      "ds": -9
     }
    ]
@@ -992,36 +992,6 @@
  "programma": [
   {
    "datum": "zaterdag 26 september 2026",
-   "thuis": "VV Achilles Veen",
-   "uit": "TOGB",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "Excelsior Maassluis",
-   "uit": "Blauw Geel '38",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "FC Lisse",
-   "uit": "EVV",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "VV Noordwijk",
-   "uit": "VV Zwaluwen",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "SV Poortugaal",
-   "uit": "VV Goes",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
    "thuis": "RBC",
    "uit": "VVSB",
    "tijd": "19:00"
@@ -1047,67 +1017,39 @@
  ],
  "uitslagen": [
   {
-   "datum": "zondag 20 september 2026",
-   "thuis": "VV Gemert",
-   "uit": "UDI '19",
-   "thuis_doelpunten": 1,
+   "datum": "zaterdag 26 september 2026",
+   "thuis": "VV Achilles Veen",
+   "uit": "TOGB",
+   "thuis_doelpunten": 0,
    "uit_doelpunten": 1
   },
   {
-   "datum": "zondag 20 september 2026",
-   "thuis": "Blauw Geel '38",
-   "uit": "VV Dongen",
-   "thuis_doelpunten": 3,
-   "uit_doelpunten": 1
-  },
-  {
-   "datum": "zondag 20 september 2026",
-   "thuis": "VV Goes",
-   "uit": "VV UNA",
-   "thuis_doelpunten": 2,
-   "uit_doelpunten": 1
-  },
-  {
-   "datum": "zaterdag 19 september 2026",
+   "datum": "zaterdag 26 september 2026",
    "thuis": "Excelsior Maassluis",
-   "uit": "RBC",
-   "thuis_doelpunten": 5,
-   "uit_doelpunten": 0
-  },
-  {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "FC Rijnvogels",
-   "uit": "SV Poortugaal",
+   "uit": "Blauw Geel '38",
    "thuis_doelpunten": 1,
    "uit_doelpunten": 0
   },
   {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "VV Zwaluwen",
-   "uit": "FC Lisse",
+   "datum": "zaterdag 26 september 2026",
+   "thuis": "FC Lisse",
+   "uit": "EVV",
    "thuis_doelpunten": 1,
-   "uit_doelpunten": 0
+   "uit_doelpunten": 1
   },
   {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "TOGB",
-   "uit": "VV Noordwijk",
+   "datum": "zaterdag 26 september 2026",
+   "thuis": "VV Noordwijk",
+   "uit": "VV Zwaluwen",
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 2
+  },
+  {
+   "datum": "zaterdag 26 september 2026",
+   "thuis": "SV Poortugaal",
+   "uit": "VV Goes",
    "thuis_doelpunten": 0,
    "uit_doelpunten": 3
-  },
-  {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "VVSB",
-   "uit": "VV Achilles Veen",
-   "thuis_doelpunten": 2,
-   "uit_doelpunten": 1
-  },
-  {
-   "datum": "zaterdag 19 september 2026",
-   "thuis": "EVV",
-   "uit": "RKSV Groene Ster",
-   "thuis_doelpunten": 1,
-   "uit_doelpunten": 1
   }
  ],
  "nieuws": [
