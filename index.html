@@ -297,6 +297,26 @@ section.blok{ padding:56px 0 8px }
 .speler b{ display:block; font:800 21px/1 var(--kop); text-transform:uppercase; overflow-wrap:anywhere }
 .speler span{ display:block; font-size:12px; opacity:.75; margin-top:3px }
 
+/* statistieken */
+.stats{ display:grid; gap:12px; grid-template-columns:repeat(4,1fr); margin-bottom:10px }
+@media (max-width:960px){ .stats{ grid-template-columns:1fr 1fr } }
+@media (max-width:560px){ .stats{ grid-template-columns:1fr } }
+.stat-lijst{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); padding:14px 16px }
+.stat-lijst h4{ font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:var(--oranje-d); margin-bottom:8px }
+.stat-rij{ display:grid; grid-template-columns:36px 1fr auto; gap:10px; align-items:center; width:100%; text-align:left;
+           padding:7px 0; border-top:1px solid var(--lijn) }
+.stat-rij:first-of-type{ border-top:0 }
+.stat-rij:hover b{ color:var(--oranje-d) }
+.stat-rij img, .stat-rij .geen{ width:36px; height:36px; border-radius:50%; object-fit:cover; object-position:top; background:var(--lijn) }
+.stat-rij b{ display:block; font-weight:700; font-size:14px; line-height:1.2 }
+.stat-rij small{ color:var(--dim); font-size:12px }
+.stat-rij .w{ font:900 26px/1 var(--kop); font-variant-numeric:tabular-nums }
+.stat-rij:first-of-type .w{ color:var(--oranje) }
+.bron{ font-size:12px; color:var(--dim); margin-bottom:26px }
+.speler .goals{ position:absolute; top:12px; right:10px; z-index:1; background:rgba(0,0,0,.55); border-radius:999px;
+                padding:4px 8px; font:800 14px/1 var(--kop); letter-spacing:.04em }
+.holo-stats.vier{ grid-template-columns:repeat(4,1fr) }
+
 /* staf */
 .staf{ display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr)); margin-top:6px }
 .staf div{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); padding:14px 16px }
@@ -478,6 +498,11 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
     <div class="wrap">
         <div class="kop"><h2 id="team-kop">Het <em>team</em></h2><small id="sel-meta"></small></div>
         <div id="linies"><p class="leeg">Selectie laden…</p></div>
+        <div id="stats-blok" hidden>
+            <div class="linie"><h3>Statistieken dit seizoen</h3></div>
+            <div class="stats" id="stats"></div>
+            <p class="bron" id="stats-bron"></p>
+        </div>
         <div id="staf-blok" hidden>
             <div class="linie"><h3>Technische staf &amp; training</h3></div>
             <div class="staf" id="staf"></div>
@@ -557,6 +582,19 @@ const X_URL = 'https://x.com/RBCvoetbal';
 let TICKETS = $('tickets-kop').href;
 let LOGOS = {};
 let TEAM = { wedstrijden: {} };
+let STATS = {}, STATS_INFO = null;
+const statsVan = p => STATS[p.number] || null;
+const achternaam = n => String(n || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().split(/\s+/).pop();
+/* Transfermarkt en de club schrijven namen soms anders ("Amr"/"Amir"):
+   koppelen op rugnummer, maar alleen als de achternaam klopt. */
+function koppelStats() {
+    STATS = {};
+    ((STATS_INFO || {}).spelers || []).forEach(s => {
+        const p = SQUAD.find(q => q.number === s.nummer && achternaam(q.name) === achternaam(s.naam))
+               || SQUAD.find(q => achternaam(q.name) === achternaam(s.naam) && q.name.split(' ')[0][0] === s.naam[0]);
+        if (p) STATS[p.number] = s;
+    });
+}
 const verslagVan = d => ((TEAM.wedstrijden || {})[d.datum] || {}).verslag || '';
 
 const DAGEN = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
@@ -646,6 +684,8 @@ function toon(nr, animeer) {
         if (p.leeftijd) extra.push(p.leeftijd + ' jaar');
         if (landen.length) extra.push(landen.join(' · '));
         if (p.vorige_club) extra.push('Kwam van ' + p.vorige_club);
+        const st = statsVan(p);
+        if (st && st.wed) extra.push(st.wed + ' wedstr. · ' + st.goals + (st.goals === 1 ? ' goal' : ' goals') + ' · ' + st.assists + ' assist' + (st.assists === 1 ? '' : 's'));
         uit.innerHTML =
             (p.photo ? '<img class="foto" src="' + esc(p.photo) + '" alt="">' : '') +
             '<div class="naam">' + esc(p.name) + '</div>' +
@@ -723,7 +763,9 @@ function tekenTeam(D) {
             '<button type="button" class="speler" data-nr="' + p.number + '" aria-label="' + esc(p.name) + ', nummer ' + p.number + '">' +
                 (p.photo ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy">' : '<span class="zonder">' + SILHOUET + '</span>') +
                 '<span class="n">' + p.number + '</span>' +
-                '<span class="t"><b>' + esc(p.name) + '</b><span>' + esc(positie(p)) + '</span></span>' +
+                (statsVan(p) && statsVan(p).goals ? '<span class="goals">⚽ ' + statsVan(p).goals + '</span>' : '') +
+                '<span class="t"><b>' + esc(p.name) + '</b><span>' + esc(positie(p)) +
+                    (statsVan(p) && statsVan(p).wed ? ' · ' + statsVan(p).wed + ' wedstr.' : '') + '</span></span>' +
             '</button>').join('') +
         '</div></div>').join('');
     if (D.squad_bijgewerkt) $('sel-meta').textContent = SQUAD.length + ' spelers · selectie van ' + D.squad_bijgewerkt.split('-').reverse().join('-');
@@ -736,6 +778,28 @@ $('antwoord').addEventListener('click', e => {
     const b = e.target.closest('[data-kaart]');
     if (b) openKaart(+b.dataset.kaart);
 });
+
+function tekenStats() {
+    const lijst = SQUAD.filter(p => statsVan(p));
+    if (!lijst.length) return;
+    const top = (sleutel, fn, eenheid) => lijst.map(p => [p, fn(statsVan(p))]).filter(([, w]) => w > 0)
+        .sort((a, b) => b[1] - a[1] || statsVan(a[0]).minuten - statsVan(b[0]).minuten).slice(0, 5);
+    const blok = (titel, rijen, fmt) => '<div class="stat-lijst"><h4>' + titel + '</h4>' + (rijen.length ? rijen.map(([p, w]) =>
+        '<button type="button" class="stat-rij" data-kaart="' + p.number + '">' +
+            (p.photo ? '<img src="' + esc(p.photo) + '" alt="" loading="lazy">' : '<span class="geen"></span>') +
+            '<span><b>' + esc(p.name) + '</b><small>#' + p.number + ' · ' + esc(positie(p)) + '</small></span>' +
+            '<span class="w">' + fmt(w) + '</span></button>').join('') : '<p class="leeg">Nog niemand.</p>') + '</div>';
+    $('stats').innerHTML =
+        blok('Topscorers', top('goals', s => s.goals), w => w) +
+        blok('Assists', top('assists', s => s.assists), w => w) +
+        blok('Meeste minuten', top('minuten', s => s.minuten), w => w + "'") +
+        blok('Kaarten', top('kaarten', s => s.geel + s.rood * 2), w => w);
+    const d = STATS_INFO.opgehaald ? new Date(STATS_INFO.opgehaald) : null;
+    $('stats-bron').textContent = 'Alle officiële wedstrijden (competitie en beker), volgens Transfermarkt' +
+        (d ? ', bijgewerkt ' + d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }) : '') + '. Kan een paar dagen achterlopen.';
+    $('stats-blok').hidden = false;
+}
+$('stats').addEventListener('click', e => { const b = e.target.closest('[data-kaart]'); if (b) openKaart(+b.dataset.kaart); });
 
 function tekenStaf() {
     const staf = TEAM.staf || [], training = TEAM.training || [];
@@ -1095,12 +1159,16 @@ function tekenKaart(p) {
         '<img class="holo-merk" src="rbc-klein.png" alt="">' +
         '<div class="holo-nr">' + p.number + '</div><div class="holo-pos">' + AFK[linie(p)] + '</div>' +
         '<div class="holo-vlag">' + vlaggen.map(v => '<span>' + v + '</span>').join('') + '</div>' +
-        '<div class="holo-onder"><div class="holo-naam">' + esc(p.name) + '</div><div class="holo-stats">' +
-            '<div><b>' + esc(p.leeftijd || '–') + '</b><span>leeftijd</span></div>' +
-            '<div><b>' + esc(AFK[linie(p)]) + '</b><span>' + esc(positie(p).split(' ').pop()) + '</span></div>' +
-            '<div><b>' + esc(land && LAND[land] ? LAND[land][1].slice(0, 3).toUpperCase() : '–') + '</b><span>land</span></div>' +
+        '<div class="holo-onder"><div class="holo-naam">' + esc(p.name) + '</div><div class="holo-stats vier">' +
+            kaartCijfers(p).map(([w, l]) => '<div><b>' + esc(w) + '</b><span>' + esc(l) + '</span></div>').join('') +
         '</div></div>';
     const holo = $('holo'); holo.style.animation = 'none'; void holo.offsetWidth; holo.style.animation = '';
+}
+function kaartCijfers(p) {
+    const st = statsVan(p), land = (p.nationaliteiten || [])[0];
+    return st ? [[p.leeftijd || '–', 'leeftijd'], [st.wed, 'wedstr.'], [st.goals, 'goals'], [st.assists, 'assists']]
+              : [[p.leeftijd || '–', 'leeftijd'], [AFK[linie(p)], positie(p).split(' ').pop()],
+                 [land && LAND[land] ? LAND[land][1].slice(0, 3).toUpperCase() : '–', 'land'], ['#' + p.number, 'nummer']];
 }
 function openKaart(nr) {
     const p = vind(nr); if (!p) return;
@@ -1199,10 +1267,8 @@ async function deelKaart() {
     passend(x, p.name.toUpperCase(), B - 160, 900, 110); x.fillText(p.name.toUpperCase(), B / 2, H - 290);
     x.shadowBlur = 0; x.fillStyle = 'rgba(255,255,255,.6)'; x.fillRect(120, H - 255, B - 240, 4);
     x.fillStyle = '#fff';
-    const land = (p.nationaliteiten || [])[0];
-    [[p.leeftijd || '–', 'LEEFTIJD'], [AFK[linie(p)], positie(p).split(' ').pop().toUpperCase()],
-     [land && LAND[land] ? LAND[land][1].slice(0, 3).toUpperCase() : '–', 'LAND']].forEach(([w, l], i) => {
-        const cx = B / 2 + (i - 1) * 290;
+    kaartCijfers(p).forEach(([w, l], i) => {
+        const cx = B / 2 + (i - 1.5) * 225; l = String(l).toUpperCase();
         x.font = F(900, 84); x.fillText(String(w), cx, H - 150);
         x.font = '700 28px system-ui, sans-serif'; x.fillText(l, cx, H - 100);
     });
@@ -1224,6 +1290,15 @@ async function deelKaart() {
     };
 })();
 
+/* Selectie en statistieken komen uit twee bestanden; het team tekenen
+   we pas als allebei binnen zijn, anders missen de doelpunten. */
+const klaar = {};
+let SEL_DATA = null;
+function naLaden() {
+    if (klaar.selectie) { koppelStats(); tekenTeam(SEL_DATA); }
+    if (klaar.selectie && klaar.competitie) { tekenStats(); if (getikt) toon(getikt); }
+}
+
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
 
@@ -1234,7 +1309,8 @@ toon('');
 
 haal('data.json').then(D => {
     SQUAD = (D.squad || []).filter(p => p.number != null);
-    tekenTeam(D);
+    SEL_DATA = D;
+    klaar.selectie = true; naLaden();
     toon(getikt || START, !!START);
     if (START) $('wie').scrollIntoView();
 }).catch(() => { $('linies').innerHTML = '<p class="leeg">De selectie kon niet geladen worden.</p>'; });
@@ -1243,7 +1319,9 @@ haal('competitie.json').then(C => {
     LOGOS = C.logos || {};
     if (C.tickets) TICKETS = C.tickets;
     if (C.team) TEAM = C.team;
+    STATS_INFO = C.statistieken || null;
     tekenStaf();
+    klaar.competitie = true; naLaden();
     tekenNieuws(C); tekenStrook(C); tekenStand(C); tekenProgramma(C);
     if (C.bijgewerkt) {
         const d = new Date(C.bijgewerkt);

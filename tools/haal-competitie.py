@@ -193,6 +193,59 @@ def haal_logos(soep):
         LOGOS[naam] = 'logos/' + slug + '.webp'
 
 
+TM_STATS = 'https://www.transfermarkt.nl/rbc-roosendaal/leistungsdaten/verein/1227/reldata/%26{jaar}/plus/1'
+
+
+def getal_of_nul(tekst):
+    tekst = tekst.replace("'", '').replace('.', '').strip()
+    return int(tekst) if tekst.isdigit() else 0
+
+
+def lees_statistieken(oud):
+    """Wedstrijden, doelpunten, assists, kaarten en minuten per speler,
+    alle wedstrijden van dit seizoen (competitie en beker). Transfermarkt
+    vragen we het hooguit twee keer per dag; lukt het niet, dan blijven
+    de vorige cijfers staan."""
+    if oud and oud.get('opgehaald'):
+        try:
+            if (datetime.now(timezone.utc) - datetime.fromisoformat(oud['opgehaald'])).total_seconds() < 12 * 3600:
+                return oud
+        except ValueError:
+            pass
+    jaar = SEIZOEN.split('-')[0]
+    verzoek = urllib.request.Request(TM_STATS.format(jaar=jaar), headers={
+        'User-Agent': 'Mozilla/5.0 (compatible; RBCRoosendaal.com supporterssite; 2x per dag)',
+        'Accept-Language': 'nl-NL,nl;q=0.9'})
+    try:
+        import certifi
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        ctx = ssl.create_default_context()
+    try:
+        with urllib.request.urlopen(verzoek, timeout=30, context=ctx) as r:
+            soep = BeautifulSoup(r.read().decode('utf-8', 'replace'), 'html.parser')
+    except Exception as fout:
+        print(f'statistieken niet gehaald: {fout}', file=sys.stderr)
+        return oud or {}
+    spelers = []
+    for tr in soep.select('table.items > tbody > tr'):
+        cellen = tr.find_all('td', recursive=False)
+        naam = tr.select_one('td.hauptlink a')
+        if len(cellen) < 15 or not naam:
+            continue
+        nr = cellen[0].get_text(strip=True)
+        spelers.append({
+            'naam': naam.get_text(strip=True), 'nummer': int(nr) if nr.isdigit() else None,
+            'wed': getal_of_nul(cellen[5].get_text()), 'goals': getal_of_nul(cellen[6].get_text()),
+            'assists': getal_of_nul(cellen[7].get_text()), 'geel': getal_of_nul(cellen[8].get_text()),
+            'rood': getal_of_nul(cellen[9].get_text()) + getal_of_nul(cellen[10].get_text()),
+            'minuten': getal_of_nul(cellen[14].get_text())})
+    if not spelers:
+        return oud or {}
+    return {'opgehaald': datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            'bron': 'Transfermarkt', 'spelers': spelers}
+
+
 THUIS_AFTRAP = '19:00'
 
 
@@ -538,6 +591,7 @@ def main():
         'rbc_seizoen': seizoen,
         'logos': LOGOS or oud_bestand.get('logos', {}),
         'team': team,
+        'statistieken': lees_statistieken(oud_bestand.get('statistieken')),
         'tickets': 'https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3',
     }
 
