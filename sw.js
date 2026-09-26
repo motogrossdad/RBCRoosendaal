@@ -7,12 +7,12 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v23';
+const CACHE = 'rbc-app-v24';
 
 const SCHIL = [
     '/', '/index.html', '/data.json', '/competitie.json',
     '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
-    '/rbc-klein.png', '/manifest.json',
+    '/rbc-klein.png', '/atik.jpg', '/manifest.json',
     // Portretten mee offline: op de tribune is juist dan de vraag
     // "welke van die elf is nummer 14".
     '/players/akram-tourki.jpg',

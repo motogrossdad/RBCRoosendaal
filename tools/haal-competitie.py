@@ -162,11 +162,43 @@ def lees_duels(soep):
 RBC_PAGINA = 'https://www.hollandsevelden.nl/clubs/r/rbc/'
 
 
+LOGO_MAP = os.path.join(os.path.dirname(UIT), 'logos')
+LOGOS = {}
+
+
+def haal_logos(soep):
+    """Clublogo's één keer ophalen en zelf bewaren: dan staan ze er ook
+    zonder bereik, en vragen we de bron er niet elk uur om."""
+    os.makedirs(LOGO_MAP, exist_ok=True)
+    for cel in soep.select('table.match td.club'):
+        naam, img = clubnaam(cel), cel.find('img', src=True)
+        if not naam or not img or naam in LOGOS:
+            continue
+        slug = re.sub(r'[^a-z0-9]+', '-', naam.lower()).strip('-')
+        pad = os.path.join(LOGO_MAP, slug + '.webp')
+        if not os.path.exists(pad):
+            try:
+                url = img['src'] if img['src'].startswith('http') else 'https://www.hollandsevelden.nl' + img['src']
+                verzoek = urllib.request.Request(url, headers=KOP)
+                import certifi
+                ctx = ssl.create_default_context(cafile=certifi.where())
+            except ImportError:
+                ctx = ssl.create_default_context()
+            try:
+                with urllib.request.urlopen(verzoek, timeout=30, context=ctx) as r, open(pad, 'wb') as f:
+                    f.write(r.read())
+            except Exception as fout:
+                print(f'logo {naam} niet gehaald: {fout}', file=sys.stderr)
+                continue
+        LOGOS[naam] = 'logos/' + slug + '.webp'
+
+
 def lees_seizoen():
     """Alle wedstrijden van RBC dit seizoen, gespeeld en nog te spelen.
     De competitiepagina toont alleen de huidige ronde; de clubpagina het
     hele seizoen, en daar komt 'volgende wedstrijd' vandaan."""
     soep = BeautifulSoup(haal(RBC_PAGINA), 'html.parser')
+    haal_logos(soep)
     duels = []
     for tabel in soep.select('table.match'):
         if 'RBC' not in schoon(tabel.find('caption')) and 'RBC' not in schoon(tabel.find('thead')):
@@ -273,11 +305,19 @@ def lees_nieuws(oud_nieuws):
             break
 
     for n in uit:
-        if n['url'] in bekend and bekend[n['url']].get('tekst'):
-            n['tekst'] = bekend[n['url']]['tekst']
+        oud = bekend.get(n['url'])
+        if oud and oud.get('tekst') and 'beeld' in oud:
+            n['tekst'], n['beeld'] = oud['tekst'], oud['beeld']
             continue
         try:
             art = BeautifulSoup(haal(n['url']), 'html.parser')
+            # De foto bij het bericht staat op de beeldbank van de club;
+            # de kopfoto van de site zelf slaan we over.
+            n['beeld'] = ''
+            for img in art.find_all('img', src=True):
+                if '/uploads/images/news/' in img['src']:
+                    n['beeld'] = ('https:' + img['src']) if img['src'].startswith('//') else img['src']
+                    break
             for weg in art(['script', 'style', 'nav', 'header', 'footer']):
                 weg.decompose()
             heel = re.sub(r'\s+', ' ', art.get_text(' ', strip=True))
@@ -289,7 +329,8 @@ def lees_nieuws(oud_nieuws):
             heel = re.sub(r'^\s*\d{2}-\d{2}-\d{4}\s*', '', heel).strip()
             n['tekst'] = heel[:600].rsplit(' ', 1)[0]
         except Exception:
-            n['tekst'] = ''
+            n.setdefault('tekst', '')
+            n.setdefault('beeld', '')
     return uit
 
 
@@ -352,6 +393,8 @@ def main():
         'uitslagen': uitslagen[-40:],
         'nieuws': nieuws,
         'rbc_seizoen': seizoen,
+        'logos': LOGOS or oud_bestand.get('logos', {}),
+        'tickets': 'https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3',
     }
 
     schrijf_agenda(seizoen)
