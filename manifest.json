@@ -1,13 +1,13 @@
 {
   "name": "RBC Roosendaal",
   "short_name": "RBC",
-  "description": "Wie is welk rugnummer? Tik het in. Plus de selectie, de stand en het clubnieuws. Werkt zonder bereik.",
+  "description": "Supporterssite van RBC Roosendaal: volgende wedstrijd, stand, nieuws, het team en wie is welk rugnummer. Werkt ook zonder bereik.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#faf6f1",
-  "theme_color": "#ff6a13",
+  "background_color": "#16120f",
+  "theme_color": "#16120f",
   "lang": "nl",
   "categories": [
     "sports"
@@ -30,6 +30,58 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "id": "/",
+  "shortcuts": [
+    {
+      "name": "Wie is nummer …?",
+      "short_name": "Wie is nummer",
+      "url": "/#wie",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Volgende wedstrijd",
+      "short_name": "Wedstrijd",
+      "url": "/#wedstrijden",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Stand",
+      "short_name": "Stand",
+      "url": "/#stand",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/scherm-1.webp",
+      "sizes": "824x1830",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Nieuws en volgende wedstrijd"
+    },
+    {
+      "src": "/icons/scherm-2.webp",
+      "sizes": "824x1830",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Wie is nummer …?"
     }
   ]
 }

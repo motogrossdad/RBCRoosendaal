@@ -273,8 +273,13 @@ def schrijf_agenda(duels):
         else:
             r += [f'DTSTART;VALUE=DATE:{dag}']
         r += [f"LOCATION:{tekst('Atik Stadion, Roosendaal' if thuis else 'Uit bij ' + d['thuis'])}",
-              'DESCRIPTION:Derde Divisie B · rbcroosendaal.com',
-              'END:VEVENT']
+              'DESCRIPTION:Derde Divisie B · rbcroosendaal.com']
+        if d.get('tijd') and 'thuis_doelpunten' not in d:
+            # Twee uur voor de aftrap een seintje, net op tijd om te vertrekken.
+            # (Een alarm hoort na alle eigenschappen van de afspraak.)
+            r += ['BEGIN:VALARM', 'ACTION:DISPLAY', f"DESCRIPTION:{tekst(naam)} begint over 2 uur",
+                  'TRIGGER:-PT2H', 'END:VALARM']
+        r += ['END:VEVENT']
     r.append('END:VCALENDAR')
     with open(AGENDA, 'w', encoding='utf-8', newline='') as f:
         f.write('\r\n'.join(r) + '\r\n')
@@ -374,6 +379,90 @@ def bewaar_nieuwsbeelden(nieuws):
                 open(pad, 'wb').write(buf.getvalue())
     except Exception as fout:
         print(f'openingsbeeld niet gemaakt: {fout}', file=sys.stderr)
+
+
+OG = os.path.join(os.path.dirname(UIT), 'og.jpg')
+FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'fonts')
+DAGEN = ['maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag', 'zondag']
+MAANDEN = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december']
+
+
+def maak_voorvertoning(seizoen):
+    """Het plaatje dat WhatsApp, Facebook en X tonen als iemand de link
+    deelt: net na een wedstrijd de uitslag, anders de volgende wedstrijd."""
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter
+    from io import BytesIO
+    from datetime import date
+    try:
+        from zoneinfo import ZoneInfo
+        vandaag = datetime.now(ZoneInfo('Europe/Amsterdam')).date()
+    except Exception:
+        vandaag = datetime.now(timezone.utc).date()
+    als_datum = lambda d: date.fromisoformat(d['datum'])
+    gespeeld = [d for d in seizoen if 'thuis_doelpunten' in d]
+    komend = [d for d in seizoen if 'thuis_doelpunten' not in d and als_datum(d) >= vandaag]
+    laatste = gespeeld[-1] if gespeeld else None
+    if laatste and (vandaag - als_datum(laatste)).days <= 2:
+        duel, soort = laatste, 'uitslag'
+    elif komend:
+        duel, soort = komend[0], 'volgende'
+    else:
+        return
+    basis = os.path.dirname(UIT)
+    kop = lambda n, w='Black': (lambda f: (f.set_variation_by_name(w), f)[1])(ImageFont.truetype(os.path.join(FONTS, 'BigShouldersDisplay.ttf'), n))
+    B, H = 1200, 630
+    doek = Image.open(os.path.join(basis, 'atik.png')).convert('RGB')
+    s_ = max(B / doek.width, H / doek.height)
+    doek = doek.resize((round(doek.width * s_), round(doek.height * s_)))
+    doek = doek.crop(((doek.width - B) // 2, (doek.height - H) // 2, (doek.width - B) // 2 + B, (doek.height - H) // 2 + H))
+    doek = doek.filter(ImageFilter.GaussianBlur(2))
+    donker = Image.new('RGB', (B, H), (22, 18, 15))
+    doek = Image.blend(doek, donker, .72)
+    t = ImageDraw.Draw(doek)
+    t.rectangle((0, 0, B, 10), fill=(255, 106, 19)); t.rectangle((0, H - 10, B, H), fill=(255, 106, 19))
+
+    def logo(club, maat):
+        pad = os.path.join(basis, 'rbc.png') if club.upper().startswith('RBC') else None
+        if not pad:
+            for n, p in (LOGOS or {}).items():
+                if n == club:
+                    pad = os.path.join(basis, p)
+        if not pad or not os.path.exists(pad):
+            return None
+        im = Image.open(pad).convert('RGBA')
+        f = maat / max(im.size)
+        return im.resize((round(im.width * f), round(im.height * f)), Image.LANCZOS)
+
+    for club, cx in ((duel['thuis'], 870), (duel['uit'], 1070)):
+        im = logo(club, 170)
+        if im:
+            doek.paste(im, (cx - im.width // 2, 230 - im.height // 2), im)
+
+    dt = als_datum(duel)
+    if soort == 'uitslag':
+        wij = duel['thuis_doelpunten'] if duel['thuis'].upper().startswith('RBC') else duel['uit_doelpunten']
+        zij = duel['uit_doelpunten'] if duel['thuis'].upper().startswith('RBC') else duel['thuis_doelpunten']
+        label = 'GEWONNEN!' if wij > zij else ('GELIJKSPEL' if wij == zij else 'UITSLAG')
+        groot = f"{duel['thuis_doelpunten']} – {duel['uit_doelpunten']}"
+        onder = f"{duel['thuis']} – {duel['uit']}  ·  {DAGEN[dt.weekday()]} {dt.day} {MAANDEN[dt.month - 1]}"
+    else:
+        label = 'VANDAAG!' if dt == vandaag else 'VOLGENDE WEDSTRIJD'
+        groot = f"{duel['thuis']} – {duel['uit']}"
+        plek = 'Atik Stadion' if duel['thuis'].upper().startswith('RBC') else f"uit bij {duel['thuis']}"
+        onder = f"{DAGEN[dt.weekday()]} {dt.day} {MAANDEN[dt.month - 1]}  ·  {duel.get('tijd') or ''}  ·  {plek}"
+    t.text((70, 90), label, font=kop(64), fill=(255, 106, 19))
+    maat = 150
+    while maat > 60 and t.textlength(groot.upper(), font=kop(maat)) > (720 if soort == 'volgende' else 700):
+        maat -= 4
+    t.text((66, 170), groot.upper(), font=kop(maat), fill=(255, 255, 255))
+    t.text((70, 400), onder, font=ImageFont.truetype(os.path.join(FONTS, 'Barlow-SemiBold.ttf'), 36), fill=(207, 197, 184))
+    crest = Image.open(os.path.join(basis, 'rbc.png')).convert('RGBA')
+    crest = crest.resize((round(crest.width * 96 / crest.height), 96), Image.LANCZOS)
+    doek.paste(crest, (70, 500), crest)
+    t.text((70 + crest.width + 22, 548), 'RBCROOSENDAAL.COM', font=kop(44), fill=(255, 106, 19), anchor='lm')
+    buf = BytesIO(); doek.save(buf, 'JPEG', quality=84, optimize=True, progressive=True)
+    if not os.path.exists(OG) or open(OG, 'rb').read() != buf.getvalue():
+        open(OG, 'wb').write(buf.getvalue())
 
 
 def lees_team(oud_team):
@@ -615,6 +704,10 @@ def main():
     thuis_tijd_regels(seizoen, nieuws)
     data['rbc_seizoen'] = seizoen
     schrijf_agenda(seizoen)
+    try:
+        maak_voorvertoning(seizoen)
+    except Exception as fout:
+        print(f'voorvertoning niet gemaakt: {fout}', file=sys.stderr)
 
     oud = None
     if os.path.exists(UIT):

@@ -10,7 +10,9 @@
 <meta property="og:site_name" content="RBC Roosendaal">
 <meta property="og:title" content="RBC Roosendaal — nieuws, wedstrijden en wie is nummer …?">
 <meta property="og:description" content="Het laatste nieuws, de volgende wedstrijd, de stand in de Derde Divisie B en elke speler op rugnummer.">
-<meta property="og:image" content="https://rbcroosendaal.com/atik.jpg">
+<meta property="og:image" content="https://rbcroosendaal.com/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:url" content="https://rbcroosendaal.com/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://rbcroosendaal.com/">
@@ -95,6 +97,17 @@ img{ display:block; max-width:100% }
           background:var(--nacht); color:#f4ece1; border:1px solid var(--nacht-lijn); border-radius:999px; padding:10px 16px;
           font-size:14px; font-weight:600; box-shadow:0 10px 30px rgba(0,0,0,.3); max-width:calc(100% - 32px); text-align:center }
 .offline[hidden]{ display:none }
+
+/* wedstrijddag: strook onder de kop */
+.dagbalk{ display:block; background:var(--oranje); color:var(--op-oranje); text-decoration:none; font:800 15px/1 var(--kop);
+          text-transform:uppercase; letter-spacing:.08em; text-align:center; padding:9px 16px }
+.dagbalk[hidden]{ display:none }
+.dagbalk b{ font-weight:900 }
+.dagbalk .pil{ display:inline-flex; align-items:center; gap:6px; background:var(--op-oranje); color:#fff; border-radius:999px;
+               padding:3px 9px; margin-right:6px }
+.dagbalk .pil i{ width:7px; height:7px; border-radius:50%; background:#ff4d3d; animation:puls 1.2s infinite }
+.wakker{ font-size:12.5px; font-weight:700; margin-top:8px; opacity:.85 }
+.wakker[hidden]{ display:none }
 
 /* ── kop van de site ──────────────────────────────────────── */
 .site-kop{ position:sticky; top:0; z-index:30; background:var(--nacht); color:#fff; padding-top:env(safe-area-inset-top);
@@ -431,6 +444,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
         </nav>
         <a class="tickets" id="tickets-kop" href="https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3" target="_blank" rel="noopener">Tickets</a>
     </div>
+    <a class="dagbalk" id="dagbalk" href="#wedstrijden" hidden></a>
 </header>
 
 <main id="top">
@@ -506,6 +520,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
                 <div class="antwoord" id="antwoord" aria-live="polite"></div>
             </div>
             <p class="veeg">← Veeg of tik op het shirt: de volgende speler →</p>
+            <p class="wakker" id="wakker" hidden>🔆 Je scherm blijft aan zolang dit in beeld is.</p>
             <button type="button" class="app-knop" id="installeer" hidden>📲 Zet RBC op je beginscherm</button>
             <p class="app-uitleg" id="ios-uitleg" hidden>Tik in Safari op <b>Deel</b> ⎋ en kies <b>Zet op beginscherm</b>. Dan werkt dit ook zonder bereik op de tribune.</p>
         </div>
@@ -910,6 +925,8 @@ function tekenStrook(C) {
     $('kaarten').innerHTML = html;
     POSTER.laatste = laatste; POSTER.volgende = volgende;
     wedstrijdVoorZoekmachines(volgende);
+    tekenDagbalk(volgende);
+    if (!volgende || alsDatum(volgende.datum).getTime() !== nu.getTime()) { try { navigator.clearAppBadge && navigator.clearAppBadge(); } catch (e) {} }
 
     /* Gewonnen, en nog geen vier dagen geleden: één keer confetti. */
     if (laatste && uitslagVan(laatste) === 'w' && (nu - alsDatum(laatste.datum)) / 864e5 <= 4) {
@@ -1272,6 +1289,45 @@ async function deelKaart() {
         if (vraag) { vraag.prompt(); try { await vraag.userChoice; } catch (e) {} vraag = null; $('installeer').hidden = true; }
         else $('ios-uitleg').hidden = !$('ios-uitleg').hidden;
     };
+})();
+
+/* ═══ wedstrijddag ══════════════════════════════════════════
+   Op de dag zelf een strook onder de kop: aftellen, dan LIVE, dan
+   klaar. De geïnstalleerde app krijgt een stipje op het icoon. */
+function tekenDagbalk(d) {
+    const balk = $('dagbalk');
+    if (!d || alsDatum(d.datum).getTime() !== vandaag().getTime()) { balk.hidden = true; return; }
+    const ko = aftrapVan(d), wie = esc(d.thuis) + ' – ' + esc(d.uit);
+    const bij = () => {
+        const min = (Date.now() - ko) / 6e4;
+        if (min < 0) {
+            const u = Math.floor(-min / 60), m = Math.floor(-min % 60);
+            balk.innerHTML = '<b>Vandaag</b> · ' + wie + ' · ' + esc(d.tijd || '') + ' · nog ' + (u ? u + 'u ' : '') + m + 'm';
+        } else if (min < 110) {
+            balk.innerHTML = '<span class="pil"><i></i>LIVE</span>' + wie;
+        } else { balk.hidden = true; return; }
+        balk.hidden = false;
+    };
+    bij(); setInterval(bij, 30000);
+    try { if (navigator.setAppBadge) navigator.setAppBadge(1); } catch (e) {}
+}
+
+/* ═══ tribunestand: scherm blijft aan bij "wie is nummer" ═══ */
+(function tribune() {
+    if (!('wakeLock' in navigator) || !('IntersectionObserver' in window)) return;
+    let slot = null, inBeeld = false;
+    const vraag = async () => {
+        if (!inBeeld || document.visibilityState !== 'visible' || slot) return;
+        try {
+            slot = await navigator.wakeLock.request('screen');
+            $('wakker').hidden = false;
+            slot.addEventListener('release', () => { slot = null; $('wakker').hidden = true; });
+        } catch (e) {}
+    };
+    const laat = () => { if (slot) { slot.release().catch(() => {}); slot = null; } $('wakker').hidden = true; };
+    new IntersectionObserver(([it]) => { inBeeld = it.intersectionRatio > .5; inBeeld ? vraag() : laat(); },
+        { threshold: [0, .5, 1] }).observe($('wie'));
+    document.addEventListener('visibilitychange', vraag);
 })();
 
 /* ═══ afwerking ═════════════════════════════════════════════ */

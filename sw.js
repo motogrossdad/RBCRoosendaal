@@ -7,7 +7,7 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v29';
+const CACHE = 'rbc-app-v30';
 
 const SCHIL = [
     '/', '/index.html', '/data.json', '/competitie.json',

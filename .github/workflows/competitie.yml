@@ -39,13 +39,13 @@ jobs:
 
       - name: committen als er iets veranderd is
         run: |
-          if [ -z "$(git status --porcelain competitie.json rbc.ics logos data.json players nieuws held.webp held-800.webp)" ]; then
+          if [ -z "$(git status --porcelain competitie.json rbc.ics logos data.json players nieuws held.webp held-800.webp og.jpg)" ]; then
             echo "niets veranderd"
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A competitie.json rbc.ics logos data.json players nieuws held.webp held-800.webp
+          git add -A competitie.json rbc.ics logos data.json players nieuws held.webp held-800.webp og.jpg
           git commit -m "Competitie bijgewerkt"
           # Iemand kan intussen geduwd hebben; dan opnieuw proberen boven op main.
           for poging in 1 2 3; do
