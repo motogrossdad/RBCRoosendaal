@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-27T08:10:59+00:00",
+ "bijgewerkt": "2026-09-27T18:24:30+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -19,6 +19,38 @@
  "stand": [
   {
    "pos": 1,
+   "club": "FC Rijnvogels",
+   "wed": 7,
+   "wgv": "5-2-0",
+   "pnt": 17,
+   "dv": 20,
+   "dt": 6,
+   "ds": 14,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "30-08-2026: VV Goes - FC Rijnvogels: 1 - 4"
+    },
+    {
+     "uitslag": "w",
+     "wat": "05-09-2026: FC Rijnvogels - VV Dongen: 5 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "13-09-2026: VV UNA - FC Rijnvogels: 1 - 4"
+    },
+    {
+     "uitslag": "w",
+     "wat": "19-09-2026: FC Rijnvogels - SV Poortugaal: 1 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "27-09-2026: UDI '19 - FC Rijnvogels: 0 - 4"
+    }
+   ]
+  },
+  {
+   "pos": 2,
    "club": "VV Noordwijk",
    "wed": 7,
    "wgv": "5-1-1",
@@ -50,7 +82,7 @@
    ]
   },
   {
-   "pos": 2,
+   "pos": 3,
    "club": "FC Lisse",
    "wed": 7,
    "wgv": "5-1-1",
@@ -78,38 +110,6 @@
     {
      "uitslag": "g",
      "wat": "26-09-2026: FC Lisse - EVV: 1 - 1"
-    }
-   ]
-  },
-  {
-   "pos": 3,
-   "club": "FC Rijnvogels",
-   "wed": 6,
-   "wgv": "4-2-0",
-   "pnt": 14,
-   "dv": 16,
-   "dt": 6,
-   "ds": 10,
-   "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "23-08-2026: Blauw Geel '38 - FC Rijnvogels: 0 - 0"
-    },
-    {
-     "uitslag": "w",
-     "wat": "30-08-2026: VV Goes - FC Rijnvogels: 1 - 4"
-    },
-    {
-     "uitslag": "w",
-     "wat": "05-09-2026: FC Rijnvogels - VV Dongen: 5 - 2"
-    },
-    {
-     "uitslag": "w",
-     "wat": "13-09-2026: VV UNA - FC Rijnvogels: 1 - 4"
-    },
-    {
-     "uitslag": "w",
-     "wat": "19-09-2026: FC Rijnvogels - SV Poortugaal: 1 - 0"
     }
    ]
   },
@@ -180,17 +180,13 @@
   {
    "pos": 6,
    "club": "UDI '19",
-   "wed": 6,
-   "wgv": "3-2-1",
+   "wed": 7,
+   "wgv": "3-2-2",
    "pnt": 11,
    "dv": 10,
-   "dt": 5,
-   "ds": 5,
+   "dt": 9,
+   "ds": 1,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "22-08-2026: VVSB - UDI '19: 0 - 2"
-    },
     {
      "uitslag": "w",
      "wat": "30-08-2026: UDI '19 - TOGB: 2 - 1"
@@ -206,11 +202,79 @@
     {
      "uitslag": "g",
      "wat": "20-09-2026: VV Gemert - UDI '19: 1 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "27-09-2026: UDI '19 - FC Rijnvogels: 0 - 4"
     }
    ]
   },
   {
    "pos": 7,
+   "club": "VV Gemert",
+   "wed": 7,
+   "wgv": "2-4-1",
+   "pnt": 10,
+   "dv": 12,
+   "dt": 11,
+   "ds": 1,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "30-08-2026: VV Dongen - VV Gemert: 3 - 2"
+    },
+    {
+     "uitslag": "g",
+     "wat": "06-09-2026: VV Gemert - VV UNA: 1 - 1"
+    },
+    {
+     "uitslag": "w",
+     "wat": "12-09-2026: SV Poortugaal - VV Gemert: 1 - 2"
+    },
+    {
+     "uitslag": "g",
+     "wat": "20-09-2026: VV Gemert - UDI '19: 1 - 1"
+    },
+    {
+     "uitslag": "w",
+     "wat": "27-09-2026: RKSV Groene Ster - VV Gemert: 1 - 2"
+    }
+   ]
+  },
+  {
+   "pos": 8,
+   "club": "VV Dongen",
+   "wed": 7,
+   "wgv": "3-1-3",
+   "pnt": 10,
+   "dv": 17,
+   "dt": 17,
+   "ds": 0,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "30-08-2026: VV Dongen - VV Gemert: 3 - 2"
+    },
+    {
+     "uitslag": "v",
+     "wat": "05-09-2026: FC Rijnvogels - VV Dongen: 5 - 2"
+    },
+    {
+     "uitslag": "v",
+     "wat": "13-09-2026: VV Dongen - VV Goes: 2 - 3"
+    },
+    {
+     "uitslag": "v",
+     "wat": "20-09-2026: Blauw Geel '38 - VV Dongen: 3 - 1"
+    },
+    {
+     "uitslag": "g",
+     "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
+    }
+   ]
+  },
+  {
+   "pos": 9,
    "club": "VV Zwaluwen",
    "wed": 7,
    "wgv": "3-1-3",
@@ -242,39 +306,7 @@
    ]
   },
   {
-   "pos": 8,
-   "club": "VV Dongen",
-   "wed": 6,
-   "wgv": "3-0-3",
-   "pnt": 9,
-   "dv": 15,
-   "dt": 15,
-   "ds": 0,
-   "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "23-08-2026: EVV - VV Dongen: 2 - 3"
-    },
-    {
-     "uitslag": "w",
-     "wat": "30-08-2026: VV Dongen - VV Gemert: 3 - 2"
-    },
-    {
-     "uitslag": "v",
-     "wat": "05-09-2026: FC Rijnvogels - VV Dongen: 5 - 2"
-    },
-    {
-     "uitslag": "v",
-     "wat": "13-09-2026: VV Dongen - VV Goes: 2 - 3"
-    },
-    {
-     "uitslag": "v",
-     "wat": "20-09-2026: Blauw Geel '38 - VV Dongen: 3 - 1"
-    }
-   ]
-  },
-  {
-   "pos": 9,
+   "pos": 10,
    "club": "SV Poortugaal",
    "wed": 7,
    "wgv": "3-0-4",
@@ -306,7 +338,7 @@
    ]
   },
   {
-   "pos": 10,
+   "pos": 11,
    "club": "RBC",
    "wed": 7,
    "wgv": "3-0-4",
@@ -338,7 +370,7 @@
    ]
   },
   {
-   "pos": 11,
+   "pos": 12,
    "club": "Blauw Geel '38",
    "wed": 7,
    "wgv": "2-2-3",
@@ -370,39 +402,39 @@
    ]
   },
   {
-   "pos": 12,
-   "club": "VV Gemert",
-   "wed": 6,
-   "wgv": "1-4-1",
+   "pos": 13,
+   "club": "VV UNA",
+   "wed": 7,
+   "wgv": "1-4-2",
    "pnt": 7,
-   "dv": 10,
-   "dt": 10,
-   "ds": 0,
+   "dv": 11,
+   "dt": 12,
+   "ds": -1,
    "vorm": [
     {
-     "uitslag": "g",
-     "wat": "23-08-2026: VV Gemert - VV Goes: 2 - 2"
-    },
-    {
-     "uitslag": "v",
-     "wat": "30-08-2026: VV Dongen - VV Gemert: 3 - 2"
+     "uitslag": "w",
+     "wat": "30-08-2026: VV UNA - EVV: 4 - 1"
     },
     {
      "uitslag": "g",
      "wat": "06-09-2026: VV Gemert - VV UNA: 1 - 1"
     },
     {
-     "uitslag": "w",
-     "wat": "12-09-2026: SV Poortugaal - VV Gemert: 1 - 2"
+     "uitslag": "v",
+     "wat": "13-09-2026: VV UNA - FC Rijnvogels: 1 - 4"
+    },
+    {
+     "uitslag": "v",
+     "wat": "20-09-2026: VV Goes - VV UNA: 2 - 1"
     },
     {
      "uitslag": "g",
-     "wat": "20-09-2026: VV Gemert - UDI '19: 1 - 1"
+     "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
     }
    ]
   },
   {
-   "pos": 13,
+   "pos": 14,
    "club": "VVSB",
    "wed": 7,
    "wgv": "2-1-4",
@@ -434,51 +466,15 @@
    ]
   },
   {
-   "pos": 14,
-   "club": "VV UNA",
-   "wed": 6,
-   "wgv": "1-3-2",
-   "pnt": 6,
-   "dv": 9,
-   "dt": 10,
-   "ds": -1,
-   "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "22-08-2026: VV Zwaluwen - VV UNA: 1 - 1"
-    },
-    {
-     "uitslag": "w",
-     "wat": "30-08-2026: VV UNA - EVV: 4 - 1"
-    },
-    {
-     "uitslag": "g",
-     "wat": "06-09-2026: VV Gemert - VV UNA: 1 - 1"
-    },
-    {
-     "uitslag": "v",
-     "wat": "13-09-2026: VV UNA - FC Rijnvogels: 1 - 4"
-    },
-    {
-     "uitslag": "v",
-     "wat": "20-09-2026: VV Goes - VV UNA: 2 - 1"
-    }
-   ]
-  },
-  {
    "pos": 15,
    "club": "RKSV Groene Ster",
-   "wed": 6,
-   "wgv": "1-3-2",
+   "wed": 7,
+   "wgv": "1-3-3",
    "pnt": 6,
-   "dv": 10,
-   "dt": 13,
-   "ds": -3,
+   "dv": 11,
+   "dt": 15,
+   "ds": -4,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "22-08-2026: Excelsior Maassluis - RKSV Groene Ster: 3 - 1"
-    },
     {
      "uitslag": "g",
      "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
@@ -494,6 +490,10 @@
     {
      "uitslag": "g",
      "wat": "19-09-2026: EVV - RKSV Groene Ster: 1 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "27-09-2026: RKSV Groene Ster - VV Gemert: 1 - 2"
     }
    ]
   },
@@ -600,24 +600,24 @@
    "rijen": [
     {
      "pos": 1,
+     "club": "FC Rijnvogels",
+     "wed": 7,
+     "pnt": 17,
+     "ds": 14
+    },
+    {
+     "pos": 2,
      "club": "VV Noordwijk",
      "wed": 7,
      "pnt": 16,
      "ds": 11
     },
     {
-     "pos": 2,
+     "pos": 3,
      "club": "FC Lisse",
      "wed": 7,
      "pnt": 16,
      "ds": 6
-    },
-    {
-     "pos": 3,
-     "club": "FC Rijnvogels",
-     "wed": 6,
-     "pnt": 14,
-     "ds": 10
     },
     {
      "pos": 4,
@@ -636,72 +636,72 @@
     {
      "pos": 6,
      "club": "UDI '19",
-     "wed": 6,
+     "wed": 7,
      "pnt": 11,
-     "ds": 5
+     "ds": 1
     },
     {
      "pos": 7,
+     "club": "VV Gemert",
+     "wed": 7,
+     "pnt": 10,
+     "ds": 1
+    },
+    {
+     "pos": 8,
+     "club": "VV Dongen",
+     "wed": 7,
+     "pnt": 10,
+     "ds": 0
+    },
+    {
+     "pos": 9,
      "club": "VV Zwaluwen",
      "wed": 7,
      "pnt": 10,
      "ds": -4
     },
     {
-     "pos": 8,
-     "club": "VV Dongen",
-     "wed": 6,
-     "pnt": 9,
-     "ds": 0
-    },
-    {
-     "pos": 9,
+     "pos": 10,
      "club": "SV Poortugaal",
      "wed": 7,
      "pnt": 9,
      "ds": -1
     },
     {
-     "pos": 10,
+     "pos": 11,
      "club": "RBC",
      "wed": 7,
      "pnt": 9,
      "ds": -2
     },
     {
-     "pos": 11,
+     "pos": 12,
      "club": "Blauw Geel '38",
      "wed": 7,
      "pnt": 8,
      "ds": 0
     },
     {
-     "pos": 12,
-     "club": "VV Gemert",
-     "wed": 6,
+     "pos": 13,
+     "club": "VV UNA",
+     "wed": 7,
      "pnt": 7,
-     "ds": 0
+     "ds": -1
     },
     {
-     "pos": 13,
+     "pos": 14,
      "club": "VVSB",
      "wed": 7,
      "pnt": 7,
      "ds": -5
     },
     {
-     "pos": 14,
-     "club": "VV UNA",
-     "wed": 6,
-     "pnt": 6,
-     "ds": -1
-    },
-    {
      "pos": 15,
      "club": "RKSV Groene Ster",
-     "wed": 6,
+     "wed": 7,
      "pnt": 6,
-     "ds": -3
+     "ds": -4
     },
     {
      "pos": 16,
@@ -991,25 +991,82 @@
  ],
  "programma": [
   {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "FC Rijnvogels",
+   "uit": "RKSV Groene Ster",
+   "tijd": "14:30"
+  },
+  {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "VV Zwaluwen",
+   "uit": "VV Achilles Veen",
+   "tijd": "14:30"
+  },
+  {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "TOGB",
+   "uit": "RBC",
+   "tijd": "15:00"
+  },
+  {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "VVSB",
+   "uit": "Excelsior Maassluis",
+   "tijd": "15:30"
+  },
+  {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "EVV",
+   "uit": "VV Noordwijk",
+   "tijd": "18:00"
+  },
+  {
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "VV Dongen",
+   "uit": "SV Poortugaal",
+   "tijd": "19:30"
+  },
+  {
+   "datum": "zondag 4 oktober 2026",
+   "thuis": "Blauw Geel '38",
+   "uit": "VV UNA",
+   "tijd": "14:00"
+  },
+  {
+   "datum": "zondag 4 oktober 2026",
+   "thuis": "VV Gemert",
+   "uit": "FC Lisse",
+   "tijd": "14:00"
+  },
+  {
+   "datum": "zondag 4 oktober 2026",
+   "thuis": "VV Goes",
+   "uit": "UDI '19",
+   "tijd": "14:30"
+  }
+ ],
+ "uitslagen": [
+  {
    "datum": "zondag 27 september 2026",
    "thuis": "UDI '19",
    "uit": "FC Rijnvogels",
-   "tijd": "14:00"
+   "thuis_doelpunten": 0,
+   "uit_doelpunten": 4
   },
   {
    "datum": "zondag 27 september 2026",
    "thuis": "RKSV Groene Ster",
    "uit": "VV Gemert",
-   "tijd": "14:30"
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 2
   },
   {
    "datum": "zondag 27 september 2026",
    "thuis": "VV UNA",
    "uit": "VV Dongen",
-   "tijd": "14:30"
-  }
- ],
- "uitslagen": [
+   "thuis_doelpunten": 2,
+   "uit_doelpunten": 2
+  },
   {
    "datum": "zaterdag 26 september 2026",
    "thuis": "VV Achilles Veen",
