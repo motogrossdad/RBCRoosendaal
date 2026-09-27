@@ -503,6 +503,17 @@ section.blok{ padding:56px 0 8px }
 .app-pijl{ text-align:center; font-size:26px; margin-top:6px; animation:wijs 1s ease-in-out infinite alternate }
 @keyframes wijs{ to{ transform:translateY(6px) } }
 
+/* ── de bal door het scherm ───────────────────────────────── */
+.inslag{ position:fixed; inset:0; z-index:90; pointer-events:none; overflow:hidden }
+.inslag .bal{ position:absolute; left:0; top:0; width:170px; height:170px; margin:-85px 0 0 -85px; will-change:transform, filter;
+              filter:drop-shadow(0 18px 30px rgba(0,0,0,.45)) }
+.inslag .flits{ position:absolute; width:900px; height:900px; margin:-450px 0 0 -450px; border-radius:50%;
+                background:radial-gradient(circle, rgba(255,255,255,.95), rgba(255,255,255,.25) 25%, transparent 60%) }
+.inslag svg.barst{ position:absolute; inset:0; width:100%; height:100% }
+.inslag .goal{ position:absolute; font:900 clamp(64px,18vw,160px)/1 var(--kop); color:var(--oranje); letter-spacing:.02em;
+               -webkit-text-stroke:3px #1b0f06; paint-order:stroke fill; text-shadow:0 10px 30px rgba(0,0,0,.4);
+               transform:translate(-50%,-50%); white-space:nowrap }
+
 /* ── voet ─────────────────────────────────────────────────── */
 footer{ margin-top:64px; background:var(--nacht); color:#cfc5b8; padding:40px 0 calc(28px + env(safe-area-inset-bottom)); font-size:14px }
 footer .kolommen{ display:grid; gap:28px; grid-template-columns:1.4fr 1fr 1fr }
@@ -1868,6 +1879,181 @@ let SEIZOEN_NAAM = '';
     $('fan-naam').value = MIJN.naam || '';
     $('fan-naam').addEventListener('input', () => { MIJN.naam = $('fan-naam').value; bewaarMijn(); });
     $('fan-kaart').onclick = openFanKaart;
+})();
+
+/* ═══ de bal door het scherm ════════════════════════════════════
+   Na tien seconden op de pagina vliegt er één keer per dag een bal
+   tegen het glas: barsten, een schok, "GOAL!", en weer weg. Alles
+   klikt erdoorheen (pointer-events: none), dus het zit nooit in de weg.
+   Drie keer op het clublogo tikken speelt hem opnieuw af. */
+const BAL_SVG = '<svg viewBox="-50 -50 100 100" width="170" height="170" aria-hidden="true">' +
+    '<defs><radialGradient id="balglans" cx="-.35" cy="-.4" r="1.15"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#fbf8f4"/><stop offset="1" stop-color="#d9d0c5"/></radialGradient>' +
+    '<radialGradient id="balschaduw" cx=".35" cy=".4" r=".9"><stop offset=".6" stop-color="rgba(0,0,0,0)"/><stop offset="1" stop-color="rgba(0,0,0,.2)"/></radialGradient>' +
+    '<clipPath id="balrand"><circle r="48"/></clipPath></defs>' +
+    '<circle r="48" fill="url(#balglans)"/>' +
+    /* RBC-oranje vlakken rondom, met donkere naden */
+    '<g clip-path="url(#balrand)" fill="#ff6a13" stroke="#1b0f06" stroke-width="1.4" stroke-linejoin="round">' +
+      [0, 72, 144, 216, 288].map(h => '<path transform="rotate(' + (h + 36) + ')" d="M0-30 12.4-39 7.7-53.5H-7.7L-12.4-39Z"/>').join('') +
+    '</g>' +
+    '<g stroke="rgba(27,15,6,.55)" stroke-width="1" fill="none" clip-path="url(#balrand)">' +
+      [0, 72, 144, 216, 288].map(h => '<path transform="rotate(' + h + ')" d="M0-24 0-50"/>').join('') +
+    '</g>' +
+    /* het clublogo in het midden */
+    '<circle r="24" fill="#fff" stroke="#1b0f06" stroke-width="1.4"/>' +
+    '<image href="/rbc.png" x="-15.6" y="-21" width="31.2" height="42" preserveAspectRatio="xMidYMid meet"/>' +
+    '<circle r="48" fill="url(#balschaduw)"/>' +
+    '<circle r="48" fill="none" stroke="rgba(0,0,0,.3)" stroke-width="1"/></svg>';
+
+function barstenSvg(x, y, B, H) {
+    /* Hoofdbarsten: gekarteld van het inslagpunt naar buiten; daartussen
+       een paar dwarsbarsten zoals in een spinnenweb. */
+    const n = 11 + Math.floor(Math.random() * 5), lijnen = [], punten = [];
+    const lengte = Math.hypot(B, H);
+    for (let i = 0; i < n; i++) {
+        const hoek = (i / n) * Math.PI * 2 + (Math.random() - .5) * .45;
+        const eind = lengte * (.35 + Math.random() * .75);
+        let px = x, py = y, afgelegd = 0, d = 'M' + x.toFixed(1) + ' ' + y.toFixed(1);
+        const tussen = [];
+        while (afgelegd < eind) {
+            const stap = 18 + Math.random() * 46;
+            const h = hoek + (Math.random() - .5) * .5;
+            px += Math.cos(h) * stap; py += Math.sin(h) * stap; afgelegd += stap;
+            d += 'L' + px.toFixed(1) + ' ' + py.toFixed(1);
+            tussen.push([px, py, afgelegd]);
+        }
+        lijnen.push(d); punten.push(tussen);
+    }
+    let web = '';
+    [70, 150, 260].forEach(r => {
+        for (let i = 0; i < n; i++) {
+            if (Math.random() < .35) continue;
+            const a = punten[i].find(p => p[2] >= r), b = punten[(i + 1) % n].find(p => p[2] >= r * (.8 + Math.random() * .4));
+            if (a && b) web += 'M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + 'Q' + ((a[0] + b[0]) / 2 + (Math.random() - .5) * 20).toFixed(1) + ' ' +
+                ((a[1] + b[1]) / 2 + (Math.random() - .5) * 20).toFixed(1) + ' ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1);
+        }
+    });
+    const lijnenSvg = lijnen.map((d, i) => '<path d="' + d + '" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" style="--v:' + (i * 12) + 'ms"/>').join('');
+    return '<svg class="barst" viewBox="0 0 ' + B + ' ' + H + '" aria-hidden="true">' +
+        '<g fill="none" stroke-linecap="round" stroke-linejoin="round">' +
+          '<g stroke="rgba(0,0,0,.35)" stroke-width="3.2" transform="translate(1.2 1.6)">' + lijnenSvg + '</g>' +
+          '<g stroke="rgba(255,255,255,.92)" stroke-width="1.6">' + lijnenSvg + '</g>' +
+          '<path d="' + web + '" stroke="rgba(255,255,255,.7)" stroke-width="1.1" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" class="web"/>' +
+        '</g>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="26" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.85)" stroke-width="1.4"/>' +
+        '<circle cx="' + x + '" cy="' + y + '" r="11" fill="rgba(255,255,255,.55)"/></svg>';
+}
+
+function glasGeluid() {
+    /* Alleen als er al op de pagina getikt is: anders blokkeert de browser
+       geluid toch. Een tik (ruis) en een paar hoge, rinkelende tonen. */
+    try {
+        if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
+        const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+        const ac = new Ctx(), nu = ac.currentTime;
+        const buf = ac.createBuffer(1, ac.sampleRate * .35, ac.sampleRate), data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / data.length, 3);
+        const ruis = ac.createBufferSource(); ruis.buffer = buf;
+        const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1800;
+        const g = ac.createGain(); g.gain.value = .5;
+        ruis.connect(hp).connect(g).connect(ac.destination); ruis.start(nu);
+        [2637, 3520, 4186, 5274].forEach((f, i) => {
+            const o = ac.createOscillator(), og = ac.createGain();
+            o.type = 'sine'; o.frequency.value = f * (1 + (Math.random() - .5) * .03);
+            og.gain.setValueAtTime(0, nu + .02 + i * .04);
+            og.gain.linearRampToValueAtTime(.08, nu + .03 + i * .04);
+            og.gain.exponentialRampToValueAtTime(.0001, nu + .5 + i * .08);
+            o.connect(og).connect(ac.destination); o.start(nu + .02 + i * .04); o.stop(nu + .7 + i * .08);
+        });
+        setTimeout(() => ac.close(), 1500);
+    } catch (e) {}
+}
+
+let BAL_BEZIG = false;
+function balDoorHetScherm() {
+    if (BAL_BEZIG || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!$('kaartlaag').hidden || !$('show').hidden || !$('app-blad').hidden) return;
+    BAL_BEZIG = true;
+    const B = innerWidth, H = innerHeight;
+    const x = B * (.35 + Math.random() * .3), y = H * (.3 + Math.random() * .25);
+    const laag = document.createElement('div');
+    laag.className = 'inslag'; laag.setAttribute('aria-hidden', 'true');
+    laag.innerHTML = '<div class="bal">' + BAL_SVG + '</div>';
+    document.body.appendChild(laag);
+    const bal = laag.querySelector('.bal');
+    const vanX = B * (Math.random() < .5 ? .15 : .85), vanY = H * .78;
+
+    /* 1. aanvliegen: klein en wazig in de verte, groeiend en draaiend naar het glas */
+    const vlucht = bal.animate([
+        { transform: `translate(${vanX}px,${vanY}px) scale(.04) rotate(0deg)`, filter: 'blur(3px) drop-shadow(0 4px 6px rgba(0,0,0,.3))' },
+        { transform: `translate(${(vanX + x) / 2}px,${Math.min(vanY, y) - H * .12}px) scale(.35) rotate(380deg)`, filter: 'blur(1px) drop-shadow(0 10px 16px rgba(0,0,0,.35))', offset: .55 },
+        { transform: `translate(${x}px,${y}px) scale(1.55) rotate(720deg)`, filter: 'blur(0) drop-shadow(0 30px 40px rgba(0,0,0,.5))' }
+    ], { duration: 750, easing: 'cubic-bezier(.55,0,.85,.35)', fill: 'forwards' });
+
+    vlucht.onfinish = () => {
+        /* 2. de klap: flits, barsten, schok, trilling, geluid, GOAL */
+        const flits = document.createElement('div');
+        flits.className = 'flits'; flits.style.left = x + 'px'; flits.style.top = y + 'px';
+        laag.appendChild(flits);
+        flits.animate([{ opacity: 1, transform: 'scale(.3)' }, { opacity: 0, transform: 'scale(1.3)' }], { duration: 380, easing: 'ease-out', fill: 'forwards' });
+        laag.insertAdjacentHTML('beforeend', barstenSvg(x, y, B, H));
+        laag.querySelectorAll('svg.barst path[pathLength]').forEach((p, i) => {
+            const vertraging = p.classList.contains('web') ? 120 : (i % 20) * 8;
+            p.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 220, delay: vertraging, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'forwards' });
+        });
+        document.querySelectorAll('.site-kop, main, footer').forEach(el => el.animate([
+            { transform: 'translate(0,0)' }, { transform: 'translate(-9px,6px)' }, { transform: 'translate(8px,-5px)' },
+            { transform: 'translate(-5px,-3px)' }, { transform: 'translate(3px,2px)' }, { transform: 'translate(0,0)' }
+        ], { duration: 380, easing: 'ease-out' }));
+        tril([35, 40, 90]); glasGeluid();
+        const goal = document.createElement('div');
+        goal.className = 'goal'; goal.textContent = 'GOAL!';
+        goal.style.left = Math.min(Math.max(x, B * .3), B * .7) + 'px'; goal.style.top = Math.min(y + 150, H * .75) + 'px';
+        laag.appendChild(goal);
+        goal.animate([
+            { transform: 'translate(-50%,-50%) scale(.2) rotate(-8deg)', opacity: 0 },
+            { transform: 'translate(-50%,-50%) scale(1.15) rotate(-4deg)', opacity: 1, offset: .25 },
+            { transform: 'translate(-50%,-50%) scale(1) rotate(-4deg)', opacity: 1, offset: .75 },
+            { transform: 'translate(-50%,-50%) scale(1.05) rotate(-4deg)', opacity: 0 }
+        ], { duration: 1800, easing: 'cubic-bezier(.2,1.4,.4,1)', fill: 'forwards', delay: 120 });
+
+        /* 3. de bal plet even tegen het glas en valt dan naar beneden weg */
+        bal.animate([
+            { transform: `translate(${x}px,${y}px) scale(1.55) rotate(720deg)` },
+            { transform: `translate(${x}px,${y}px) scale(1.75,1.3) rotate(724deg)`, offset: .12 },
+            { transform: `translate(${x + (Math.random() - .5) * 120}px,${y - 40}px) scale(1.35) rotate(760deg)`, offset: .3 },
+            { transform: `translate(${x + (Math.random() - .5) * 240}px,${H + 260}px) scale(1.2) rotate(900deg)` }
+        ], { duration: 1300, easing: 'cubic-bezier(.4,0,.9,.6)', fill: 'forwards' });
+
+        /* 4. het glas "herstelt": barsten vervagen en alles is weg */
+        setTimeout(() => {
+            laag.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-in', fill: 'forwards' })
+                .onfinish = () => { laag.remove(); BAL_BEZIG = false; };
+        }, 2600);
+    };
+}
+
+(function balTimer() {
+    const weg = +OPSLAG.lees('rbc-bal') || 0;
+    let zichtbaar = 0, vorige = performance.now();
+    /* Tien seconden écht op de pagina (niet in een achtergrondtabblad). */
+    const tik = setInterval(() => {
+        const nu = performance.now();
+        if (document.visibilityState === 'visible') zichtbaar += nu - vorige;
+        vorige = nu;
+        if (zichtbaar >= 10000) {
+            clearInterval(tik);
+            if (Date.now() - weg > 864e5 || location.hash === '#bal') {
+                OPSLAG.schrijf('rbc-bal', String(Date.now()));
+                balDoorHetScherm();
+            }
+        }
+    }, 500);
+    /* Drie keer snel op het logo tikken: nog een keer. */
+    let tikken = [];
+    document.querySelector('.merk').addEventListener('click', () => {
+        const nu = Date.now(); tikken = tikken.filter(t => nu - t < 900).concat(nu);
+        if (tikken.length >= 3) { tikken = []; balDoorHetScherm(); }
+    });
 })();
 
 /* ═══ laden ═════════════════════════════════════════════════ */
