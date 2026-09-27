@@ -1969,9 +1969,9 @@ function glasGeluid() {
 }
 
 let BAL_BEZIG = false;
+const balMagNu = () => $('kaartlaag').hidden && $('show').hidden && $('app-blad').hidden && document.visibilityState === 'visible';
 function balDoorHetScherm() {
-    if (BAL_BEZIG || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!$('kaartlaag').hidden || !$('show').hidden || !$('app-blad').hidden) return;
+    if (BAL_BEZIG || matchMedia('(prefers-reduced-motion: reduce)').matches || !balMagNu()) return false;
     BAL_BEZIG = true;
     const B = innerWidth, H = innerHeight;
     const x = B * (.35 + Math.random() * .3), y = H * (.3 + Math.random() * .25);
@@ -2030,6 +2030,7 @@ function balDoorHetScherm() {
                 .onfinish = () => { laag.remove(); BAL_BEZIG = false; };
         }, 2600);
     };
+    return true;
 }
 
 (function balTimer() {
@@ -2040,19 +2041,17 @@ function balDoorHetScherm() {
         const nu = performance.now();
         if (document.visibilityState === 'visible') zichtbaar += nu - vorige;
         vorige = nu;
-        if (zichtbaar >= 10000) {
-            clearInterval(tik);
-            if (Date.now() - weg > 864e5 || location.hash === '#bal') {
-                OPSLAG.schrijf('rbc-bal', String(Date.now()));
-                balDoorHetScherm();
-            }
-        }
+        if (zichtbaar < 10000) return;
+        if (Date.now() - weg <= 864e5 && location.hash !== '#bal') { clearInterval(tik); return; }
+        /* Staat er net iets open (installatieblad, spelerskaart, lichtshow)?
+           Dan wachten tot dat dicht is, en pas tellen als hij echt vloog. */
+        if (balMagNu() && balDoorHetScherm()) { clearInterval(tik); OPSLAG.schrijf('rbc-bal', String(Date.now())); }
     }, 500);
     /* Drie keer snel op het logo tikken: nog een keer. */
     let tikken = [];
     document.querySelector('.merk').addEventListener('click', () => {
         const nu = Date.now(); tikken = tikken.filter(t => nu - t < 900).concat(nu);
-        if (tikken.length >= 3) { tikken = []; balDoorHetScherm(); }
+        if (tikken.length >= 3) { tikken = []; setTimeout(balDoorHetScherm, 150); }
     });
 })();
 
