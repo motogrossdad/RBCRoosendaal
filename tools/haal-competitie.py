@@ -409,6 +409,13 @@ def maak_voorvertoning(seizoen):
     else:
         return
     basis = os.path.dirname(UIT)
+    # Alleen opnieuw tekenen als de inhoud verandert. Twee computers maken
+    # van hetzelfde plaatje net andere bytes; zonder deze sleutel zou de
+    # bot het plaatje steeds "verbeteren".
+    sleutel = json.dumps([soort, duel, vandaag.isoformat() if soort == 'volgende' and als_datum(duel) == vandaag else ''], sort_keys=True)
+    sleutel_pad = OG + '.sleutel'
+    if os.path.exists(OG) and os.path.exists(sleutel_pad) and open(sleutel_pad).read() == sleutel:
+        return
     kop = lambda n, w='Black': (lambda f: (f.set_variation_by_name(w), f)[1])(ImageFont.truetype(os.path.join(FONTS, 'BigShouldersDisplay.ttf'), n))
     B, H = 1200, 630
     doek = Image.open(os.path.join(basis, 'atik.png')).convert('RGB')
@@ -460,9 +467,8 @@ def maak_voorvertoning(seizoen):
     crest = crest.resize((round(crest.width * 96 / crest.height), 96), Image.LANCZOS)
     doek.paste(crest, (70, 500), crest)
     t.text((70 + crest.width + 22, 548), 'RBCROOSENDAAL.COM', font=kop(44), fill=(255, 106, 19), anchor='lm')
-    buf = BytesIO(); doek.save(buf, 'JPEG', quality=84, optimize=True, progressive=True)
-    if not os.path.exists(OG) or open(OG, 'rb').read() != buf.getvalue():
-        open(OG, 'wb').write(buf.getvalue())
+    doek.save(OG, 'JPEG', quality=84, optimize=True, progressive=True)
+    open(sleutel_pad, 'w').write(sleutel)
 
 
 def lees_team(oud_team):
