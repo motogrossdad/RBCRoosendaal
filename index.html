@@ -25,7 +25,7 @@
 </script>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/rbc-klein.png">
-<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preload" href="/fonts/big-shoulders-display.woff2" as="font" type="font/woff2" crossorigin>
@@ -410,6 +410,99 @@ section.blok{ padding:56px 0 8px }
 .app-knop{ margin-top:14px; background:#1b0f06; color:#fff; border-radius:999px; padding:10px 16px; font-weight:700; font-size:14px }
 .app-uitleg{ font-size:13px; font-weight:600; margin-top:8px; max-width:40ch }
 
+/* ── lichtshow ──────────────────────────────────────────── */
+.licht{ background:var(--nacht); color:#f4ece1; padding:48px 0; position:relative; overflow:hidden }
+.licht::before{ content:""; position:absolute; inset:-40%; pointer-events:none; opacity:.35;
+    background:radial-gradient(circle at 20% 30%, rgba(255,106,19,.55), transparent 30%),
+               radial-gradient(circle at 80% 70%, rgba(255,255,255,.18), transparent 28%);
+    animation:gloei 6s ease-in-out infinite alternate }
+@keyframes gloei{ to{ transform:translate(6%,-4%) scale(1.08) } }
+.licht .wrap{ position:relative; display:grid; gap:26px; grid-template-columns:1fr; align-items:center }
+@media (min-width:860px){ .licht .wrap{ grid-template-columns:1.1fr .9fr; gap:48px } }
+.licht .boven{ font:800 15px/1 var(--kop); text-transform:uppercase; letter-spacing:.16em; color:var(--oranje) }
+.licht h2{ font:900 clamp(42px,8vw,76px)/.86 var(--kop); text-transform:uppercase; margin:8px 0 12px }
+.licht h2 em{ font-style:normal; color:var(--oranje) }
+.licht p{ opacity:.85; max-width:46ch }
+.licht .let-op{ font-size:13px; opacity:.6; margin-top:10px }
+.plek{ background:#1d1916; border:1px solid #2e2925; border-radius:var(--r); padding:18px }
+.plek label{ display:block; font:800 14px/1 var(--kop); text-transform:uppercase; letter-spacing:.14em; color:#a39888; margin-bottom:12px }
+.plek input[type=range]{ width:100%; accent-color:var(--oranje) }
+.plek .schaal{ display:flex; justify-content:space-between; font-size:12px; color:#a39888; margin-top:4px }
+.plek .start{ width:100%; margin-top:16px; background:var(--oranje); color:var(--op-oranje); font:900 22px/1 var(--kop);
+              text-transform:uppercase; letter-spacing:.08em; padding:18px; border-radius:999px }
+.plek .start:hover{ background:#fff }
+.show{ position:fixed; inset:0; z-index:80; background:#ff6a13; color:#1b0f06; display:grid; place-items:center;
+       touch-action:none; user-select:none; -webkit-user-select:none; transition:background-color .12s linear }
+.show[hidden]{ display:none }
+.show .letter{ font:900 min(62vw,52vh)/1 var(--kop); opacity:.9; transition:opacity .12s }
+.show .balk{ position:absolute; left:0; right:0; top:0; padding:calc(12px + env(safe-area-inset-top)) 16px 12px;
+             display:flex; justify-content:space-between; align-items:center; gap:10px; font:800 14px/1 var(--kop);
+             text-transform:uppercase; letter-spacing:.12em; background:rgba(0,0,0,.28); color:#fff; transition:opacity .3s }
+.show .onder{ position:absolute; left:16px; right:16px; bottom:calc(16px + env(safe-area-inset-bottom)); display:grid; gap:10px;
+              background:rgba(0,0,0,.35); color:#fff; border-radius:var(--r); padding:14px 16px; transition:opacity .3s }
+.show .onder input{ width:100%; accent-color:#fff }
+.show.stil .balk, .show.stil .onder{ opacity:0; pointer-events:none }
+.show .stop{ background:#fff; color:#1b0f06; border-radius:999px; padding:10px 16px; font:900 15px/1 var(--kop); letter-spacing:.08em }
+
+/* ── mijn seizoen ─────────────────────────────────────────── */
+.inchecken{ background:var(--nacht); color:#f4ece1; border-radius:var(--r); padding:20px; margin-bottom:20px;
+            display:flex; flex-wrap:wrap; gap:14px 20px; align-items:center }
+.inchecken[hidden]{ display:none }
+.inchecken b{ display:block; font:900 30px/1 var(--kop); text-transform:uppercase }
+.inchecken span{ color:#a39888; font-size:14px }
+.inchecken .knop-wit{ margin-left:auto }
+.inchecken .melding{ flex-basis:100%; font-size:14px; color:#f4ece1 }
+.inchecken .melding button{ color:var(--oranje); font-weight:700; text-decoration:underline }
+.mijn-cijfers{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:14px }
+@media (max-width:760px){ .mijn-cijfers{ grid-template-columns:1fr 1fr } }
+.charm{ background:var(--oranje-zacht); border:1px solid var(--lijn); border-radius:var(--r); padding:14px 16px; margin-bottom:20px; font-weight:600 }
+.charm b{ color:var(--oranje-d) }
+.badges{ display:grid; grid-template-columns:repeat(auto-fill,minmax(min(46%,150px),1fr)); gap:10px; margin-bottom:24px }
+.badge{ background:var(--vlak); border:1px solid var(--lijn); border-radius:var(--r); padding:12px; text-align:center }
+.badge i{ display:block; font-style:normal; font-size:30px; line-height:1.1 }
+.badge b{ display:block; font:800 16px/1.1 var(--kop); text-transform:uppercase; margin-top:6px }
+.badge span{ font-size:12px; color:var(--dim) }
+.badge.op-slot{ opacity:.45; filter:grayscale(1) }
+.bij-lijst .rij{ grid-template-columns:64px 26px 1fr auto auto }
+.bij-knop{ border:2px solid var(--lijn); border-radius:999px; padding:6px 12px; font-weight:700; font-size:13px; white-space:nowrap }
+.bij-knop[aria-pressed="true"]{ background:var(--oranje); border-color:var(--oranje); color:var(--op-oranje) }
+.mijn-acties{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin:6px 0 22px }
+.mijn-acties input{ font:inherit; border:1px solid var(--lijn); background:var(--vlak); color:var(--inkt); border-radius:999px; padding:12px 16px; min-width:0; flex:1 1 200px }
+.knop-oranje{ background:var(--oranje); color:var(--op-oranje); font:900 18px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em;
+              padding:14px 20px; border-radius:999px }
+.knop-oranje:hover{ background:var(--inkt); color:var(--papier) }
+.holo.fan .holo-in{ background:linear-gradient(160deg,#3a2a20 0%,#16120f 45%,#0a0908 100%);
+    box-shadow:0 30px 60px rgba(0,0,0,.5), inset 0 0 0 3px #ff6a13, inset 0 0 0 9px rgba(255,106,19,.15) }
+.holo.fan .holo-in::before{ opacity:.07 }
+.holo-crest{ position:absolute; left:50%; top:9%; width:40%; height:auto; transform:translateX(-50%); filter:drop-shadow(0 12px 24px rgba(0,0,0,.5)) }
+.holo.fan .glans{ opacity:.4 }
+.holo-stats.vier{ grid-template-columns:repeat(4,1fr) }
+.holo.fan .holo-nr, .holo.fan .holo-pos{ color:#ff6a13 }
+.holo-sub{ font:800 12px/1 var(--kop); letter-spacing:.2em; text-transform:uppercase; color:#ff6a13; margin-bottom:8px }
+
+/* ── app installeren ──────────────────────────────────────── */
+.app-blad{ position:fixed; left:0; right:0; bottom:0; z-index:65; padding:0 12px calc(12px + env(safe-area-inset-bottom));
+           transform:translateY(110%); transition:transform .4s cubic-bezier(.2,.9,.3,1) }
+.app-blad.open{ transform:none }
+.app-blad[hidden]{ display:none }
+.app-blad .in{ max-width:520px; margin:0 auto; background:var(--nacht); color:#f4ece1; border:1px solid var(--nacht-lijn);
+               border-radius:20px; padding:18px; box-shadow:0 -10px 40px rgba(0,0,0,.35) }
+.app-kop{ display:flex; gap:14px; align-items:center }
+.app-kop img{ width:56px; height:56px; border-radius:14px; flex:none }
+.app-kop b{ display:block; font:900 24px/1 var(--kop); text-transform:uppercase }
+.app-kop span{ font-size:14px; color:#cfc5b8 }
+.app-knoppen{ display:flex; gap:10px; margin-top:14px }
+.app-knoppen button{ flex:1; border-radius:999px; padding:13px; font:900 17px/1 var(--kop); text-transform:uppercase; letter-spacing:.08em }
+.app-ja{ background:var(--oranje); color:var(--op-oranje) }
+.app-nee{ background:transparent; color:#cfc5b8; border:1px solid var(--nacht-lijn)!important }
+.app-stappen{ list-style:none; margin-top:14px; display:grid; gap:10px; counter-reset:stap }
+.app-stappen li{ display:flex; gap:12px; align-items:center; font-size:15px; counter-increment:stap }
+.app-stappen li::before{ content:counter(stap); flex:none; width:28px; height:28px; border-radius:50%; background:var(--oranje);
+                         color:var(--op-oranje); display:grid; place-items:center; font:900 16px/1 var(--kop) }
+.app-stappen svg{ width:22px; height:22px; vertical-align:-5px; color:#4da3ff }
+.app-pijl{ text-align:center; font-size:26px; margin-top:6px; animation:wijs 1s ease-in-out infinite alternate }
+@keyframes wijs{ to{ transform:translateY(6px) } }
+
 /* ── voet ─────────────────────────────────────────────────── */
 footer{ margin-top:64px; background:var(--nacht); color:#cfc5b8; padding:40px 0 calc(28px + env(safe-area-inset-bottom)); font-size:14px }
 footer .kolommen{ display:grid; gap:28px; grid-template-columns:1.4fr 1fr 1fr }
@@ -441,6 +534,8 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
             <a href="#stand">Stand</a>
             <a href="#team">Team</a>
             <a href="#wie">Wie is nummer?</a>
+            <a href="#licht">Lichtshow</a>
+            <a href="#mijn">Mijn seizoen</a>
         </nav>
         <a class="tickets" id="tickets-kop" href="https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3" target="_blank" rel="noopener">Tickets</a>
     </div>
@@ -522,9 +617,27 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
             <p class="veeg">← Veeg of tik op het shirt: de volgende speler →</p>
             <p class="wakker" id="wakker" hidden>🔆 Je scherm blijft aan zolang dit in beeld is.</p>
             <button type="button" class="app-knop" id="installeer" hidden>📲 Zet RBC op je beginscherm</button>
-            <p class="app-uitleg" id="ios-uitleg" hidden>Tik in Safari op <b>Deel</b> ⎋ en kies <b>Zet op beginscherm</b>. Dan werkt dit ook zonder bereik op de tribune.</p>
         </div>
         <div class="toetsen" id="toetsen" role="group" aria-label="Rugnummer intikken"></div>
+    </div>
+</section>
+
+<!-- ═══ lichtshow ════════════════════════════════════════ -->
+<section class="licht" id="licht" aria-labelledby="licht-kop">
+    <div class="wrap">
+        <div>
+            <span class="boven">Op de tribune</span>
+            <h2 id="licht-kop">Tribune-<em>lichtshow</em></h2>
+            <p>Houd je telefoon omhoog. Alle telefoons in het stadion lichten <b>precies tegelijk</b> op: oranje, wit, R-B-C, en een golf die door de tribune loopt. Hoe meer mensen meedoen, hoe mooier.</p>
+            <p class="let-op">Let op: de show gebruikt wisselend licht (nooit sneller dan drie keer per seconde). Zet je helderheid hoog.</p>
+        </div>
+        <div class="plek">
+            <label for="plek">Waar sta of zit je?</label>
+            <input type="range" id="plek" min="0" max="100" value="50" aria-describedby="plek-uitleg">
+            <div class="schaal"><span>◀ links</span><span>midden</span><span>rechts ▶</span></div>
+            <p class="let-op" id="plek-uitleg" style="opacity:.7">Kijkend naar het veld. Zo loopt de golf van links naar rechts door de tribune.</p>
+            <button type="button" class="start" id="licht-start">💡 Start de lichtshow</button>
+        </div>
     </div>
 </section>
 
@@ -537,6 +650,24 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
             <div class="linie"><h3>Technische staf &amp; training</h3></div>
             <div class="staf" id="staf"></div>
         </div>
+    </div>
+</section>
+<!-- ═══ mijn seizoen ═══════════════════════════════════════ -->
+<section class="blok" id="mijn" aria-labelledby="mijn-kop">
+    <div class="wrap">
+        <div class="kop"><h2 id="mijn-kop">Mijn <em>seizoen</em></h2><small>Alleen op jouw telefoon bewaard</small></div>
+        <div class="inchecken" id="inchecken" hidden></div>
+        <div class="mijn-cijfers cijfers" id="mijn-cijfers"></div>
+        <p class="charm" id="charm" hidden></p>
+        <div class="linie"><h3>Badges</h3></div>
+        <div class="badges" id="badges"></div>
+        <div class="mijn-acties">
+            <label class="sr" for="fan-naam">Naam op je supporterskaart</label>
+            <input id="fan-naam" maxlength="24" placeholder="Jouw naam op de kaart" autocomplete="nickname">
+            <button type="button" class="knop-oranje" id="fan-kaart">✨ Mijn supporterskaart</button>
+        </div>
+        <div class="linie"><h3>Was je erbij?</h3></div>
+        <div class="lijst bij-lijst" id="bij-lijst"></div>
     </div>
 </section>
 </main>
@@ -570,6 +701,7 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
                     <li><a href="#stand">Stand &amp; programma</a></li>
                     <li><a href="#wie">Wie is nummer …?</a></li>
                     <li><a href="/rbc.ics">Agenda (.ics)</a></li>
+                    <li><a href="#" id="app-link">📲 Installeer de app</a></li>
                 </ul>
             </div>
         </div>
@@ -595,6 +727,24 @@ footer .thema{ margin-left:auto; border:1px solid var(--nacht-lijn); border-radi
 </div>
 
 <div class="offline" id="offline" role="status" hidden></div>
+<div class="app-blad" id="app-blad" hidden role="dialog" aria-labelledby="app-titel">
+    <div class="in">
+        <div class="app-kop">
+            <img src="/icons/icon-192.png" alt="" width="192" height="192">
+            <div><b id="app-titel">RBC als app</b><span id="app-sub">Eigen icoon, opent meteen, en werkt ook zonder bereik op de tribune.</span></div>
+        </div>
+        <div id="app-inhoud"></div>
+    </div>
+</div>
+<div class="show" id="show" hidden role="dialog" aria-modal="true" aria-label="Lichtshow">
+    <div class="balk"><span id="show-naam">Lichtshow</span><span id="show-sync"></span><button type="button" class="stop" id="show-stop">Stop</button></div>
+    <div class="letter" id="show-letter" aria-hidden="true"></div>
+    <div class="onder">
+        <label for="show-plek" style="font-size:13px;font-weight:700">Jouw plek in de tribune: ◀ links · rechts ▶</label>
+        <input type="range" id="show-plek" min="0" max="100" value="50">
+        <span style="font-size:12px;opacity:.8">Tik op het scherm om deze balk te verbergen.</span>
+    </div>
+</div>
 <canvas id="confetti" hidden></canvas>
 <script>
 'use strict';
@@ -1026,7 +1176,7 @@ function confetti() {
 /* ═══ weer op de wedstrijddag ═══════════════════════════════
    Open-Meteo, zonder sleutel. Per club de plaats van het veld. */
 const PLAATS = {
-    'RBC': ['Roosendaal', 51.531, 4.465], 'TOGB': ['Berkel en Rodenrijs', 51.990, 4.476],
+    'RBC': ['Roosendaal', 51.5407, 4.4541], 'TOGB': ['Berkel en Rodenrijs', 51.990, 4.476],
     'VV Zwaluwen': ['Vlaardingen', 51.912, 4.341], 'EVV': ['Echt', 51.103, 5.873],
     'VV Gemert': ['Gemert', 51.555, 5.690], 'FC Rijnvogels': ['Katwijk', 52.203, 4.418],
     'VV Goes': ['Goes', 51.504, 3.889], 'VV Dongen': ['Dongen', 51.626, 4.939],
@@ -1148,6 +1298,8 @@ $('kaarten').addEventListener('click', e => { const b = e.target.closest('[data-
 const AFK = { K: 'KEE', V: 'VER', M: 'MID', A: 'AAN', '?': 'RBC' };
 let kaartNr = null;
 function tekenKaart(p) {
+    $('holo').classList.remove('fan');
+    $('holo-vorige').hidden = $('holo-volgende').hidden = false;
     const vlaggen = (p.nationaliteiten || []).map(l => LAND[l] ? LAND[l][0] : '').filter(Boolean).slice(0, 2);
     const land = (p.nationaliteiten || [])[0];
     $('holo-in').innerHTML =
@@ -1173,11 +1325,12 @@ function openKaart(nr) {
         DeviceOrientationEvent.requestPermission().catch(() => {});
 }
 function sluitKaart() {
-    const terug = document.querySelector('.speler[data-nr="' + kaartNr + '"]');
+    const terug = kaartNr === 'fan' ? $('fan-kaart') : document.querySelector('.speler[data-nr="' + kaartNr + '"]');
     $('kaartlaag').hidden = true; document.body.style.overflow = ''; kaartNr = null;
     if (terug) terug.focus({ preventScroll: true });
 }
 function bladerKaart(stap) {
+    if (kaartNr === 'fan') return;
     tril();
     const lijst = SQUAD.slice().sort((a, b) => a.number - b.number);
     const i = lijst.findIndex(p => p.number === kaartNr);
@@ -1227,7 +1380,7 @@ function kantel(rx, ry) {
         else if (e.key === 'ArrowLeft') bladerKaart(-1);
         e.stopImmediatePropagation();
     }, true);
-    $('holo-deel').onclick = deelKaart;
+    $('holo-deel').onclick = () => kaartNr === 'fan' ? deelFanKaart() : deelKaart();
 })();
 
 async function deelKaart() {
@@ -1278,17 +1431,75 @@ async function deelKaart() {
     if (blob) deelBlob(blob, 'rbc-' + p.number + '.png', p.name + ' · #' + p.number + ' RBC Roosendaal · rbcroosendaal.com');
 }
 
-/* ═══ als app installeren ═══════════════════════════════════ */
+/* ═══ als app installeren ═════════════════════════════════════
+   Android/Chrome geeft een echte installatievraag (beforeinstallprompt).
+   Safari op de iPhone niet: daar tonen we de drie tikken. In de browser
+   binnen WhatsApp, Instagram of Facebook kan installeren niet; dan eerst
+   openen in Safari of Chrome. */
+const APP = { vraag: null };
+const alsApp = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const ua = navigator.userAgent;
+const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const inApp = /FBAN|FBAV|Instagram|WhatsApp|Line\/|Snapchat|TikTok/i.test(ua);
+const isMobiel = matchMedia('(pointer: coarse)').matches && Math.min(screen.width, screen.height) < 820;
+const DEEL_ICOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Deel"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M5 11v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-8"/></svg>';
+function appBlad(stand) {
+    const blad = $('app-blad'), inh = $('app-inhoud');
+    if (stand === 'vraag') {
+        inh.innerHTML = '<div class="app-knoppen"><button type="button" class="app-nee" id="app-nee">Niet nu</button>' +
+            '<button type="button" class="app-ja" id="app-ja">Installeren</button></div>';
+        $('app-ja').onclick = installeer;
+    } else if (stand === 'ios') {
+        inh.innerHTML = '<ol class="app-stappen"><li><span>Tik onderaan in Safari op <b>Deel</b> ' + DEEL_ICOON + '</span></li>' +
+            '<li><span>Scroll en kies <b>Zet op beginscherm</b></span></li><li><span>Tik rechtsboven op <b>Voeg toe</b></span></li></ol>' +
+            '<div class="app-pijl" aria-hidden="true">⬇</div>' +
+            '<div class="app-knoppen"><button type="button" class="app-nee" id="app-nee">Sluiten</button></div>';
+    } else if (stand === 'android') {
+        inh.innerHTML = '<ol class="app-stappen"><li><span>Tik rechtsboven op het menu <b>⋮</b></span></li>' +
+            '<li><span>Kies <b>App installeren</b> of <b>Toevoegen aan startscherm</b></span></li></ol>' +
+            '<div class="app-knoppen"><button type="button" class="app-nee" id="app-nee">Sluiten</button></div>';
+    } else if (stand === 'inapp') {
+        inh.innerHTML = '<ol class="app-stappen"><li><span>Tik op <b>⋯</b> of <b>⋮</b> in deze app</span></li>' +
+            '<li><span>Kies <b>Open in ' + (isIOS ? 'Safari' : 'Chrome') + '</b> (of "Open in browser")</span></li>' +
+            '<li><span>Tik daar op <b>Installeer de app</b></span></li></ol>' +
+            '<div class="app-knoppen"><button type="button" class="app-nee" id="app-nee">Sluiten</button></div>';
+    }
+    $('app-nee').onclick = () => sluitAppBlad(true);
+    blad.hidden = false;
+    requestAnimationFrame(() => requestAnimationFrame(() => blad.classList.add('open')));
+}
+function sluitAppBlad(weg) {
+    $('app-blad').classList.remove('open');
+    setTimeout(() => { $('app-blad').hidden = true; }, 400);
+    if (weg) OPSLAG.schrijf('rbc-app-weg', String(Date.now()));
+}
+async function installeer() {
+    if (APP.vraag) {
+        APP.vraag.prompt();
+        try { const k = await APP.vraag.userChoice; if (k.outcome === 'accepted') sluitAppBlad(false); } catch (e) {}
+        APP.vraag = null;
+        return;
+    }
+    appBlad(inApp ? 'inapp' : isIOS ? 'ios' : 'android');
+}
+function toonInstallatie() {
+    if (alsApp()) return;
+    if (inApp) return appBlad('inapp');
+    if (APP.vraag) return appBlad('vraag');
+    appBlad(isIOS ? 'ios' : 'android');
+}
 (function installeren() {
-    const alsApp = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-    if (alsApp) return;
-    let vraag = null;
-    addEventListener('beforeinstallprompt', e => { e.preventDefault(); vraag = e; $('installeer').hidden = false; });
-    if (/iPhone|iPad|iPod/.test(navigator.userAgent)) $('installeer').hidden = false;
-    $('installeer').onclick = async () => {
-        if (vraag) { vraag.prompt(); try { await vraag.userChoice; } catch (e) {} vraag = null; $('installeer').hidden = true; }
-        else $('ios-uitleg').hidden = !$('ios-uitleg').hidden;
-    };
+    if (alsApp()) { $('app-link').parentElement.hidden = true; return; }
+    addEventListener('beforeinstallprompt', e => { e.preventDefault(); APP.vraag = e; $('installeer').hidden = false; });
+    addEventListener('appinstalled', () => { sluitAppBlad(false); $('installeer').hidden = true; tril([20, 60, 20]); });
+    if (isMobiel) $('installeer').hidden = false;
+    $('installeer').onclick = toonInstallatie;
+    $('app-link').onclick = e => { e.preventDefault(); toonInstallatie(); };
+    /* Vanzelf één keer tonen op een telefoon, na een paar tellen, en na
+       "Niet nu" dertig dagen niet meer. */
+    const weg = +OPSLAG.lees('rbc-app-weg') || 0;
+    if (isMobiel && Date.now() - weg > 30 * 864e5)
+        setTimeout(() => { if (!alsApp() && $('kaartlaag').hidden && $('show').hidden) toonInstallatie(); }, 6000);
 })();
 
 /* ═══ wedstrijddag ══════════════════════════════════════════
@@ -1393,6 +1604,272 @@ function wedstrijdVoorZoekmachines(d) {
     document.head.appendChild(el);
 }
 
+/* ═══ tribune-lichtshow ══════════════════════════════════════
+   Elke telefoon rekent zelf uit welke kleur het nu is, op basis van
+   dezelfde klok. Telefoonklokken lopen soms seconden uit elkaar, dus
+   eerst gelijkzetten met de server: die zet in elk antwoord de tijd op
+   de seconde. Door een paar keer te vragen, gericht rond de secondegrens,
+   en de grenzen te snijden (zoals NTP) kom je op zo'n ±75 ms. HEAD, want de service worker laat
+   alleen GET-verzoeken uit de cache komen. */
+const LICHT = { offset: 0, fout: null, loopt: false, frame: 0, slot: null };
+async function synchroniseer() {
+    const slaap = ms => new Promise(ok => setTimeout(ok, Math.max(0, ms)));
+    let lo = -Infinity, hi = Infinity, n = 0; const rtts = [];
+    const meet = async () => {
+        const t0 = Date.now();
+        try {
+            const r = await fetch('/manifest.json?klok=' + Math.random(), { method: 'HEAD', cache: 'no-store' });
+            const t1 = Date.now(), d = Date.parse(r.headers.get('date') || '');
+            if (d) { lo = Math.max(lo, d - t1); hi = Math.min(hi, d + 1000 - t0); n++; rtts.push(t1 - t0); }
+        } catch (e) {}
+    };
+    for (let i = 0; i < 5; i++) { await meet(); await slaap(173); }
+    if (!n || lo > hi) return null;
+    /* Daarna gericht: laat de server het verzoek net rond een secondegrens
+       afhandelen. Elk zo'n verzoek snijdt het onzekere stuk verder af,
+       tot ongeveer de helft van de reistijd van een verzoek. */
+    for (let i = 0; i < 10 && hi - lo > 20; i++) {
+        const rtt = rtts.slice().sort((a, b) => a - b)[Math.floor(rtts.length / 2)];
+        const est = (lo + hi) / 2, marge = (hi - lo) / 2;
+        const grens = Math.ceil((Date.now() + est + rtt + 50) / 1000) * 1000;
+        await slaap(grens + (i % 2 ? 1 : -1) * marge * .5 - est - rtt / 2 - Date.now());
+        await meet();
+    }
+    if (lo > hi) return null;
+    return { offset: (lo + hi) / 2, fout: Math.round((hi - lo) / 2) };
+}
+/* Het programma: 40 seconden, daarna opnieuw. Nooit meer dan drie
+   lichtflitsen per seconde (richtlijn tegen epilepsie-aanvallen). */
+const ORANJE = [255, 106, 19], WIT = [255, 255, 255], DIEP = [60, 20, 0];
+const mix = (a, b, f) => a.map((x, i) => Math.round(x + (b[i] - x) * Math.max(0, Math.min(1, f))));
+function lichtOp(t, plek) {
+    const fase = ((t % 40000) + 40000) % 40000, s = fase / 1000;
+    if (s < 10) {                                   // puls op de maat
+        const beat = (t % 1000) / 1000;
+        return { naam: 'Puls', kleur: beat < .5 ? mix(WIT, ORANJE, beat * 4) : ORANJE, letter: '' };
+    }
+    if (s < 20) {                                   // golf door de tribune
+        const g = ((t / 2500 - plek) % 1 + 1) % 1;
+        const f = g < .2 ? 1 - Math.abs(g - .1) / .1 : 0;
+        return { naam: 'De golf', kleur: mix(DIEP, WIT, f), letter: '' };
+    }
+    if (s < 30) {                                   // R - B - C
+        const m = t % 2000, i = Math.floor(m / 400);
+        const aan = i < 3 && (m % 400) < 220;
+        return { naam: 'R-B-C', kleur: aan ? WIT : ORANJE, letter: i < 3 ? 'RBC'[i] : '' };
+    }
+    const adem = (Math.sin(t / 900) + 1) / 2;       // oranje zee
+    return { naam: 'Oranje zee', kleur: mix(mix(ORANJE, DIEP, .55), ORANJE, adem), letter: '' };
+}
+function speelLicht() {
+    if (!LICHT.loopt) return;
+    const plek = $('show-plek').value / 100;
+    const l = lichtOp(Date.now() + LICHT.offset, plek);
+    const kleur = 'rgb(' + l.kleur.join(',') + ')';
+    $('show').style.backgroundColor = kleur;
+    document.querySelector('meta[name="theme-color"]').content = kleur;
+    if ($('show-naam').textContent !== l.naam) $('show-naam').textContent = l.naam;
+    $('show-letter').textContent = l.letter;
+    LICHT.frame = requestAnimationFrame(speelLicht);
+}
+async function startLicht() {
+    $('show-plek').value = $('plek').value;
+    OPSLAG.schrijf('rbc-plek', $('plek').value);
+    $('show').hidden = false; $('show').classList.remove('stil');
+    document.body.style.overflow = 'hidden';
+    try { await $('show').requestFullscreen?.({ navigationUI: 'hide' }); } catch (e) {}
+    try { LICHT.slot = await navigator.wakeLock?.request('screen'); } catch (e) {}
+    LICHT.loopt = true; speelLicht();
+    $('show-sync').textContent = '⏱ klok gelijkzetten…';
+    const s = await synchroniseer();
+    if (s) { LICHT.offset = s.offset; $('show-sync').textContent = '⏱ gelijk ±' + s.fout + ' ms'; }
+    else $('show-sync').textContent = '⏱ geen bereik: eigen klok';
+    tril(15);
+}
+function stopLicht() {
+    LICHT.loopt = false; cancelAnimationFrame(LICHT.frame);
+    $('show').hidden = true; document.body.style.overflow = '';
+    document.querySelector('meta[name="theme-color"]').content = '#16120f';
+    try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {}
+    try { LICHT.slot?.release(); } catch (e) {} LICHT.slot = null;
+    $('licht-start').focus({ preventScroll: true });
+}
+(function lichtBediening() {
+    const bewaard = OPSLAG.lees('rbc-plek');
+    if (bewaard != null) $('plek').value = bewaard;
+    $('licht-start').onclick = startLicht;
+    $('show-stop').onclick = e => { e.stopPropagation(); stopLicht(); };
+    $('show').addEventListener('click', e => { if (!e.target.closest('.onder, .balk')) $('show').classList.toggle('stil'); });
+    $('show-plek').addEventListener('input', () => OPSLAG.schrijf('rbc-plek', $('show-plek').value));
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && LICHT.loopt) stopLicht(); });
+    document.addEventListener('visibilitychange', async () => {
+        if (LICHT.loopt && document.visibilityState === 'visible' && !LICHT.slot)
+            try { LICHT.slot = await navigator.wakeLock?.request('screen'); } catch (e) {}
+    });
+})();
+
+/* ═══ mijn seizoen ═══════════════════════════════════════════
+   Alles blijft op de eigen telefoon (localStorage): geen account,
+   niets naar een server. Inchecken met locatie bewijst dat je in het
+   stadion was; zonder locatie mag ook, dan staat er geen vinkje. */
+const ATIK = [51.5407, 4.4541];
+let DUELS = [];
+const MIJN = (() => { try { return JSON.parse(OPSLAG.lees('rbc-mijn-v1')) || {}; } catch (e) { return {}; } })();
+MIJN.bij = MIJN.bij || {};
+const bewaarMijn = () => OPSLAG.schrijf('rbc-mijn-v1', JSON.stringify(MIJN));
+function afstandKm(a, b) {
+    const r = Math.PI / 180, dLat = (b[0] - a[0]) * r, dLon = (b[1] - a[1]) * r;
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLon / 2) ** 2;
+    return 6371 * 2 * Math.asin(Math.sqrt(h));
+}
+const plekVan = d => isRBC(d.thuis) ? ATIK : (PLAATS[d.thuis] ? [PLAATS[d.thuis][1], PLAATS[d.thuis][2]] : null);
+const sleutel = d => d.datum + '|' + d.thuis;
+
+function mijnCijfers() {
+    const bij = DUELS.filter(d => gespeeld(d) && MIJN.bij[sleutel(d)]);
+    const w = bij.filter(d => uitslagVan(d) === 'w').length, g = bij.filter(d => uitslagVan(d) === 'g').length;
+    const alle = DUELS.filter(gespeeld), wAlle = alle.filter(d => uitslagVan(d) === 'w').length;
+    const goals = bij.reduce((n, d) => n + (isRBC(d.thuis) ? d.thuis_doelpunten : d.uit_doelpunten), 0);
+    const uit = bij.filter(d => !isRBC(d.thuis));
+    const km = Math.round(uit.reduce((n, d) => { const p = plekVan(d); return n + (p ? afstandKm(ATIK, p) * 2 : 0); }, 0));
+    const gps = Object.values(MIJN.bij).filter(v => v === 'gps').length;
+    return { n: bij.length, w, g, v: bij.length - w - g, thuis: bij.length - uit.length, uit: uit.length, goals, km, gps,
+             pct: bij.length ? Math.round(w / bij.length * 100) : 0, pctAlle: alle.length ? Math.round(wAlle / alle.length * 100) : 0 };
+}
+const BADGES = [
+    ['🎟️', 'Eerste keer', 'Bij je eerste wedstrijd', c => c.n >= 1],
+    ['🏠', 'Thuisfront', '3 thuiswedstrijden', c => c.thuis >= 3],
+    ['🚌', 'Uitvak', 'Mee naar een uitwedstrijd', c => c.uit >= 1],
+    ['🧭', 'Globetrotter', '3 uitwedstrijden', c => c.uit >= 3],
+    ['📍', 'Echt erbij', 'Ingecheckt in het stadion', c => c.gps >= 1],
+    ['⚽', 'Doelpuntenjager', '10 RBC-goals gezien', c => c.goals >= 10],
+    ['🛣️', 'Kilometervreter', '250 km meegereisd', c => c.km >= 250],
+    ['🍀', 'Lucky charm', 'RBC wint vaker als jij er bent', c => c.n >= 3 && c.pct >= c.pctAlle + 10],
+    ['🔥', 'Vaste kern', '10 wedstrijden', c => c.n >= 10]
+];
+function tekenMijn() {
+    const c = mijnCijfers();
+    $('mijn-cijfers').innerHTML = [
+        [c.n, 'wedstrijden bij', true], [c.w + '-' + c.g + '-' + c.v, 'winst · gelijk · verlies'],
+        [c.goals, 'RBC-goals gezien'], [c.km + ' km', 'meegereisd naar uit']
+    ].map(([a, b, o]) => '<div class="cijfer"><div class="w' + (o ? ' o' : '') + '">' + esc(a) + '</div><div class="l">' + esc(b) + '</div></div>').join('');
+    const charm = $('charm');
+    if (c.n >= 2) {
+        charm.hidden = false;
+        charm.innerHTML = c.pct > c.pctAlle
+            ? '🍀 RBC wint <b>' + c.pct + '%</b> van de wedstrijden waar jij bij bent, tegen ' + c.pctAlle + '% over het hele seizoen. Blijf komen!'
+            : 'RBC wint ' + c.pct + '% van de wedstrijden waar jij bij bent, over het hele seizoen ' + c.pctAlle + '%. Tijd om het tij te keren.';
+    } else charm.hidden = true;
+    $('badges').innerHTML = BADGES.map(([i, t, u, ok]) => '<div class="badge' + (ok(c) ? '' : ' op-slot') + '"><i aria-hidden="true">' + i +
+        '</i><b>' + t + '</b><span>' + (ok(c) ? u : '🔒 ' + u) + '</span></div>').join('');
+
+    const gespeeldLijst = DUELS.filter(gespeeld).slice().reverse();
+    $('bij-lijst').innerHTML = gespeeldLijst.length ? gespeeldLijst.map(d => {
+        const thuis = isRBC(d.thuis), tegen = thuis ? d.uit : d.thuis, v = MIJN.bij[sleutel(d)];
+        return '<div class="rij"><span class="dt">' + kortDatum(alsDatum(d.datum)) + '</span>' + logo(tegen) +
+            '<span><b>' + esc(tegen) + '</b> <span class="th">' + (thuis ? 'thuis' : 'uit') + '</span></span>' +
+            '<span class="s">' + (thuis ? d.thuis_doelpunten + '–' + d.uit_doelpunten : d.uit_doelpunten + '–' + d.thuis_doelpunten) + '</span>' +
+            '<button type="button" class="bij-knop" data-bij="' + esc(sleutel(d)) + '" aria-pressed="' + (!!v) + '">' +
+                (v === 'gps' ? '📍 Ingecheckt' : v ? '✓ Erbij' : 'Was je erbij?') + '</button></div>';
+    }).join('') : '<p class="leeg" style="padding:12px 14px">Nog geen gespeelde wedstrijden.</p>';
+    tekenInchecken();
+}
+$('bij-lijst').addEventListener('click', e => {
+    const b = e.target.closest('[data-bij]'); if (!b) return;
+    const k = b.dataset.bij;
+    if (MIJN.bij[k] === 'gps' ) return;              // een echte check-in wis je niet per ongeluk
+    if (MIJN.bij[k]) delete MIJN.bij[k]; else MIJN.bij[k] = 'zelf';
+    bewaarMijn(); tril(); tekenMijn();
+});
+
+/* Inchecken kan op de wedstrijddag, van 3 uur voor tot 4 uur na de aftrap. */
+function wedstrijdNu() {
+    const nu = Date.now();
+    return DUELS.find(d => { const ko = aftrapVan(d).getTime(); return nu > ko - 3 * 36e5 && nu < ko + 4 * 36e5; });
+}
+function tekenInchecken(melding) {
+    const d = wedstrijdNu(), vak = $('inchecken');
+    if (!d) { vak.hidden = true; return; }
+    const al = MIJN.bij[sleutel(d)];
+    vak.hidden = false;
+    vak.innerHTML = '<div><span>Vandaag · ' + (isRBC(d.thuis) ? STADION.naam : 'uit bij ' + esc(d.thuis)) + '</span><b>' + esc(d.thuis) + ' – ' + esc(d.uit) + '</b></div>' +
+        (al ? '<span style="margin-left:auto;font-weight:700;color:#f4ece1">' + (al === 'gps' ? '📍 Je bent ingecheckt in het stadion' : '✓ Je staat erbij') + '</span>'
+            : '<button type="button" class="knop-wit" id="check-in">📍 Ik ben erbij!</button>') +
+        (melding ? '<p class="melding">' + melding + '</p>' : '');
+    const k = $('check-in'); if (k) k.onclick = () => checkIn(d);
+}
+function checkIn(d) {
+    const doel = plekVan(d), straal = isRBC(d.thuis) ? 1.5 : 6;
+    const zonder = reden => {
+        tekenInchecken(reden + ' <button type="button" id="toch">Toch opslaan, zonder locatie</button>');
+        $('toch').onclick = () => { MIJN.bij[sleutel(d)] = 'zelf'; bewaarMijn(); tekenMijn(); };
+    };
+    if (!navigator.geolocation || !doel) return zonder('Locatie is hier niet beschikbaar.');
+    tekenInchecken('Locatie bepalen…');
+    navigator.geolocation.getCurrentPosition(p => {
+        const km = afstandKm([p.coords.latitude, p.coords.longitude], doel);
+        if (km <= straal) {
+            MIJN.bij[sleutel(d)] = 'gps'; bewaarMijn(); tril([20, 60, 20]); tekenMijn(); confetti();
+        } else zonder('Je lijkt nog niet bij het veld te zijn (' + (km < 10 ? km.toFixed(1) : Math.round(km)) + ' km).');
+    }, () => zonder('Geen toestemming voor je locatie.'), { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
+}
+
+/* De eigen supporterskaart, in dezelfde holografische stijl. */
+function openFanKaart() {
+    const c = mijnCijfers(), naam = (MIJN.naam || '').trim() || 'RBC Supporter';
+    $('holo').classList.add('fan');
+    $('holo-in').innerHTML =
+        '<img class="holo-crest" src="rbc.png" alt="" width="700" height="941">' +
+        '<div class="holo-nr">' + c.n + '</div><div class="holo-pos">WED</div>' +
+        '<div class="holo-onder"><div class="holo-sub">Supporter · seizoen ' + esc(SEIZOEN_NAAM) + '</div>' +
+        '<div class="holo-naam">' + esc(naam) + '</div><div class="holo-stats vier">' +
+            [[c.pct + '%', 'winst'], [c.goals, 'goals'], [c.km, 'km'], [BADGES.filter(b => b[3](c)).length, 'badges']]
+                .map(([w, l]) => '<div><b>' + esc(w) + '</b><span>' + esc(l) + '</span></div>').join('') +
+        '</div></div>';
+    kaartNr = 'fan';
+    $('holo-vorige').hidden = $('holo-volgende').hidden = true;
+    $('kaartlaag').hidden = false; document.body.style.overflow = 'hidden';
+    const holo = $('holo'); holo.style.animation = 'none'; void holo.offsetWidth; holo.style.animation = '';
+    if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function')
+        DeviceOrientationEvent.requestPermission().catch(() => {});
+    tril(12);
+    setTimeout(() => $('holo-sluit').focus({ preventScroll: true }), 50);
+}
+async function deelFanKaart() {
+    const c = mijnCijfers(), naam = (MIJN.naam || '').trim() || 'RBC Supporter';
+    try { await document.fonts.load('900 40px "Big Shoulders Display"'); } catch (e) {}
+    const B = 1080, H = 1512, cv = document.createElement('canvas'); cv.width = B; cv.height = H;
+    const x = cv.getContext('2d'), crest = await laadBeeld('rbc.png');
+    x.fillStyle = '#0a0908'; x.fillRect(0, 0, B, H);
+    const g = x.createLinearGradient(0, 0, B, H);
+    g.addColorStop(0, '#3a2a20'); g.addColorStop(.45, '#16120f'); g.addColorStop(1, '#0a0908');
+    x.beginPath(); x.roundRect ? x.roundRect(20, 20, B - 40, H - 40, 64) : x.rect(20, 20, B - 40, H - 40);
+    x.fillStyle = g; x.fill(); x.lineWidth = 10; x.strokeStyle = '#ff6a13'; x.stroke();
+    if (crest) { const w = 500, h = w * crest.height / crest.width; x.save(); x.shadowColor = 'rgba(0,0,0,.6)'; x.shadowBlur = 50; x.drawImage(crest, (B - w) / 2, 190, w, h); x.restore(); }
+    x.fillStyle = '#ff6a13'; x.textAlign = 'left';
+    x.font = F(900, 230); x.fillText(String(c.n), 76, 270);
+    x.font = F(900, 64); x.fillText('WED', 84, 350);
+    x.textAlign = 'center';
+    x.font = F(800, 38); x.fillText(('SUPPORTER · SEIZOEN ' + SEIZOEN_NAAM).toUpperCase(), B / 2, H - 400);
+    x.fillStyle = '#fff'; passend(x, naam.toUpperCase(), B - 160, 900, 120); x.fillText(naam.toUpperCase(), B / 2, H - 290);
+    x.fillStyle = 'rgba(255,106,19,.6)'; x.fillRect(120, H - 255, B - 240, 4);
+    x.fillStyle = '#fff';
+    [[c.pct + '%', 'WINST'], [c.goals, 'GOALS'], [c.km, 'KM'], [BADGES.filter(b => b[3](c)).length, 'BADGES']].forEach(([w, l], i) => {
+        const cx = B / 2 + (i - 1.5) * 225;
+        x.font = F(900, 84); x.fillText(String(w), cx, H - 150);
+        x.font = '700 28px system-ui, sans-serif'; x.fillText(l, cx, H - 100);
+    });
+    x.font = F(900, 34); x.fillStyle = '#ff6a13'; x.fillText('RBCROOSENDAAL.COM', B / 2, H - 44);
+    const blob = await new Promise(ok => cv.toBlob(ok, 'image/png'));
+    if (blob) deelBlob(blob, 'rbc-supporter.png', 'Mijn seizoen bij RBC: ' + c.n + ' wedstrijden, ' + c.goals + ' goals gezien. rbcroosendaal.com');
+}
+let SEIZOEN_NAAM = '';
+(function mijnBediening() {
+    $('fan-naam').value = MIJN.naam || '';
+    $('fan-naam').addEventListener('input', () => { MIJN.naam = $('fan-naam').value; bewaarMijn(); });
+    $('fan-kaart').onclick = openFanKaart;
+})();
+
 /* ═══ laden ═════════════════════════════════════════════════ */
 const haal = u => fetch(u).then(r => { if (!r.ok) throw new Error(u); return r.json(); });
 
@@ -1414,6 +1891,8 @@ haal('competitie.json').then(C => {
     if (C.team) TEAM = C.team;
     tekenStaf();
     tekenNieuws(C); tekenStrook(C); tekenStand(C); tekenProgramma(C);
+    DUELS = C.rbc_seizoen || []; SEIZOEN_NAAM = C.seizoen || '';
+    tekenMijn(); setInterval(tekenInchecken, 60000);
     if (C.bijgewerkt) {
         const d = new Date(C.bijgewerkt);
         $('bijgewerkt').textContent = 'Bijgewerkt ' + d.toLocaleString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });

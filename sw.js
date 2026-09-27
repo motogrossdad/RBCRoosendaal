@@ -7,11 +7,11 @@
    · de externe bronnen en proxies gaan er nooit in: die zijn
      traag en wisselvallig, en de app bewaart die zelf al
    ════════════════════════════════════════════════════════════ */
-const CACHE = 'rbc-app-v30';
+const CACHE = 'rbc-app-v32';
 
 const SCHIL = [
     '/', '/index.html', '/data.json', '/competitie.json',
-    '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png',
+    '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png', '/icons/maskable-512.png',
     '/rbc-klein.png', '/rbc.png', '/atik.jpg', '/atik-800.webp', '/held-800.webp', '/manifest.json',
     '/fonts/big-shoulders-display.woff2', '/fonts/barlow-500.woff2', '/fonts/barlow-600.woff2', '/fonts/barlow-700.woff2',
 ];
