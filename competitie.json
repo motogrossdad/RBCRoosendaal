@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-28T15:28:08+00:00",
+ "bijgewerkt": "2026-09-29T15:51:52+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -1383,108 +1383,7 @@
     "tijd": "20:15-21:45"
    }
   ],
-  "wedstrijden": {
-   "2026-08-16": {
-    "scheidsrechter": "S.J.F. Huijs",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2443"
-   },
-   "2026-08-22": {
-    "scheidsrechter": "F. Berg",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2444"
-   },
-   "2026-08-29": {
-    "scheidsrechter": "F.E. ter Brake",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2445"
-   },
-   "2026-09-05": {
-    "scheidsrechter": "R.A.H.J. Souwen",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2446"
-   },
-   "2026-09-12": {
-    "scheidsrechter": "T. van Pelt",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2447"
-   },
-   "2026-09-19": {
-    "scheidsrechter": "P. Smeenk",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2448"
-   },
-   "2026-09-26": {
-    "scheidsrechter": "V. de Roos",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2449"
-   },
-   "2026-10-03": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-10-10": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-10-18": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-10-24": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-11-07": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-11-14": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-11-21": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-11-29": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-12-05": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-12-12": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-09-02": {
-    "scheidsrechter": "K.F. Molenaar",
-    "verslag": ""
-   },
-   "2026-09-22": {
-    "scheidsrechter": "V. de Roos",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2569"
-   },
-   "2026-07-25": {
-    "scheidsrechter": "",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2453"
-   },
-   "2026-07-31": {
-    "scheidsrechter": "",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2454"
-   },
-   "2026-08-04": {
-    "scheidsrechter": "Y. Gosens",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2455"
-   },
-   "2026-08-25": {
-    "scheidsrechter": "",
-    "verslag": ""
-   },
-   "2026-08-07": {
-    "scheidsrechter": "",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2456"
-   },
-   "2026-08-09": {
-    "scheidsrechter": "",
-    "verslag": "https://www.rbcvoetbal.nl/SVS/verslag/2466"
-   }
-  }
+  "wedstrijden": {}
  },
  "tickets": "https://sales.ticketing.cm.com/ticketing2627/nl-nl/cc75e33c-0235-4b2b-af30-c19971ddebd3"
 }
