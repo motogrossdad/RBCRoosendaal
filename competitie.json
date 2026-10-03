@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-09-30T13:43:41+00:00",
+ "bijgewerkt": "2026-10-03T17:17:11+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -14,23 +14,19 @@
   11
  ],
  "periode_nu": 1,
- "periode_resterend": 5,
- "speelronde": 7,
+ "periode_resterend": 4,
+ "speelronde": 8,
  "stand": [
   {
    "pos": 1,
    "club": "FC Rijnvogels",
-   "wed": 7,
-   "wgv": "5-2-0",
-   "pnt": 17,
-   "dv": 20,
-   "dt": 6,
-   "ds": 14,
+   "wed": 8,
+   "wgv": "6-2-0",
+   "pnt": 20,
+   "dv": 25,
+   "dt": 7,
+   "ds": 18,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "30-08-2026: VV Goes - FC Rijnvogels: 1 - 4"
-    },
     {
      "uitslag": "w",
      "wat": "05-09-2026: FC Rijnvogels - VV Dongen: 5 - 2"
@@ -46,6 +42,10 @@
     {
      "uitslag": "w",
      "wat": "27-09-2026: UDI '19 - FC Rijnvogels: 0 - 4"
+    },
+    {
+     "uitslag": "w",
+     "wat": "03-10-2026: FC Rijnvogels - RKSV Groene Ster: 5 - 1"
     }
    ]
   },
@@ -179,6 +179,38 @@
   },
   {
    "pos": 6,
+   "club": "VV Zwaluwen",
+   "wed": 8,
+   "wgv": "4-1-3",
+   "pnt": 13,
+   "dv": 7,
+   "dt": 10,
+   "ds": -3,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "19-09-2026: VV Zwaluwen - FC Lisse: 1 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "26-09-2026: VV Noordwijk - VV Zwaluwen: 1 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "03-10-2026: VV Zwaluwen - VV Achilles Veen: 1 - 0"
+    }
+   ]
+  },
+  {
+   "pos": 7,
    "club": "UDI '19",
    "wed": 7,
    "wgv": "3-2-2",
@@ -210,7 +242,7 @@
    ]
   },
   {
-   "pos": 7,
+   "pos": 8,
    "club": "VV Gemert",
    "wed": 7,
    "wgv": "2-4-1",
@@ -242,7 +274,7 @@
    ]
   },
   {
-   "pos": 8,
+   "pos": 9,
    "club": "VV Dongen",
    "wed": 7,
    "wgv": "3-1-3",
@@ -270,38 +302,6 @@
     {
      "uitslag": "g",
      "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
-    }
-   ]
-  },
-  {
-   "pos": 9,
-   "club": "VV Zwaluwen",
-   "wed": 7,
-   "wgv": "3-1-3",
-   "pnt": 10,
-   "dv": 6,
-   "dt": 10,
-   "ds": -4,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "29-08-2026: SV Poortugaal - VV Zwaluwen: 3 - 1"
-    },
-    {
-     "uitslag": "w",
-     "wat": "05-09-2026: VV Zwaluwen - UDI '19: 1 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "12-09-2026: RKSV Groene Ster - VV Zwaluwen: 1 - 0"
-    },
-    {
-     "uitslag": "w",
-     "wat": "19-09-2026: VV Zwaluwen - FC Lisse: 1 - 0"
-    },
-    {
-     "uitslag": "w",
-     "wat": "26-09-2026: VV Noordwijk - VV Zwaluwen: 1 - 2"
     }
    ]
   },
@@ -468,17 +468,13 @@
   {
    "pos": 15,
    "club": "RKSV Groene Ster",
-   "wed": 7,
-   "wgv": "1-3-3",
+   "wed": 8,
+   "wgv": "1-3-4",
    "pnt": 6,
-   "dv": 11,
-   "dt": 15,
-   "ds": -4,
+   "dv": 12,
+   "dt": 20,
+   "ds": -8,
    "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "30-08-2026: RKSV Groene Ster - VVSB: 3 - 3"
-    },
     {
      "uitslag": "g",
      "wat": "05-09-2026: TOGB - RKSV Groene Ster: 3 - 3"
@@ -494,6 +490,10 @@
     {
      "uitslag": "v",
      "wat": "27-09-2026: RKSV Groene Ster - VV Gemert: 1 - 2"
+    },
+    {
+     "uitslag": "v",
+     "wat": "03-10-2026: FC Rijnvogels - RKSV Groene Ster: 5 - 1"
     }
    ]
   },
@@ -532,17 +532,13 @@
   {
    "pos": 17,
    "club": "VV Achilles Veen",
-   "wed": 7,
-   "wgv": "1-0-6",
+   "wed": 8,
+   "wgv": "1-0-7",
    "pnt": 3,
    "dv": 7,
-   "dt": 19,
-   "ds": -12,
+   "dt": 20,
+   "ds": -13,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "29-08-2026: VV Achilles Veen - Blauw Geel '38: 3 - 2"
-    },
     {
      "uitslag": "v",
      "wat": "05-09-2026: RBC - VV Achilles Veen: 3 - 0"
@@ -558,6 +554,10 @@
     {
      "uitslag": "v",
      "wat": "26-09-2026: VV Achilles Veen - TOGB: 0 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "03-10-2026: VV Zwaluwen - VV Achilles Veen: 1 - 0"
     }
    ]
   },
@@ -601,9 +601,9 @@
     {
      "pos": 1,
      "club": "FC Rijnvogels",
-     "wed": 7,
-     "pnt": 17,
-     "ds": 14
+     "wed": 8,
+     "pnt": 20,
+     "ds": 18
     },
     {
      "pos": 2,
@@ -635,31 +635,31 @@
     },
     {
      "pos": 6,
+     "club": "VV Zwaluwen",
+     "wed": 8,
+     "pnt": 13,
+     "ds": -3
+    },
+    {
+     "pos": 7,
      "club": "UDI '19",
      "wed": 7,
      "pnt": 11,
      "ds": 1
     },
     {
-     "pos": 7,
+     "pos": 8,
      "club": "VV Gemert",
      "wed": 7,
      "pnt": 10,
      "ds": 1
     },
     {
-     "pos": 8,
+     "pos": 9,
      "club": "VV Dongen",
      "wed": 7,
      "pnt": 10,
      "ds": 0
-    },
-    {
-     "pos": 9,
-     "club": "VV Zwaluwen",
-     "wed": 7,
-     "pnt": 10,
-     "ds": -4
     },
     {
      "pos": 10,
@@ -699,9 +699,9 @@
     {
      "pos": 15,
      "club": "RKSV Groene Ster",
-     "wed": 7,
+     "wed": 8,
      "pnt": 6,
-     "ds": -4
+     "ds": -8
     },
     {
      "pos": 16,
@@ -713,9 +713,9 @@
     {
      "pos": 17,
      "club": "VV Achilles Veen",
-     "wed": 7,
+     "wed": 8,
      "pnt": 3,
-     "ds": -12
+     "ds": -13
     },
     {
      "pos": 18,
@@ -992,18 +992,6 @@
  "programma": [
   {
    "datum": "zaterdag 3 oktober 2026",
-   "thuis": "FC Rijnvogels",
-   "uit": "RKSV Groene Ster",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 3 oktober 2026",
-   "thuis": "VV Zwaluwen",
-   "uit": "VV Achilles Veen",
-   "tijd": "14:30"
-  },
-  {
-   "datum": "zaterdag 3 oktober 2026",
    "thuis": "TOGB",
    "uit": "RBC",
    "tijd": "15:00"
@@ -1047,67 +1035,18 @@
  ],
  "uitslagen": [
   {
-   "datum": "zondag 27 september 2026",
-   "thuis": "UDI '19",
-   "uit": "FC Rijnvogels",
-   "thuis_doelpunten": 0,
-   "uit_doelpunten": 4
-  },
-  {
-   "datum": "zondag 27 september 2026",
-   "thuis": "RKSV Groene Ster",
-   "uit": "VV Gemert",
-   "thuis_doelpunten": 1,
-   "uit_doelpunten": 2
-  },
-  {
-   "datum": "zondag 27 september 2026",
-   "thuis": "VV UNA",
-   "uit": "VV Dongen",
-   "thuis_doelpunten": 2,
-   "uit_doelpunten": 2
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "VV Achilles Veen",
-   "uit": "TOGB",
-   "thuis_doelpunten": 0,
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "FC Rijnvogels",
+   "uit": "RKSV Groene Ster",
+   "thuis_doelpunten": 5,
    "uit_doelpunten": 1
   },
   {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "Excelsior Maassluis",
-   "uit": "Blauw Geel '38",
+   "datum": "zaterdag 3 oktober 2026",
+   "thuis": "VV Zwaluwen",
+   "uit": "VV Achilles Veen",
    "thuis_doelpunten": 1,
    "uit_doelpunten": 0
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "FC Lisse",
-   "uit": "EVV",
-   "thuis_doelpunten": 1,
-   "uit_doelpunten": 1
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "VV Noordwijk",
-   "uit": "VV Zwaluwen",
-   "thuis_doelpunten": 1,
-   "uit_doelpunten": 2
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "SV Poortugaal",
-   "uit": "VV Goes",
-   "thuis_doelpunten": 0,
-   "uit_doelpunten": 3
-  },
-  {
-   "datum": "zaterdag 26 september 2026",
-   "thuis": "RBC",
-   "uit": "VVSB",
-   "thuis_doelpunten": 3,
-   "uit_doelpunten": 1
   }
  ],
  "nieuws": [],
