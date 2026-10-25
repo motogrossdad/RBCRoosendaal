@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-10-24T20:49:44+00:00",
+ "bijgewerkt": "2026-10-25T16:19:27+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -403,6 +403,38 @@
   },
   {
    "pos": 13,
+   "club": "VV UNA",
+   "wed": 11,
+   "wgv": "2-5-4",
+   "pnt": 11,
+   "dv": 15,
+   "dt": 17,
+   "ds": -2,
+   "vorm": [
+    {
+     "uitslag": "g",
+     "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
+    },
+    {
+     "uitslag": "g",
+     "wat": "04-10-2026: Blauw Geel '38 - VV UNA: 1 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "10-10-2026: SV Poortugaal - VV UNA: 1 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "18-10-2026: VV UNA - UDI '19: 0 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "25-10-2026: RKSV Groene Ster - VV UNA: 1 - 3"
+    }
+   ]
+  },
+  {
+   "pos": 14,
    "club": "RBC",
    "wed": 10,
    "wgv": "3-1-6",
@@ -434,19 +466,15 @@
    ]
   },
   {
-   "pos": 14,
+   "pos": 15,
    "club": "RKSV Groene Ster",
-   "wed": 10,
-   "wgv": "2-3-5",
+   "wed": 11,
+   "wgv": "2-3-6",
    "pnt": 9,
-   "dv": 14,
-   "dt": 24,
-   "ds": -10,
+   "dv": 15,
+   "dt": 27,
+   "ds": -12,
    "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "19-09-2026: EVV - RKSV Groene Ster: 1 - 1"
-    },
     {
      "uitslag": "v",
      "wat": "27-09-2026: RKSV Groene Ster - VV Gemert: 1 - 2"
@@ -462,38 +490,10 @@
     {
      "uitslag": "v",
      "wat": "18-10-2026: VV Dongen - RKSV Groene Ster: 3 - 0"
-    }
-   ]
-  },
-  {
-   "pos": 15,
-   "club": "VV UNA",
-   "wed": 10,
-   "wgv": "1-5-4",
-   "pnt": 8,
-   "dv": 12,
-   "dt": 16,
-   "ds": -4,
-   "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "20-09-2026: VV Goes - VV UNA: 2 - 1"
-    },
-    {
-     "uitslag": "g",
-     "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
-    },
-    {
-     "uitslag": "g",
-     "wat": "04-10-2026: Blauw Geel '38 - VV UNA: 1 - 1"
     },
     {
      "uitslag": "v",
-     "wat": "10-10-2026: SV Poortugaal - VV UNA: 1 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "18-10-2026: VV UNA - UDI '19: 0 - 2"
+     "wat": "25-10-2026: RKSV Groene Ster - VV UNA: 1 - 3"
     }
    ]
   },
@@ -684,24 +684,24 @@
     },
     {
      "pos": 13,
+     "club": "VV UNA",
+     "wed": 11,
+     "pnt": 11,
+     "ds": -2
+    },
+    {
+     "pos": 14,
      "club": "RBC",
      "wed": 10,
      "pnt": 10,
      "ds": -5
     },
     {
-     "pos": 14,
-     "club": "RKSV Groene Ster",
-     "wed": 10,
-     "pnt": 9,
-     "ds": -10
-    },
-    {
      "pos": 15,
-     "club": "VV UNA",
-     "wed": 10,
-     "pnt": 8,
-     "ds": -4
+     "club": "RKSV Groene Ster",
+     "wed": 11,
+     "pnt": 9,
+     "ds": -12
     },
     {
      "pos": 16,
@@ -991,19 +991,26 @@
  ],
  "programma": [
   {
-   "datum": "zondag 25 oktober 2026",
+   "datum": "zaterdag 24 oktober 2026",
    "thuis": "RBC",
    "uit": "VV Gemert",
-   "tijd": "AFG"
+   "tijd": "0 - 0 (GEST)"
   },
+  {
+   "datum": "zaterdag 24 oktober 2026",
+   "thuis": "RBC",
+   "uit": "VV Gemert",
+   "tijd": "0 - 0 (GEST)"
+  }
+ ],
+ "uitslagen": [
   {
    "datum": "zondag 25 oktober 2026",
    "thuis": "RKSV Groene Ster",
    "uit": "VV UNA",
-   "tijd": "14:30"
-  }
- ],
- "uitslagen": [
+   "thuis_doelpunten": 1,
+   "uit_doelpunten": 3
+  },
   {
    "datum": "zaterdag 24 oktober 2026",
    "thuis": "Excelsior Maassluis",
@@ -1130,7 +1137,7 @@
    "tijd": "14:00"
   },
   {
-   "datum": "2026-10-25",
+   "datum": "2026-10-24",
    "thuis": "RBC",
    "uit": "VV Gemert",
    "tijd": "19:00"

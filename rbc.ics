@@ -108,11 +108,11 @@ LOCATION:Uit bij EVV
 DESCRIPTION:Derde Divisie B · rbcroosendaal.com
 END:VEVENT
 BEGIN:VEVENT
-UID:20261025-rbc@rbcroosendaal.com
+UID:20261024-rbc@rbcroosendaal.com
 DTSTAMP:20260101T000000Z
 SUMMARY:RBC - VV Gemert
-DTSTART;TZID=Europe/Amsterdam:20261025T190000
-DTEND;TZID=Europe/Amsterdam:20261025T210000
+DTSTART;TZID=Europe/Amsterdam:20261024T190000
+DTEND;TZID=Europe/Amsterdam:20261024T210000
 LOCATION:Atik Stadion\, Roosendaal
 DESCRIPTION:Derde Divisie B · rbcroosendaal.com
 BEGIN:VALARM
