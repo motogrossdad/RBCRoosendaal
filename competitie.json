@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-10-27T07:51:41+00:00",
+ "bijgewerkt": "2026-10-30T20:48:14+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -991,12 +991,6 @@
  ],
  "programma": [
   {
-   "datum": "zaterdag 24 oktober 2026",
-   "thuis": "RBC",
-   "uit": "VV Gemert",
-   "tijd": "AFG"
-  },
-  {
    "datum": "zaterdag 7 november 2026",
    "thuis": "SV Poortugaal",
    "uit": "RKSV Groene Ster",
@@ -1185,12 +1179,6 @@
    "tijd": "14:00"
   },
   {
-   "datum": "2026-10-24",
-   "thuis": "RBC",
-   "uit": "VV Gemert",
-   "tijd": "19:00"
-  },
-  {
    "datum": "2026-11-07",
    "thuis": "FC Rijnvogels",
    "uit": "RBC",
@@ -1207,6 +1195,12 @@
    "thuis": "VV Dongen",
    "uit": "RBC",
    "tijd": "19:30"
+  },
+  {
+   "datum": "2026-11-25",
+   "thuis": "RBC",
+   "uit": "VV Gemert",
+   "tijd": "20:00"
   },
   {
    "datum": "2026-11-29",
@@ -1341,10 +1335,10 @@
   "TOGB": "logos/togb.webp",
   "VV Zwaluwen": "logos/vv-zwaluwen.webp",
   "EVV": "logos/evv.webp",
-  "VV Gemert": "logos/vv-gemert.webp",
   "FC Rijnvogels": "logos/fc-rijnvogels.webp",
   "VV Goes": "logos/vv-goes.webp",
   "VV Dongen": "logos/vv-dongen.webp",
+  "VV Gemert": "logos/vv-gemert.webp",
   "VV UNA": "logos/vv-una.webp",
   "SV Poortugaal": "logos/sv-poortugaal.webp",
   "UDI '19": "logos/udi-19.webp"
