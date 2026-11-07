@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-07T18:47:44+00:00",
+ "bijgewerkt": "2026-11-07T22:45:32+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -243,6 +243,38 @@
   },
   {
    "pos": 8,
+   "club": "VV Goes",
+   "wed": 12,
+   "wgv": "5-2-5",
+   "pnt": 17,
+   "dv": 25,
+   "dt": 29,
+   "ds": -4,
+   "vorm": [
+    {
+     "uitslag": "v",
+     "wat": "04-10-2026: VV Goes - UDI '19: 0 - 4"
+    },
+    {
+     "uitslag": "v",
+     "wat": "11-10-2026: RKSV Groene Ster - VV Goes: 2 - 1"
+    },
+    {
+     "uitslag": "v",
+     "wat": "18-10-2026: VV Goes - FC Lisse: 2 - 6"
+    },
+    {
+     "uitslag": "v",
+     "wat": "24-10-2026: VV Noordwijk - VV Goes: 3 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "07-11-2026: VV Goes - VV Achilles Veen: 4 - 1"
+    }
+   ]
+  },
+  {
+   "pos": 9,
    "club": "VV Dongen",
    "wed": 11,
    "wgv": "5-1-5",
@@ -270,38 +302,6 @@
     {
      "uitslag": "v",
      "wat": "24-10-2026: FC Lisse - VV Dongen: 4 - 0"
-    }
-   ]
-  },
-  {
-   "pos": 9,
-   "club": "VV Goes",
-   "wed": 11,
-   "wgv": "4-2-5",
-   "pnt": 14,
-   "dv": 21,
-   "dt": 28,
-   "ds": -7,
-   "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "26-09-2026: SV Poortugaal - VV Goes: 0 - 3"
-    },
-    {
-     "uitslag": "v",
-     "wat": "04-10-2026: VV Goes - UDI '19: 0 - 4"
-    },
-    {
-     "uitslag": "v",
-     "wat": "11-10-2026: RKSV Groene Ster - VV Goes: 2 - 1"
-    },
-    {
-     "uitslag": "v",
-     "wat": "18-10-2026: VV Goes - FC Lisse: 2 - 6"
-    },
-    {
-     "uitslag": "v",
-     "wat": "24-10-2026: VV Noordwijk - VV Goes: 3 - 2"
     }
    ]
   },
@@ -532,17 +532,13 @@
   {
    "pos": 17,
    "club": "VV Achilles Veen",
-   "wed": 11,
-   "wgv": "2-0-9",
+   "wed": 12,
+   "wgv": "2-0-10",
    "pnt": 6,
-   "dv": 9,
-   "dt": 26,
-   "ds": -17,
+   "dv": 10,
+   "dt": 30,
+   "ds": -20,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "26-09-2026: VV Achilles Veen - TOGB: 0 - 1"
-    },
     {
      "uitslag": "v",
      "wat": "03-10-2026: VV Zwaluwen - VV Achilles Veen: 1 - 0"
@@ -558,6 +554,10 @@
     {
      "uitslag": "v",
      "wat": "24-10-2026: VV Achilles Veen - FC Rijnvogels: 1 - 4"
+    },
+    {
+     "uitslag": "v",
+     "wat": "07-11-2026: VV Goes - VV Achilles Veen: 4 - 1"
     }
    ]
   },
@@ -649,17 +649,17 @@
     },
     {
      "pos": 8,
+     "club": "VV Goes",
+     "wed": 12,
+     "pnt": 17,
+     "ds": -4
+    },
+    {
+     "pos": 9,
      "club": "VV Dongen",
      "wed": 11,
      "pnt": 16,
      "ds": -1
-    },
-    {
-     "pos": 9,
-     "club": "VV Goes",
-     "wed": 11,
-     "pnt": 14,
-     "ds": -7
     },
     {
      "pos": 10,
@@ -713,9 +713,9 @@
     {
      "pos": 17,
      "club": "VV Achilles Veen",
-     "wed": 11,
+     "wed": 12,
      "pnt": 6,
-     "ds": -17
+     "ds": -20
     },
     {
      "pos": 18,
@@ -1000,13 +1000,7 @@
    "datum": "zaterdag 7 november 2026",
    "thuis": "VV Gemert",
    "uit": "Excelsior Maassluis",
-   "tijd": "18:00"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Goes",
-   "uit": "VV Achilles Veen",
-   "tijd": "18:00"
+   "tijd": "19:00"
   },
   {
    "datum": "zondag 8 november 2026",
@@ -1048,6 +1042,13 @@
    "uit": "TOGB",
    "thuis_doelpunten": 1,
    "uit_doelpunten": 0
+  },
+  {
+   "datum": "zaterdag 7 november 2026",
+   "thuis": "VV Goes",
+   "uit": "VV Achilles Veen",
+   "thuis_doelpunten": 4,
+   "uit_doelpunten": 1
   }
  ],
  "nieuws": [],
