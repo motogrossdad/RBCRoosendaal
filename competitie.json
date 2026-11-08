@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-07T22:45:32+00:00",
+ "bijgewerkt": "2026-11-08T02:29:25+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -20,17 +20,13 @@
   {
    "pos": 1,
    "club": "VV Noordwijk",
-   "wed": 11,
-   "wgv": "9-1-1",
-   "pnt": 28,
-   "dv": 25,
+   "wed": 12,
+   "wgv": "10-1-1",
+   "pnt": 31,
+   "dv": 26,
    "dt": 4,
-   "ds": 21,
+   "ds": 22,
    "vorm": [
-    {
-     "uitslag": "v",
-     "wat": "26-09-2026: VV Noordwijk - VV Zwaluwen: 1 - 2"
-    },
     {
      "uitslag": "w",
      "wat": "03-10-2026: EVV - VV Noordwijk: 0 - 2"
@@ -46,6 +42,10 @@
     {
      "uitslag": "w",
      "wat": "24-10-2026: VV Noordwijk - VV Goes: 3 - 2"
+    },
+    {
+     "uitslag": "w",
+     "wat": "07-11-2026: VV Dongen - VV Noordwijk: 0 - 1"
     }
    ]
   },
@@ -84,17 +84,13 @@
   {
    "pos": 3,
    "club": "Excelsior Maassluis",
-   "wed": 11,
-   "wgv": "8-2-1",
+   "wed": 12,
+   "wgv": "8-2-2",
    "pnt": 26,
-   "dv": 22,
-   "dt": 7,
-   "ds": 15,
+   "dv": 23,
+   "dt": 10,
+   "ds": 13,
    "vorm": [
-    {
-     "uitslag": "w",
-     "wat": "26-09-2026: Excelsior Maassluis - Blauw Geel '38: 1 - 0"
-    },
     {
      "uitslag": "w",
      "wat": "03-10-2026: VVSB - Excelsior Maassluis: 2 - 3"
@@ -110,6 +106,10 @@
     {
      "uitslag": "w",
      "wat": "24-10-2026: Excelsior Maassluis - EVV: 1 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "07-11-2026: VV Gemert - Excelsior Maassluis: 3 - 1"
     }
    ]
   },
@@ -275,50 +275,14 @@
   },
   {
    "pos": 9,
-   "club": "VV Dongen",
+   "club": "VV Gemert",
    "wed": 11,
-   "wgv": "5-1-5",
+   "wgv": "4-4-3",
    "pnt": 16,
-   "dv": 24,
-   "dt": 25,
+   "dv": 17,
+   "dt": 18,
    "ds": -1,
    "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "27-09-2026: VV UNA - VV Dongen: 2 - 2"
-    },
-    {
-     "uitslag": "w",
-     "wat": "03-10-2026: VV Dongen - SV Poortugaal: 4 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "11-10-2026: UDI '19 - VV Dongen: 4 - 0"
-    },
-    {
-     "uitslag": "w",
-     "wat": "18-10-2026: VV Dongen - RKSV Groene Ster: 3 - 0"
-    },
-    {
-     "uitslag": "v",
-     "wat": "24-10-2026: FC Lisse - VV Dongen: 4 - 0"
-    }
-   ]
-  },
-  {
-   "pos": 10,
-   "club": "VV Gemert",
-   "wed": 10,
-   "wgv": "3-4-3",
-   "pnt": 13,
-   "dv": 14,
-   "dt": 17,
-   "ds": -3,
-   "vorm": [
-    {
-     "uitslag": "g",
-     "wat": "20-09-2026: VV Gemert - UDI '19: 1 - 1"
-    },
     {
      "uitslag": "w",
      "wat": "27-09-2026: RKSV Groene Ster - VV Gemert: 1 - 2"
@@ -334,6 +298,42 @@
     {
      "uitslag": "w",
      "wat": "17-10-2026: VV Gemert - VV Achilles Veen: 2 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "07-11-2026: VV Gemert - Excelsior Maassluis: 3 - 1"
+    }
+   ]
+  },
+  {
+   "pos": 10,
+   "club": "VV Dongen",
+   "wed": 12,
+   "wgv": "5-1-6",
+   "pnt": 16,
+   "dv": 24,
+   "dt": 26,
+   "ds": -2,
+   "vorm": [
+    {
+     "uitslag": "w",
+     "wat": "03-10-2026: VV Dongen - SV Poortugaal: 4 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "11-10-2026: UDI '19 - VV Dongen: 4 - 0"
+    },
+    {
+     "uitslag": "w",
+     "wat": "18-10-2026: VV Dongen - RKSV Groene Ster: 3 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "24-10-2026: FC Lisse - VV Dongen: 4 - 0"
+    },
+    {
+     "uitslag": "v",
+     "wat": "07-11-2026: VV Dongen - VV Noordwijk: 0 - 1"
     }
    ]
   },
@@ -601,9 +601,9 @@
     {
      "pos": 1,
      "club": "VV Noordwijk",
-     "wed": 11,
-     "pnt": 28,
-     "ds": 21
+     "wed": 12,
+     "pnt": 31,
+     "ds": 22
     },
     {
      "pos": 2,
@@ -615,9 +615,9 @@
     {
      "pos": 3,
      "club": "Excelsior Maassluis",
-     "wed": 11,
+     "wed": 12,
      "pnt": 26,
-     "ds": 15
+     "ds": 13
     },
     {
      "pos": 4,
@@ -656,17 +656,17 @@
     },
     {
      "pos": 9,
-     "club": "VV Dongen",
+     "club": "VV Gemert",
      "wed": 11,
      "pnt": 16,
      "ds": -1
     },
     {
      "pos": 10,
-     "club": "VV Gemert",
-     "wed": 10,
-     "pnt": 13,
-     "ds": -3
+     "club": "VV Dongen",
+     "wed": 12,
+     "pnt": 16,
+     "ds": -2
     },
     {
      "pos": 11,
@@ -991,18 +991,6 @@
  ],
  "programma": [
   {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Dongen",
-   "uit": "VV Noordwijk",
-   "tijd": "18:00"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Gemert",
-   "uit": "Excelsior Maassluis",
-   "tijd": "19:00"
-  },
-  {
    "datum": "zondag 8 november 2026",
    "thuis": "Blauw Geel '38",
    "uit": "UDI '19",
@@ -1048,6 +1036,20 @@
    "thuis": "VV Goes",
    "uit": "VV Achilles Veen",
    "thuis_doelpunten": 4,
+   "uit_doelpunten": 1
+  },
+  {
+   "datum": "zaterdag 7 november 2026",
+   "thuis": "VV Dongen",
+   "uit": "VV Noordwijk",
+   "thuis_doelpunten": 0,
+   "uit_doelpunten": 1
+  },
+  {
+   "datum": "zaterdag 7 november 2026",
+   "thuis": "VV Gemert",
+   "uit": "Excelsior Maassluis",
+   "thuis_doelpunten": 3,
    "uit_doelpunten": 1
   }
  ],
