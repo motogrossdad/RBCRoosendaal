@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-13T16:23:36+00:00",
+ "bijgewerkt": "2026-11-14T17:07:51+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -11,72 +11,72 @@
  "periode_rondes": [],
  "periode_nu": 1,
  "periode_resterend": null,
- "speelronde": 12,
+ "speelronde": 13,
  "stand": [
   {
    "pos": 1,
    "club": "FC Lisse",
-   "wed": 12,
-   "wgv": "10-1-1",
-   "pnt": 31,
-   "dv": 30,
+   "wed": 13,
+   "wgv": "11-1-1",
+   "pnt": 34,
+   "dv": 33,
    "dt": 8,
-   "ds": 22,
+   "ds": 25,
    "vorm": []
   },
   {
    "pos": 2,
    "club": "VV Noordwijk",
-   "wed": 12,
-   "wgv": "10-1-1",
-   "pnt": 31,
-   "dv": 26,
-   "dt": 4,
-   "ds": 22,
+   "wed": 13,
+   "wgv": "11-1-1",
+   "pnt": 34,
+   "dv": 28,
+   "dt": 5,
+   "ds": 23,
    "vorm": []
   },
   {
    "pos": 3,
-   "club": "Excelsior Maassluis",
-   "wed": 12,
-   "wgv": "8-2-2",
-   "pnt": 26,
-   "dv": 23,
-   "dt": 10,
-   "ds": 13,
+   "club": "FC Rijnvogels",
+   "wed": 13,
+   "wgv": "8-3-2",
+   "pnt": 27,
+   "dv": 35,
+   "dt": 17,
+   "ds": 18,
    "vorm": []
   },
   {
    "pos": 4,
-   "club": "FC Rijnvogels",
-   "wed": 12,
-   "wgv": "7-3-2",
-   "pnt": 24,
-   "dv": 32,
-   "dt": 16,
-   "ds": 16,
+   "club": "Excelsior Maassluis",
+   "wed": 13,
+   "wgv": "8-2-3",
+   "pnt": 26,
+   "dv": 24,
+   "dt": 13,
+   "ds": 11,
    "vorm": []
   },
   {
    "pos": 5,
    "club": "VV Zwaluwen",
-   "wed": 12,
-   "wgv": "7-1-4",
+   "wed": 13,
+   "wgv": "7-1-5",
    "pnt": 22,
-   "dv": 16,
-   "dt": 16,
-   "ds": 0,
+   "dv": 18,
+   "dt": 19,
+   "ds": -1,
    "vorm": []
   },
   {
    "pos": 6,
    "club": "SV Poortugaal",
-   "wed": 12,
-   "wgv": "7-0-5",
+   "wed": 13,
+   "wgv": "7-0-6",
    "pnt": 21,
    "dv": 20,
-   "dt": 16,
-   "ds": 4,
+   "dt": 19,
+   "ds": 1,
    "vorm": []
   },
   {
@@ -92,6 +92,28 @@
   },
   {
    "pos": 8,
+   "club": "VV Dongen",
+   "wed": 13,
+   "wgv": "6-1-6",
+   "pnt": 19,
+   "dv": 27,
+   "dt": 27,
+   "ds": 0,
+   "vorm": []
+  },
+  {
+   "pos": 9,
+   "club": "Blauw Geel '38",
+   "wed": 13,
+   "wgv": "5-3-5",
+   "pnt": 18,
+   "dv": 19,
+   "dt": 19,
+   "ds": 0,
+   "vorm": []
+  },
+  {
+   "pos": 10,
    "club": "VV Goes",
    "wed": 12,
    "wgv": "5-2-5",
@@ -102,7 +124,7 @@
    "vorm": []
   },
   {
-   "pos": 9,
+   "pos": 11,
    "club": "VV Gemert",
    "wed": 11,
    "wgv": "4-4-3",
@@ -113,36 +135,14 @@
    "vorm": []
   },
   {
-   "pos": 10,
-   "club": "VV Dongen",
-   "wed": 12,
-   "wgv": "5-1-6",
-   "pnt": 16,
-   "dv": 24,
-   "dt": 26,
-   "ds": -2,
-   "vorm": []
-  },
-  {
-   "pos": 11,
-   "club": "Blauw Geel '38",
-   "wed": 12,
-   "wgv": "4-3-5",
-   "pnt": 15,
-   "dv": 16,
-   "dt": 17,
-   "ds": -1,
-   "vorm": []
-  },
-  {
    "pos": 12,
    "club": "TOGB",
-   "wed": 12,
-   "wgv": "3-3-6",
-   "pnt": 12,
-   "dv": 19,
-   "dt": 26,
-   "ds": -7,
+   "wed": 13,
+   "wgv": "4-3-6",
+   "pnt": 15,
+   "dv": 22,
+   "dt": 28,
+   "ds": -6,
    "vorm": []
   },
   {
@@ -158,17 +158,6 @@
   },
   {
    "pos": 14,
-   "club": "VV UNA",
-   "wed": 12,
-   "wgv": "2-5-5",
-   "pnt": 11,
-   "dv": 15,
-   "dt": 21,
-   "ds": -6,
-   "vorm": []
-  },
-  {
-   "pos": 15,
    "club": "VVSB",
    "wed": 12,
    "wgv": "3-2-7",
@@ -176,6 +165,17 @@
    "dv": 16,
    "dt": 25,
    "ds": -9,
+   "vorm": []
+  },
+  {
+   "pos": 15,
+   "club": "VV UNA",
+   "wed": 13,
+   "wgv": "2-5-6",
+   "pnt": 11,
+   "dv": 16,
+   "dt": 23,
+   "ds": -7,
    "vorm": []
   },
   {
@@ -192,86 +192,32 @@
   {
    "pos": 17,
    "club": "VV Achilles Veen",
-   "wed": 12,
-   "wgv": "2-0-10",
+   "wed": 13,
+   "wgv": "2-0-11",
    "pnt": 6,
-   "dv": 10,
-   "dt": 30,
-   "ds": -20,
+   "dv": 11,
+   "dt": 33,
+   "ds": -22,
    "vorm": []
   },
   {
    "pos": 18,
    "club": "EVV",
-   "wed": 12,
-   "wgv": "0-3-9",
+   "wed": 13,
+   "wgv": "0-3-10",
    "pnt": 3,
-   "dv": 11,
-   "dt": 25,
-   "ds": -14,
+   "dv": 13,
+   "dt": 28,
+   "ds": -15,
    "vorm": []
   }
  ],
  "periodes": [],
  "programma": [
   {
-   "datum": "zondag 8 november 2026",
-   "thuis": "Blauw Geel '38",
-   "uit": "UDI '19",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zondag 8 november 2026",
-   "thuis": "EVV",
-   "uit": "VVSB",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zondag 8 november 2026",
-   "thuis": "VV UNA",
-   "uit": "FC Lisse",
-   "tijd": "Lees wedstrijdverslag Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "SV Poortugaal",
-   "uit": "RKSV Groene Ster",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "FC Rijnvogels",
-   "uit": "RBC",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Zwaluwen",
-   "uit": "TOGB",
-   "tijd": "Lees wedstrijdverslag Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Goes",
-   "uit": "VV Achilles Veen",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Dongen",
-   "uit": "VV Noordwijk",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 7 november 2026",
-   "thuis": "VV Gemert",
-   "uit": "Excelsior Maassluis",
-   "tijd": "Onderlinge balans"
-  },
-  {
    "datum": "zaterdag 14 november 2026",
-   "thuis": "VV Achilles Veen",
-   "uit": "VV Dongen",
+   "thuis": "VV Zwaluwen",
+   "uit": "Blauw Geel '38",
    "tijd": "Onderlinge balans"
   },
   {
@@ -288,14 +234,14 @@
   },
   {
    "datum": "zaterdag 14 november 2026",
-   "thuis": "VV Noordwijk",
-   "uit": "VV UNA",
+   "thuis": "VV Achilles Veen",
+   "uit": "VV Dongen",
    "tijd": "Onderlinge balans"
   },
   {
    "datum": "zaterdag 14 november 2026",
-   "thuis": "VV Zwaluwen",
-   "uit": "Blauw Geel '38",
+   "thuis": "VV Noordwijk",
+   "uit": "VV UNA",
    "tijd": "Onderlinge balans"
   },
   {
