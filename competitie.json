@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-14T17:07:51+00:00",
+ "bijgewerkt": "2026-11-14T21:29:41+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -92,6 +92,28 @@
   },
   {
    "pos": 8,
+   "club": "VV Goes",
+   "wed": 13,
+   "wgv": "6-2-5",
+   "pnt": 20,
+   "dv": 29,
+   "dt": 32,
+   "ds": -3,
+   "vorm": []
+  },
+  {
+   "pos": 9,
+   "club": "VV Gemert",
+   "wed": 12,
+   "wgv": "5-4-3",
+   "pnt": 19,
+   "dv": 21,
+   "dt": 20,
+   "ds": 1,
+   "vorm": []
+  },
+  {
+   "pos": 10,
    "club": "VV Dongen",
    "wed": 13,
    "wgv": "6-1-6",
@@ -102,7 +124,7 @@
    "vorm": []
   },
   {
-   "pos": 9,
+   "pos": 11,
    "club": "Blauw Geel '38",
    "wed": 13,
    "wgv": "5-3-5",
@@ -110,28 +132,6 @@
    "dv": 19,
    "dt": 19,
    "ds": 0,
-   "vorm": []
-  },
-  {
-   "pos": 10,
-   "club": "VV Goes",
-   "wed": 12,
-   "wgv": "5-2-5",
-   "pnt": 17,
-   "dv": 25,
-   "dt": 29,
-   "ds": -4,
-   "vorm": []
-  },
-  {
-   "pos": 11,
-   "club": "VV Gemert",
-   "wed": 11,
-   "wgv": "4-4-3",
-   "pnt": 16,
-   "dv": 17,
-   "dt": 18,
-   "ds": -1,
    "vorm": []
   },
   {
@@ -148,27 +148,16 @@
   {
    "pos": 13,
    "club": "RBC",
-   "wed": 11,
-   "wgv": "3-2-6",
+   "wed": 12,
+   "wgv": "3-2-7",
    "pnt": 11,
-   "dv": 21,
-   "dt": 26,
-   "ds": -5,
+   "dv": 24,
+   "dt": 30,
+   "ds": -6,
    "vorm": []
   },
   {
    "pos": 14,
-   "club": "VVSB",
-   "wed": 12,
-   "wgv": "3-2-7",
-   "pnt": 11,
-   "dv": 16,
-   "dt": 25,
-   "ds": -9,
-   "vorm": []
-  },
-  {
-   "pos": 15,
    "club": "VV UNA",
    "wed": 13,
    "wgv": "2-5-6",
@@ -176,6 +165,17 @@
    "dv": 16,
    "dt": 23,
    "ds": -7,
+   "vorm": []
+  },
+  {
+   "pos": 15,
+   "club": "VVSB",
+   "wed": 13,
+   "wgv": "3-2-8",
+   "pnt": 11,
+   "dv": 18,
+   "dt": 29,
+   "ds": -11,
    "vorm": []
   },
   {
