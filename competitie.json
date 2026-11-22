@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-21T23:16:07+00:00",
+ "bijgewerkt": "2026-11-22T03:11:37+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -59,6 +59,17 @@
   },
   {
    "pos": 5,
+   "club": "VV Zwaluwen",
+   "wed": 14,
+   "wgv": "8-1-5",
+   "pnt": 25,
+   "dv": 20,
+   "dt": 20,
+   "ds": 0,
+   "vorm": []
+  },
+  {
+   "pos": 6,
    "club": "UDI '19",
    "wed": 13,
    "wgv": "7-2-4",
@@ -69,18 +80,18 @@
    "vorm": []
   },
   {
-   "pos": 6,
-   "club": "VV Zwaluwen",
-   "wed": 13,
-   "wgv": "7-1-5",
+   "pos": 7,
+   "club": "VV Dongen",
+   "wed": 14,
+   "wgv": "7-1-6",
    "pnt": 22,
-   "dv": 18,
-   "dt": 19,
-   "ds": -1,
+   "dv": 29,
+   "dt": 27,
+   "ds": 2,
    "vorm": []
   },
   {
-   "pos": 7,
+   "pos": 8,
    "club": "SV Poortugaal",
    "wed": 14,
    "wgv": "7-1-6",
@@ -91,7 +102,7 @@
    "vorm": []
   },
   {
-   "pos": 8,
+   "pos": 9,
    "club": "VV Goes",
    "wed": 14,
    "wgv": "6-2-6",
@@ -102,7 +113,7 @@
    "vorm": []
   },
   {
-   "pos": 9,
+   "pos": 10,
    "club": "VV Gemert",
    "wed": 12,
    "wgv": "5-4-3",
@@ -110,17 +121,6 @@
    "dv": 21,
    "dt": 20,
    "ds": 1,
-   "vorm": []
-  },
-  {
-   "pos": 10,
-   "club": "VV Dongen",
-   "wed": 13,
-   "wgv": "6-1-6",
-   "pnt": 19,
-   "dv": 27,
-   "dt": 27,
-   "ds": 0,
    "vorm": []
   },
   {
@@ -148,12 +148,12 @@
   {
    "pos": 13,
    "club": "RBC",
-   "wed": 12,
-   "wgv": "3-2-7",
+   "wed": 13,
+   "wgv": "3-2-8",
    "pnt": 11,
    "dv": 24,
-   "dt": 30,
-   "ds": -6,
+   "dt": 32,
+   "ds": -8,
    "vorm": []
   },
   {
@@ -203,12 +203,12 @@
   {
    "pos": 18,
    "club": "EVV",
-   "wed": 13,
-   "wgv": "0-3-10",
+   "wed": 14,
+   "wgv": "0-3-11",
    "pnt": 3,
-   "dv": 13,
-   "dt": 28,
-   "ds": -15,
+   "dv": 14,
+   "dt": 30,
+   "ds": -16,
    "vorm": []
   }
  ],
@@ -236,7 +236,7 @@
    "datum": "zaterdag 21 november 2026",
    "thuis": "VV UNA",
    "uit": "VV Achilles Veen",
-   "tijd": "Onderlinge balans"
+   "tijd": "Lees wedstrijdverslag Onderlinge balans"
   },
   {
    "datum": "zaterdag 21 november 2026",
