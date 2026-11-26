@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-23T00:53:17+00:00",
+ "bijgewerkt": "2026-11-26T05:03:55+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -82,11 +82,11 @@
   {
    "pos": 7,
    "club": "VV Gemert",
-   "wed": 13,
-   "wgv": "6-4-3",
-   "pnt": 22,
-   "dv": 26,
-   "dt": 23,
+   "wed": 14,
+   "wgv": "6-5-3",
+   "pnt": 23,
+   "dv": 27,
+   "dt": 24,
    "ds": 3,
    "vorm": []
   },
@@ -148,11 +148,11 @@
   {
    "pos": 13,
    "club": "RBC",
-   "wed": 13,
-   "wgv": "3-2-8",
-   "pnt": 11,
-   "dv": 24,
-   "dt": 32,
+   "wed": 14,
+   "wgv": "3-3-8",
+   "pnt": 12,
+   "dv": 25,
+   "dt": 33,
    "ds": -8,
    "vorm": []
   },
@@ -214,60 +214,6 @@
  ],
  "periodes": [],
  "programma": [
-  {
-   "datum": "zondag 22 november 2026",
-   "thuis": "VV Gemert",
-   "uit": "TOGB",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zondag 22 november 2026",
-   "thuis": "Blauw Geel '38",
-   "uit": "RKSV Groene Ster",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zondag 22 november 2026",
-   "thuis": "UDI '19",
-   "uit": "FC Lisse",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "SV Poortugaal",
-   "uit": "VV Noordwijk",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "FC Rijnvogels",
-   "uit": "VVSB",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "VV Goes",
-   "uit": "Excelsior Maassluis",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "VV UNA",
-   "uit": "VV Achilles Veen",
-   "tijd": "Lees wedstrijdverslag Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "VV Dongen",
-   "uit": "RBC",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 21 november 2026",
-   "thuis": "EVV",
-   "uit": "VV Zwaluwen",
-   "tijd": "Onderlinge balans"
-  },
   {
    "datum": "woensdag 25 november 2026",
    "thuis": "RBC",
