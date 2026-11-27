@@ -1,5 +1,5 @@
 {
- "bijgewerkt": "2026-11-26T05:03:55+00:00",
+ "bijgewerkt": "2026-11-27T18:59:10+00:00",
  "bron": "https://www.hollandsevelden.nl/competities/2026-2027/landelijk/derde-divisie-b/",
  "competitie": "Derde Divisie B",
  "seizoen": "2026/2027",
@@ -222,6 +222,12 @@
   },
   {
    "datum": "zaterdag 28 november 2026",
+   "thuis": "VV Zwaluwen",
+   "uit": "VV Gemert",
+   "tijd": "Onderlinge balans"
+  },
+  {
+   "datum": "zaterdag 28 november 2026",
    "thuis": "VV Achilles Veen",
    "uit": "SV Poortugaal",
    "tijd": "Onderlinge balans"
@@ -242,12 +248,6 @@
    "datum": "zaterdag 28 november 2026",
    "thuis": "VV Noordwijk",
    "uit": "UDI '19",
-   "tijd": "Onderlinge balans"
-  },
-  {
-   "datum": "zaterdag 28 november 2026",
-   "thuis": "VV Zwaluwen",
-   "uit": "VV Gemert",
    "tijd": "Onderlinge balans"
   },
   {
